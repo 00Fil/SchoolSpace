@@ -2,7 +2,7 @@
 # Frontend di produzione (GAP-J03): build statica Vite servita da Nginx non privilegiato,
 # che fa anche da reverse proxy verso gunicorn con header di sicurezza e CSP.
 ARG NODE_IMAGE=node:22-bookworm-slim
-ARG NGINX_IMAGE=nginxinc/nginx-unprivileged:1.27-alpine
+ARG NGINX_IMAGE=nginxinc/nginx-unprivileged:1.28-alpine
 ARG PYTHON_IMAGE=python:3.13-slim-bookworm
 
 # Static di Django. compose.prod.yaml sostituisce questo stage con l'immagine backend

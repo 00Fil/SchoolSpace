@@ -73,6 +73,9 @@ def test_no_service_name_collision_on_shared_network():
     assert shared == ["jitsi-web"]
     nginx = (ROOT / "infra/nginx/nginx.conf").read_text()
     assert "server ripetizioni-web:8000" in nginx and "server web:8000" not in nginx
+    # Nome risolto a ogni ricreazione del container web, non solo all'avvio del proxy.
+    assert "server ripetizioni-web:8000 resolve" in nginx
+    assert "resolver 127.0.0.11" in nginx and "zone web_upstream" in nginx
     for compose in ("compose.dokploy.yaml", "compose.prod.yaml"):
         web = yaml.safe_load((ROOT / compose).read_text())["services"]["web"]
         assert "ripetizioni-web" in web["networks"]["backend"]["aliases"], compose

@@ -81,7 +81,11 @@ def build_layout(
 
     def rewrite(path: Path):
         text = pattern.sub(lambda m: mapping[m.group(0)], path.read_text())
-        text = text.replace("server ripetizioni-web:8000", f"server 127.0.0.1:{upstream_port}")
+        text = text.replace(
+            "server ripetizioni-web:8000 resolve", f"server 127.0.0.1:{upstream_port}"
+        ).replace("server ripetizioni-web:8000", f"server 127.0.0.1:{upstream_port}")
+        # Fuori da Docker non c'e' il DNS interno 127.0.0.11: upstream statico.
+        text = re.sub(r"\n\s*resolver 127\.0\.0\.11[^;]*;\n\s*resolver_timeout [^;]*;", "", text)
         text = text.replace("listen 8080", f"listen 127.0.0.1:{http_port}").replace(
             "listen 8443", f"listen 127.0.0.1:{https_port}"
         )

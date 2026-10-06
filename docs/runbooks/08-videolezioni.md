@@ -72,6 +72,8 @@ stabili di Jitsi; dopo un aggiornamento importante di Jitsi controllare a vista 
 
 ## Problemi frequenti
 
+- **«Server non raggiungibile» e nei log del proxy `connect() failed (111: Connection refused) … upstream: http://172.x.x.x:8000`**: il proxy puntava al vecchio IP di `web` (versioni precedenti alla v0.10.1). Riavviare il servizio `proxy`; dalla v0.10.1 non serve più. Se persiste, `web` non è in esecuzione: controllarne i log.
+
 - **`migrate` o `web` riportano `communications.W010 Videolezioni automatiche disattivate: …`**: `VIDEO_PROVIDER=jitsi` è impostato ma manca qualcosa. L'app parte comunque, senza stanze automatiche. Correggere nell'ambiente del gestionale `VIDEO_JITSI_URL=https://meet.<dominio>` e `JITSI_JWT_APP_SECRET` (`openssl rand -hex 32`, 64 caratteri, **identico** a quello dello stack Jitsi), poi ridistribuire. Finché Jitsi non è pronto si può lasciare `VIDEO_PROVIDER` vuoto.
 | Sintomo | Causa probabile |
 |---|---|

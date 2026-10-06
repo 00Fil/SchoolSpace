@@ -45,6 +45,7 @@ import Presenze from "./portal/Presenze";
 import PresaVisione from "./portal/PresaVisione";
 import Operativita from "./screens/Operativita";
 import Statistiche from "./screens/Statistiche";
+import { watchTables } from "./ui/tableLabels";
 
 initPrefs();
 
@@ -181,4 +182,5 @@ function NoRole({ onSignOut }: { onSignOut: () => void }) {
   </AuthCard>;
 }
 
+watchTables();
 createRoot(document.getElementById("root")!).render(<><Sprite /><ToastHost><App /></ToastHost></>);

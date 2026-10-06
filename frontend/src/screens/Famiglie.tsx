@@ -92,7 +92,7 @@ function FamilyList({ all, q, filter, ctx }: { all: Family[]; q: string; filter:
       <label className="field-search"><Icon n="search" /><span className="sr">Cerca famiglie, figli o genitori</span><input type="search" placeholder="Cerca famiglia, figlio o genitore…" value={q} autoComplete="off" spellCheck={false} onChange={(e) => setQuery((x) => (e.target.value ? x.set("q", e.target.value) : x.delete("q")))} /></label>
       <SegCtl label="Mostra" value={filter} onChange={(v) => setQuery((x) => (v === "tutte" ? x.delete("vista") : x.set("vista", v)))} options={[["tutte", "Tutte"], ["attesa", "Accesso da completare"], ["senza-figli", "Senza figli"]]} />
     </div>}
-    {!all.length ? <div className="module fm-empty"><span className="fm-empty-ic"><Icon n="users" /></span><b>Nessuna famiglia ancora</b><p>Parti dal genitore o tutore: gli mandi l’invito (o gli mostri un QR code) e poi aggiungi i figli.</p><Btn kind="primary" isle="plus" onClick={() => ctx.setForm({ k: "new" })}>Nuova famiglia</Btn></div>
+    {!all.length ? <div className="module fm-empty"><span className="fm-empty-ic"><Icon n="users" /></span><b>Nessuna famiglia ancora</b><Btn kind="primary" isle="plus" onClick={() => ctx.setForm({ k: "new" })}>Nuova famiglia</Btn></div>
       : !shown.length ? <div className="module"><Empty title={needle ? `Nessun risultato per “${q}”` : "Nessuna famiglia in questo filtro"} /></div>
       : <div className="fm-grid">{shown.map((f) => <FamilyCard key={f.id} f={f} ctx={ctx} />)}</div>}
   </section>;

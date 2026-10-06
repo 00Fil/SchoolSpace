@@ -1333,3 +1333,53 @@ button.chip{cursor:pointer;height:30px}
   .ag-wrap.is-scrolled .ag-scroller{--ag-ramp:linear-gradient(to right,transparent calc(var(--ag-sc-edge) + 4px * var(--ag-k)),#000 calc(var(--ag-sc-edge) + 4px * var(--ag-k) + 28px * var(--ag-k)))}
   .ag-bar{margin-left:calc(var(--ag-edge) + 4px)}
 }
+
+/* v0.10 · Mobile senza scorrimento orizzontale: liste come schede, selettori di schede su piu'
+   righe, statistiche a due colonne, linea del giorno dei tutor a tutta larghezza. */
+@media (max-width:767px){
+  /* selettori di schede (menu dell'area e controlli segmentati) */
+  .hub-tabs{display:flex;flex-wrap:wrap;width:100%;overflow:visible;border-radius:22px;gap:4px}
+  .hub-tabs a{flex:1 1 auto;justify-content:center;height:36px;padding:0 12px;font-size:13.5px}
+  .seg-scroll{overflow:visible;margin:0;padding:0}
+  .seg-scroll .seg-ctl,.seg-ctl{display:flex;flex-wrap:wrap;width:100%;max-width:100%;border-radius:22px}
+  .seg-ctl button{flex:1 1 auto;white-space:nowrap;padding:0 12px;font-size:13.5px}
+  /* liste: ogni riga e' una scheda; titolo in alto, poi le voci con la loro etichetta */
+  .list-wrap,.table-wrap{overflow:visible;margin:0;padding:0}
+  table.list,table.tbl,table.pm-table{display:block;width:100%;border-spacing:0}
+  table.list thead,table.tbl thead,table.pm-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  table.list tbody,table.tbl tbody,table.pm-table tbody,table.pm-table tfoot{display:grid;gap:8px}
+  table.list tbody+tbody,table.pm-table tbody+tbody{margin-top:8px}
+  table.list tr,table.tbl tr,table.pm-table tr{display:flex;flex-direction:column;gap:7px;padding:12px 14px;border-radius:var(--r-md);background:var(--surface-2);box-shadow:var(--raise-hi),inset 0 0 0 1px var(--line);min-width:0}
+  table.pm-table tr{background:var(--surface)}
+  table.list td,table.tbl td,table.pm-table td,table.pm-table tbody th,table.pm-table tfoot th{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;padding:0!important;background:none!important;border:0!important;border-radius:0!important;min-width:0;width:auto!important;text-align:left!important;white-space:normal!important}
+  table.list td[data-label]:not([data-label=""])::before,table.tbl td[data-label]:not([data-label=""])::before,table.pm-table td[data-label]:not([data-label=""])::before{content:attr(data-label);font-size:12px;font-weight:450;color:var(--text-3);flex:none;max-width:45%}
+  table.list td>*,table.tbl td>*,table.pm-table td>*{min-width:0}
+  table.list td:first-child,table.tbl td:first-child,table.pm-table tr>:first-child{font-weight:500;justify-content:flex-start}
+  table.list td:first-child::before,table.tbl td:first-child::before,table.pm-table tr>:first-child::before{display:none}
+  table.list td[data-label=""]:last-child:not(:first-child),table.tbl td[data-label=""]:last-child:not(:first-child),table.pm-table td[data-label=""]:last-child:not(:first-child){justify-content:flex-start;padding-top:4px!important}
+  table.list td:empty,table.tbl td:empty,table.pm-table td:empty{display:none}
+  .list .who b{white-space:normal}
+  .list tr.row:hover td{background:none}
+  /* statistiche: due per riga, piu' compatte */
+  .stats,.stats.four,.stats.two-col{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:18px}
+  .stat{padding:12px 14px}
+  .stat b{font-size:28px;margin-top:4px}
+  .stat small{font-size:12.5px;line-height:1.3}
+  .stat .note{font-size:12px}
+  /* panoramica: lezioni dei tutor a tutta larghezza, nome sopra la linea */
+  .tday-scroll{overflow:visible;margin:0;padding:0}
+  .tday{min-width:0}
+  .tday-row{grid-template-columns:minmax(0,1fr);gap:6px}
+  .tday-hours .tday-name{display:none}
+  .tday-hours .tday-line span:nth-child(even){visibility:hidden}
+  .tday-name{position:static}
+}
+/* schede delle liste: titolo a tutta larghezza, voci su due colonne con l'etichetta sopra, azioni in fondo */
+@media (max-width:767px){
+  table.list tr,table.tbl tr,table.pm-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+  table.list td,table.tbl td,table.pm-table td{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:3px}
+  table.list td::before,table.tbl td::before,table.pm-table td::before{max-width:none!important}
+  table.list tr>:first-child,table.tbl tr>:first-child,table.pm-table tr>:first-child{grid-column:1 / -1;flex-direction:row;align-items:center;flex-wrap:wrap;gap:6px 10px}
+  :is(table.list,table.tbl,table.pm-table) td:is([data-label=""],[data-label="Azioni"]):last-child:not(:first-child){grid-column:1 / -1;flex-direction:row;justify-content:flex-end;align-items:center;padding-top:2px!important}
+  :is(table.list,table.tbl,table.pm-table) td[data-label="Azioni"]::before{display:none}
+}

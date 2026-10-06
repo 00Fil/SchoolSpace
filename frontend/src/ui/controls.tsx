@@ -12,7 +12,7 @@ export function SegCtl<V extends string>({ value, options, onChange, label }: { 
     const b = ref.current?.querySelector<HTMLElement>('[aria-pressed="true"]'), th = thumb.current;
     if (!b || !th) return;
     if (first.current) th.style.transition = "none";
-    th.style.width = b.offsetWidth + "px"; th.style.transform = `translateX(${b.offsetLeft}px)`;
+    th.style.width = b.offsetWidth + "px"; th.style.transform = `translate(${b.offsetLeft}px,${b.offsetTop - 4}px)`; // anche su piu' righe (mobile)
     if (first.current) { void th.offsetWidth; th.style.transition = ""; first.current = false; }
   };
   useLayoutEffect(place, [value]);

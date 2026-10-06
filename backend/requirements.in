@@ -1,8 +1,8 @@
 # Dipendenze dirette. I range seguono la politica di supporto upstream: una vulnerabilità
 # nota con correzione disponibile blocca il merge (NFR08, GAP-I08). Lock con hash in
 # requirements.txt (rigenerare con pip-compile --generate-hashes o scripts equivalenti).
-Django>=5.2.17,<5.3
-djangorestframework>=3.17.2,<4
+Django>=6.1.1,<6.2
+djangorestframework>=3.18.1,<4
 psycopg[binary]>=3.2,<3.3
 gunicorn>=23,<24
 ortools>=9.14,<10

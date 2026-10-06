@@ -1383,3 +1383,10 @@ button.chip{cursor:pointer;height:30px}
   :is(table.list,table.tbl,table.pm-table) td:is([data-label=""],[data-label="Azioni"]):last-child:not(:first-child){grid-column:1 / -1;flex-direction:row;justify-content:flex-end;align-items:center;padding-top:2px!important}
   :is(table.list,table.tbl,table.pm-table) td[data-label="Azioni"]::before{display:none}
 }
+/* v0.10 · Hover dei pulsanti pieni piccoli: la regola generica di .pill-btn.sm:hover li rendeva
+   bianchi (sfondo e testo dello stesso colore). Ora mantengono il loro colore e si schiariscono appena. */
+.pill-btn.sm.primary:hover,.pill-btn.sm.join:hover{background-color:var(--fill-blue)}
+.pill-btn.sm.approve:hover{background-color:var(--green)}
+.pill-btn.sm.danger:hover{background-color:var(--red-soft)}
+.pill-btn:is(.primary,.join,.approve,.danger):hover,.vr-btn.danger.solid:hover{filter:brightness(1.07) saturate(1.04)}
+.pill-btn:is(.primary,.join,.approve):hover{color:#fff}

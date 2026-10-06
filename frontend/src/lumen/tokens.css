@@ -22,11 +22,11 @@
   --raise-hi:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,20,30,.05);
   --glass:rgba(255,255,255,.42);--glass-edge:rgba(255,255,255,.9);
   --scrim:rgba(217,219,225,.55);
-  --blue:#2563EB;--blue-soft:rgba(37,99,235,.10);--blue-ink:#1D4ED8;
-  --violet:#6A46E5;--violet-soft:rgba(106,70,229,.10);--violet-ink:#5530CF;
-  --green:#12804F;--green-soft:rgba(18,128,79,.11);--green-ink:#0B6B40;
-  --amber:#E5A10E;--amber-soft:rgba(229,161,14,.15);--amber-ink:#7A4E00;
-  --red:#C9302C;--red-soft:rgba(201,48,44,.10);--red-ink:#A61F1B;
+  --blue:#4F7CF7;--blue-soft:#DCE6FE;--blue-ink:#2449B8;
+  --violet:#8A6CF2;--violet-soft:#E7E0FD;--violet-ink:#5536C4;
+  --green:#3FA86F;--green-soft:#DBF1E4;--green-ink:#1F7A48;
+  --amber:#F4CB52;--amber-soft:#FDF0C8;--amber-ink:#6E5200;
+  --red:#D9534F;--red-soft:#FBE3E2;--red-ink:#9B2723;
   --t1:#DCE6FE;--t2:#E7E0FD;--t3:#DBF1E4;--t4:#FDE3D3;--t5:#FDF0C8;
   color-scheme:light;
 }
@@ -41,11 +41,11 @@
   --raise-hi:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.25);
   --glass:rgba(120,150,255,.14);--glass-edge:rgba(255,255,255,.14);
   --scrim:rgba(5,6,8,.6);
-  --blue:#5B8BFF;--blue-soft:rgba(91,139,255,.16);--blue-ink:#BCD0FF;
-  --violet:#9277FF;--violet-soft:rgba(146,119,255,.16);--violet-ink:#D2C6FF;
-  --green:#2FB574;--green-soft:rgba(47,181,116,.15);--green-ink:#9FE6C2;
-  --amber:#F0B429;--amber-soft:rgba(240,180,41,.15);--amber-ink:#FBD98A;
-  --red:#F0605B;--red-soft:rgba(240,96,91,.15);--red-ink:#FFC0BD;
+  --blue:#6D93FF;--blue-soft:rgba(109,147,255,.16);--blue-ink:#B5C8FF;
+  --violet:#9C83F7;--violet-soft:rgba(156,131,247,.16);--violet-ink:#CDBFFD;
+  --green:#4DB57E;--green-soft:rgba(86,194,136,.15);--green-ink:#A5E3C1;
+  --amber:#E8BE4B;--amber-soft:rgba(232,190,75,.14);--amber-ink:#F5DA8E;
+  --red:#F07470;--red-soft:rgba(240,116,112,.14);--red-ink:#FFC2BF;
   --t1:#2A3558;--t2:#35295A;--t3:#1E4232;--t4:#4A3024;--t5:#4A3E1C;
   color-scheme:dark;
 }

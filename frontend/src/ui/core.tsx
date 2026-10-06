@@ -4,7 +4,7 @@ import { initials, tone } from "../format";
 import { stateOf, Tone } from "../messages";
 import { TECH_ADMIN } from "../env";
 
-export type IconName = "home" | "cal" | "users" | "user" | "book" | "clip" | "chart" | "wallet" | "spark" | "gear" | "search" | "bell" | "plus" | "filter" | "arrow" | "chev" | "left" | "right" | "x" | "check" | "clock" | "send" | "clipf" | "mic" | "sun" | "moon" | "download" | "move" | "qr" | "mail" | "phone";
+export type IconName = "home" | "cal" | "users" | "user" | "book" | "clip" | "chart" | "wallet" | "spark" | "gear" | "search" | "bell" | "plus" | "filter" | "arrow" | "chev" | "left" | "right" | "x" | "check" | "clock" | "send" | "clipf" | "mic" | "sun" | "moon" | "download" | "move" | "qr" | "mail" | "phone" | "video" | "pin";
 export const Sprite = () => <div hidden dangerouslySetInnerHTML={{ __html: sprite }} />;
 export const Icon = ({ n, size }: { n: IconName; size?: number }) => (
   <svg className="i" aria-hidden="true" style={size ? { width: size, height: size } : undefined}><use href={"#" + n} /></svg>

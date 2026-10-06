@@ -23,7 +23,7 @@ export function LessonCard({ l, hl, actions }: { l: MyLesson; hl?: boolean; acti
   const off = l.state === "CANCELLED";
   return <article className={"event" + (hl ? " hl" : "") + (off ? " off" : "")} aria-label={`${l.subject_name}, ${rangeOf(l.start_at, l.end_at)}${off ? ", cancellata" : ""}`}>
     <div className="e-top"><div><b>{l.subject_name}</b><p>{l.as_tutor ? `Con ${who(l) || "nessuno studente"}` : `Con ${l.tutor_name}${l.participants.length + l.other_participants > 1 ? " · lezione di gruppo" : ""}`}</p></div>
-      {off ? <Tag tone="plain">Cancellata</Tag> : <Tag tone={hl ? "plain" : "blue"}>{MODE[l.mode] || l.mode}</Tag>}</div>
+      {off ? <Tag tone="plain">Cancellata</Tag> : <span className="mode-ic" title={MODE[l.mode] || l.mode}><Icon n={l.mode === "ONLINE" ? "video" : "pin"} /><span className="sr">{MODE[l.mode] || l.mode}</span></span>}</div>
     <div className="e-bot"><span className="chip"><Icon n="clock" />{rangeOf(l.start_at, l.end_at)}</span><span className="chip"><Icon n="home" />{l.space_name || LOCATION[l.location] || l.location}</span>{l.participants.length > 0 && <Stack names={l.participants.map((p) => p.name)} />}</div>
     {actions && <div className="kid-actions" style={{ marginTop: 10 }}>{actions}</div>}
   </article>;

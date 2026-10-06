@@ -145,6 +145,3 @@ Completata in v0.6: guscio e tutte le schermate v0.5 usano le primitive di `fron
 - **Portali**: «La mia settimana» riusa `DayStrip` e le card `.event` della Panoramica; nessuna azione distruttiva, solo lettura.
 - **Spiegare prima di rifiutare**: dove il server può calcolare l'esito (spostamenti), la UI marca le opzioni non valide e mostra il motivo in italiano prima dell'invio; il server rivalida comunque al salvataggio.
 
-
-## Colore (v0.10)
-Niente pastelli piatti. Pieni profondi (`--blue` #2563EB, `--violet` #6A46E5, `--green` #12804F, `--amber` #E5A10E, `--red` #C9302C) sempre con `--fill-edge`, `--sheen` e `--drop`. Le varianti `-soft` sono tinte trasparenti (10–15%) da usare con bordo nella stessa tinta e testo `-ink`. Avatar `.t1`–`.t5`: sfumature piene con iniziali bianche.

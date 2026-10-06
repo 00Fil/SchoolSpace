@@ -176,7 +176,7 @@ export default function Agenda() {
             <button className="circle" aria-label="Giorno successivo" aria-keyshortcuts="]" onClick={() => setDay(addDays(day, 1))}><Icon n="right" /></button>
           </div>
           {day !== today && <button className="pill-btn sm" onClick={() => setDay(today)}>Oggi</button>}
-          <button className="pill-btn sm" aria-haspopup="dialog" aria-expanded={false} aria-pressed={nf > 0} onClick={(e) => setFiltAnchor(filtAnchor ? null : e.currentTarget)}><Icon n="filter" />{nf ? `Filtri (${nf})` : "Filtra"}</button>
+          <button className="pill-btn sm ag-filter" aria-label={nf ? `Filtri attivi: ${nf}` : "Filtra"} aria-haspopup="dialog" aria-expanded={false} aria-pressed={nf > 0} onClick={(e) => setFiltAnchor(filtAnchor ? null : e.currentTarget)}><Icon n="filter" />{nf ? `Filtri (${nf})` : "Filtra"}</button>
         </div>
       </div>
       {cap?.enabled && <MonthBar ym={ym} m={month && month.month === ym ? month : null} toast={(x) => toast(x)} onChanged={monthChanged}
@@ -193,6 +193,7 @@ export default function Agenda() {
       {cap?.enabled && <div className="legend" aria-label="Legenda">
         <span><i style={{ background: "var(--blue)" }} />Individuale</span><span><i style={{ background: "var(--violet)" }} />Gruppo</span>
         <span><i className="cell off" style={{ borderRadius: 4 }} />{av?.hours.length ? "Centro chiuso o tutor impegnato" : "Tutor non disponibile"}</span>
+        <span><Icon n="pin" />In presenza</span><span><Icon n="video" />Online</span>
         <span><i className="lg-pend" />In bozza, da pubblicare</span>
         <span><i className="lg-pend lg-rv" />Richiesta in verifica</span>
       </div>}
@@ -245,7 +246,7 @@ export function DayStrip({ week, day, today, counts, onPick, month }: { week: st
 /* ------------------------------ griglia ------------------------------ */
 type GridP = { rows: Row[]; geo: Geo; day: string; lessons: Lesson[]; rules: { tutor: string | null; weekday: number; start_time: string; end_time: string; status: string; period_start?: string; period_end?: string }[]; avail: Avail | null; empty: boolean; nextDay?: string; onGo: (d: string) => void; onOpen: (l: Lesson, mod?: boolean) => void; onDrag: (l: Lesson, start: number, end: number) => void; onRefuse: (m: string) => void; picked?: string; onCreate?: (tutor: string, start: number, end: number) => void };
 function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo, onOpen, onDrag, onRefuse, picked, onCreate, drafts, ghosts = [], onGhost }: GridP & { drafts?: Map<string, Correction>; ghosts?: Ghost[]; onGhost?: (g: Ghost) => void }) {
-  const sched = useRef<HTMLDivElement>(null), scroller = useRef<HTMLDivElement>(null);
+  const sched = useRef<HTMLDivElement>(null), scroller = useRef<HTMLDivElement>(null), bar = useRef<HTMLDivElement>(null);
   const now = rome(new Date()), isToday = now.date === day;
   const slots = Array.from({ length: geo.cols / 2 }, (_, i) => geo.open + i * 30);
   const col = (min: number) => Math.round((min - geo.open) / Q) + 2;
@@ -289,7 +290,7 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
   const t = isToday ? Math.min(Math.max((now.min - geo.open) / (geo.close - geo.open), 0), 1) : 0;
   const gaps = (geo.cols - 1) * 8, passed = Math.min(Math.floor(Math.max(now.min - geo.open, 0) / Q), geo.cols - 1) * 8;
   useEffect(() => { // scorrendo, la griglia si sfoca e sparisce dietro la colonna dei tutor
-    const sc = scroller.current, wrap = sc?.parentElement; if (!sc || !wrap) return;
+    const sc = scroller.current, wrap = sc?.closest<HTMLElement>(".ag-wrap"), track = bar.current; if (!sc || !wrap || !track) return;
     let raf = 0;
     const paint = () => {
       raf = 0;
@@ -308,14 +309,35 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
       wrap.style.setProperty("--ag-col-size", `${n.width}px ${pitch}px`);
       wrap.style.setProperty("--ag-k", k.toFixed(3));
       wrap.classList.toggle("is-scrolled", sc.scrollLeft > 0);
+      // barra di scorrimento propria: solo sotto gli orari, fuori dalla sfocatura
+      const max = sc.scrollWidth - sc.clientWidth, tw = track.clientWidth;
+      const th = max > 1 ? Math.max(40, tw * sc.clientWidth / sc.scrollWidth) : tw;
+      wrap.classList.toggle("has-bar", max > 1);
+      track.style.setProperty("--th-w", `${th}px`);
+      track.style.setProperty("--th-x", `${max > 1 ? (tw - th) * sc.scrollLeft / max : 0}px`);
     };
+    let drag: { x: number; sl: number } | null = null;
+    const down = (e: PointerEvent) => {
+      const th = track.firstElementChild as HTMLElement, r = th.getBoundingClientRect();
+      if (e.target === th) { drag = { x: e.clientX, sl: sc.scrollLeft }; track.setPointerCapture(e.pointerId); track.classList.add("is-drag"); e.preventDefault(); return; }
+      sc.scrollBy({ left: (e.clientX < r.left ? -1 : 1) * sc.clientWidth * 0.8, behavior: "smooth" });
+    };
+    const move = (e: PointerEvent) => {
+      if (!drag) return;
+      const th = (track.firstElementChild as HTMLElement).offsetWidth, room = track.clientWidth - th;
+      if (room > 0) sc.scrollLeft = drag.sl + (e.clientX - drag.x) * (sc.scrollWidth - sc.clientWidth) / room;
+    };
+    const up = () => { drag = null; track.classList.remove("is-drag"); };
+    track.addEventListener("pointerdown", down); track.addEventListener("pointermove", move);
+    track.addEventListener("pointerup", up); track.addEventListener("pointercancel", up);
     const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
     paint();
     sc.addEventListener("scroll", queue, { passive: true });
     window.addEventListener("resize", queue);
-    return () => { cancelAnimationFrame(raf); sc.removeEventListener("scroll", queue); window.removeEventListener("resize", queue); };
+    const ro = new ResizeObserver(queue); ro.observe(sc); if (sc.firstElementChild) ro.observe(sc.firstElementChild);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); sc.removeEventListener("scroll", queue); window.removeEventListener("resize", queue); track.removeEventListener("pointerdown", down); track.removeEventListener("pointermove", move); track.removeEventListener("pointerup", up); track.removeEventListener("pointercancel", up); };
   }, [rows.length, geo.cols]);
-  return <div className="ag-wrap"><div className="scroller ag-scroller" ref={scroller}>
+  return <div className="ag-wrap"><div className="ag-view"><div className="scroller ag-scroller" ref={scroller}>
     <div className="sched dyn" id="sched" ref={sched} role="group" aria-label="Lezioni per tutor e orario" style={{ "--cols": geo.cols } as React.CSSProperties}>
       <div className="c-name corner" style={{ gridRow: 1 }}>Tutor</div>
       {slots.map((m, i) => <div key={m} className={"c-head" + (i === nowCol ? " is-now" : "")} style={{ gridColumn: `${col(m)} / span 2` }} data-min={m}>{i === nowCol && <span>Ora</span>}{hm(m)}</div>)}
@@ -332,22 +354,21 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
           cells.push(<div key={s} className={"cell" + (past ? " past" : "")} style={{ gridRow: row, gridColumn: `${col(s)} / span 2` }} />); i++;
         }
         return [<button key={t.id} className="c-name" style={{ gridRow: row }} data-tutor={t.id} aria-label={`${t.name}, ${plural(mine.length, "lezione", "lezioni")}`} tabIndex={-1}>
-          <Avatar name={t.name} k={t.id} /><div><b>{t.name}</b><small>{mine.length ? plural(mine.length, "lezione", "lezioni") : "Nessuna lezione"}</small></div><span className="load">{mins ? duration(mins).replace(" ore", " h").replace(" ora", " h") : ""}</span></button>,
+          <Avatar name={t.name} k={t.id} /><div><b>{t.name.split(" ")[0]}<span className="ln">{t.name.slice(t.name.split(" ")[0].length)}</span></b><small>{mine.length ? plural(mine.length, "lezione", "lezioni") : "Nessuna lezione"}</small></div><span className="load">{mins ? duration(mins).replace(" ore", " h").replace(" ora", " h") : ""}</span></button>,
           ...cells,
           ...lessons.filter((l) => l.tutor === t.id).map((l, li) => {
             const m = lmin(l), len = (m.e - m.s) / Q, nowIso = new Date();
             const done = new Date(l.end_at) <= nowIso, liveNow = new Date(l.start_at) <= nowIso && !done, cancelled = l.state === "CANCELLED";
             const movable = !cancelled && new Date(l.start_at) > nowIso, tc = l.time_change, dc = drafts?.get(l.id);
             const dcls = !dc ? "" : dc.op === "cancel" ? " d-cancel" : dc.op === "modify" && !dc.target ? " d-mod" : " d-from";
-            const label = `${l.subject_name}, ${isGroup(l) ? "gruppo" : "individuale"}, ${l.participants.map((p) => p.name).join(", ")}, con ${t.name}, ${rangeOf(l.start_at, l.end_at)}${cancelled ? ", cancellata" : done ? ", svolta" : liveNow ? ", in corso" : ""}${tc ? `, modifica a ${rangeOf(tc.start_at, tc.end_at)} in attesa di conferma` : ""}${dc ? `, rettifica in bozza: ${dc.summary}` : ""}`;
+            const label = `${l.subject_name}, ${isGroup(l) ? "gruppo" : "individuale"}, ${(MODE[l.mode] || l.mode).toLowerCase()}, ${l.participants.map((p) => p.name).join(", ")}, con ${t.name}, ${rangeOf(l.start_at, l.end_at)}${cancelled ? ", cancellata" : done ? ", svolta" : liveNow ? ", in corso" : ""}${tc ? `, modifica a ${rangeOf(tc.start_at, tc.end_at)} in attesa di conferma` : ""}${dc ? `, rettifica in bozza: ${dc.summary}` : ""}`;
             const pend = tc && rome(tc.start_at).date === day ? (() => { const a = rome(tc.start_at).min, b = rome(tc.end_at).min; return <span key={l.id + ":p"} className="les-pend" aria-hidden="true" style={{ gridRow: row, gridColumn: `${col(a)} / span ${Math.max(1, (b - a) / Q)}` }}><b>{hm(a)}–{hm(b)}</b><small>in attesa</small></span>; })() : null;
             return [pend, <button key={l.id} data-id={l.id} data-movable={movable ? "1" : undefined} className={`les ${isGroup(l) ? "k-g" : "k-s"} len${Math.max(1, Math.round(len / 2))}${done ? " done" : ""}${cancelled ? " cancelled" : ""}${tc ? " has-pend" : ""}${dcls}${picked === l.id ? " picked" : ""}`}
               style={{ gridRow: row, gridColumn: `${col(m.s)} / span ${Math.max(1, len)}`, "--dl": `${(m.s - geo.open) / Q * 20 + ri * 35 + li * 10}ms` } as React.CSSProperties}
               aria-label={label} aria-keyshortcuts={movable ? "Alt+ArrowLeft Alt+ArrowRight Alt+Shift+ArrowLeft Alt+Shift+ArrowRight" : undefined}>
               {movable && <span className="les-grip s" data-grip="start" aria-hidden="true" />}
-              <span className="ic"><Icon n={isGroup(l) ? "users" : "book"} /></span>
+              <span className="ic" title={MODE[l.mode] || l.mode}><Icon n={l.mode === "ONLINE" ? "video" : "pin"} /></span>
               <span className="lt"><b>{l.subject_name}</b><small>{isGroup(l) ? plural(l.participants.length, "studente", "studenti") : l.participants[0]?.name || "—"}</small></span>
-              {len >= 6 && !done && <em className="pill">{cancelled ? "Cancellata" : MODE[l.mode] || l.mode}</em>}
               {liveNow && !cancelled && <i className="live-dot" aria-hidden="true" />}
               {tc && <i className="pend-dot" aria-hidden="true" title="Modifica in attesa di conferma" />}
               {dc && <i className="draft-dot" aria-hidden="true" title={`In bozza: ${dc.summary}`} />}
@@ -360,13 +381,12 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
               style={{ gridRow: row, gridColumn: `${col(a)} / span ${Math.max(1, len)}` }} aria-label={`In bozza: ${g.subject}, ${g.who}, ${hm(a)}–${hm(b)}${g.corr ? ", " + g.corr.summary : g.kind === "review" ? ", richiesta in verifica" : ", bozza mensile"}`}>
               <span className="ic"><Icon n={g.kind === "review" ? "clock" : g.kind === "new" ? "plus" : "move"} /></span>
               <span className="lt"><b>{g.subject}</b><small>{g.who}</small></span>
-              {len >= 6 && <em className="pill">{g.kind === "review" ? "In verifica" : "Bozza"}</em>}
             </button>;
           })];
       })}
       <div className="nowlayer" aria-hidden="true"><i className="nowline" hidden={nowCol < 0} style={{ transform: `translateX(calc(${t} * (100% - ${gaps}px) + ${passed}px))` }} /></div>
     </div>
-  </div><div className="ag-blur" aria-hidden="true" /></div>;
+  </div><div className="ag-blur" aria-hidden="true" /></div><div className="ag-bar" ref={bar} aria-hidden="true"><i /></div></div>;
 }
 
 /* Gesti: trascina lungo la riga per spostare (mouse dopo 6 px, touch con pressione lunga) o tira un bordo

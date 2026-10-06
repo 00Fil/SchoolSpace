@@ -158,8 +158,8 @@ button.mini:hover{transform:translateY(-2px)}
 .lab-unit small{display:block;color:var(--text-2)}
 /* v0.7 — accessibilità: correzioni di contrasto WCAG 2.2 AA (audit axe-core).
    Variazioni minime dei token Lumen solo dove testo e sfondo scendevano sotto 4,5:1. */
-:root:not([data-theme="dark"]),[data-theme="light"]{--text-3:#6D707A;--blue:#2563EB;--violet:#6A46E5}
-[data-theme="dark"]{--text-3:rgba(236,238,243,.62);--fill-blue:#3366F0;--fill-violet:#6A48E0}
+:root:not([data-theme="dark"]),[data-theme="light"]{--text-3:#6D707A;--blue:#466EDB;--violet:#7A60D7}
+[data-theme="dark"]{--text-3:rgba(236,238,243,.62);--fill-blue:#466EDB;--fill-violet:#7A60D7}
 :root:not([data-theme="dark"]),[data-theme="light"]{--fill-blue:var(--blue);--fill-violet:var(--violet)}
 .pill-btn.primary,.pill-btn.cta .isle,.c-head.is-now,.msg.from-me,.send.ready,.week .dh.today,.cal-d[aria-pressed="true"],.ds[aria-pressed="true"],.check input:checked{background:var(--fill-blue)}
 .les.k-s{background:var(--fill-blue)}
@@ -1244,14 +1244,15 @@ button.chip{cursor:pointer;height:30px}
    tutto dietro la colonna dei tutor (niente pezzi di lezione che spuntano tra le righe).
    --ag-edge = bordo destro della colonna (px dal contenitore), --ag-k = 0..1 in base allo
    scorrimento: a inizio riga l'effetto è spento e non copre la prima colonna oraria. */
-.ag-wrap{position:relative;--ag-edge:0px;--ag-k:0}
+.ag-wrap{--ag-edge:0px;--ag-k:0}
+.ag-view{position:relative}
 .ag-wrap.is-scrolled .ag-scroller{
   --ag-ramp:linear-gradient(to right,transparent calc(var(--ag-sc-edge) + 10px * var(--ag-k)),#000 calc(var(--ag-sc-edge) + 10px * var(--ag-k) + 64px * var(--ag-k)));
   -webkit-mask-image:var(--ag-ramp),var(--ag-col);mask-image:var(--ag-ramp),var(--ag-col);
   -webkit-mask-repeat:no-repeat,repeat-y;mask-repeat:no-repeat,repeat-y;
   -webkit-mask-position:0 0,var(--ag-col-pos);mask-position:0 0,var(--ag-col-pos);
   -webkit-mask-size:100% 100%,var(--ag-col-size);mask-size:100% 100%,var(--ag-col-size)}
-.ag-blur{position:absolute;top:0;bottom:14px;left:var(--ag-edge);width:76px;pointer-events:none;z-index:5;opacity:0;
+.ag-blur{position:absolute;top:0;bottom:8px;left:var(--ag-edge);width:76px;pointer-events:none;z-index:5;opacity:0;
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   -webkit-mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);
   mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);
@@ -1276,22 +1277,59 @@ button.chip{cursor:pointer;height:30px}
 .inp{box-shadow:var(--well),inset 0 0 0 1px var(--line-2)}
 .chip{box-shadow:var(--raise-hi),inset 0 0 0 1px var(--line)}
 
-/* v0.10 · Colori pieni e profondi al posto dei pastelli. Etichette e stati: tinta leggera +
-   bordo nella stessa tinta + testo scuro saturo (nitidi su ogni superficie). Avatar: pieni con
-   sfumatura e iniziali bianche. Contrasto testo bianco su pieni >= 4,5:1. */
-.t1,.t2,.t3,.t4,.t5{color:#fff;box-shadow:var(--fill-edge),0 0 0 3px var(--frame);text-shadow:0 1px 0 rgba(0,0,0,.18)}
-.t1{background:linear-gradient(150deg,#4F86FF,#1D4ED8)}
-.t2{background:linear-gradient(150deg,#8A6BFF,#5530CF)}
-.t3{background:linear-gradient(150deg,#22A86A,#0B6B40)}
-.t4{background:linear-gradient(150deg,#F2774B,#C2410C)}
-.t5{background:linear-gradient(150deg,#1BA6BC,#0E6F80)}
-.tag{box-shadow:inset 0 0 0 1px var(--line-2)}
-.tag.blue{box-shadow:inset 0 0 0 1px rgba(37,99,235,.24)}
-.tag.green{box-shadow:inset 0 0 0 1px rgba(18,128,79,.26)}
-.tag.amber{box-shadow:inset 0 0 0 1px rgba(229,161,14,.34)}
-.tag.red{box-shadow:inset 0 0 0 1px rgba(201,48,44,.24)}
-.tag.violet{box-shadow:inset 0 0 0 1px rgba(106,70,229,.24)}
-[data-theme="dark"] .tag:is(.blue,.green,.amber,.red,.violet){box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 28%,transparent)}
-.les.k-v{background-color:var(--green)}
-[data-theme="dark"] :is(.pill-btn.approve,.les.k-v){background-color:#16834F}
-[data-theme="dark"] .vr-btn.danger.solid{background-color:#C9302C}
+/* v0.10 · Agenda: barra di scorrimento propria, solo sotto gli orari (dalla fine della colonna
+   tutor al bordo destro) e fuori dalla sfocatura. Quella nativa resta per rotella e touch. */
+.ag-scroller{scrollbar-width:none}.ag-scroller::-webkit-scrollbar{display:none}
+.ag-bar{display:none;position:relative;height:16px;margin:4px 0 0 calc(var(--ag-edge) + 6px);cursor:pointer;touch-action:none}
+.ag-wrap.has-bar .ag-bar{display:block}
+.ag-bar::before{content:"";position:absolute;left:0;right:0;top:6px;height:4px;border-radius:2px;background:var(--line-2)}
+.ag-bar i{position:absolute;top:4px;left:0;height:8px;width:var(--th-w,40px);transform:translateX(var(--th-x,0));border-radius:4px;background:var(--text-3);opacity:.6;transition:opacity var(--d1) var(--out)}
+.ag-bar:hover i,.ag-bar.is-drag i{opacity:.9}
+.ag-bar.is-drag{cursor:grabbing}
+/* modalità della lezione: solo icona (presenza = segnaposto, online = videocamera), sempre visibile */
+.les.len1{gap:6px;padding:0 6px}
+.les.len1 .ic{display:grid;width:24px;height:24px}
+.les.len1 .ic svg{width:14px;height:14px}
+.legend svg.i{width:16px;height:16px;color:var(--text-2)}
+.mode-ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--blue-soft);color:var(--blue-ink)}
+.mode-ic svg{width:16px;height:16px}
+.event.hl .mode-ic{background:rgba(255,255,255,.55);color:#2A2106}
+.tday-ev b{display:flex;align-items:center;gap:4px}
+.tday-ev b svg.i{flex:none;opacity:.9}
+/* v0.10 · Agenda su mobile: piu' giornata in vista (circa 3 ore invece di 1), colonna tutor
+   ridotta all'avatar con il nome breve, righe e intestazioni piu' basse, comandi su una riga. */
+@media (max-width:767px){
+  .planner{padding:16px 12px}
+  .planner .m-head{flex-direction:row;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:14px}
+  .planner .titlebox{flex:1 1 100%}
+  .planner .h-display{font-size:28px}
+  .planner .sub-line{margin-top:4px;font-size:13px;min-height:0}
+  .planner .controls{flex:1 1 100%;flex-wrap:nowrap;gap:6px}
+  .planner .datenav{flex:1 1 auto;min-width:0;justify-content:space-between}
+  .planner .datebtn{min-width:0;padding:0 6px;overflow:hidden}
+  .planner .datebtn .num{overflow:hidden;text-overflow:ellipsis}
+  .pill-btn.sm.ag-filter{font-size:0;gap:0;width:40px;padding:0;justify-content:center;flex:none}
+  .pill-btn.sm.ag-filter svg{width:18px;height:18px}
+  .monthbar-wrap{margin:-2px 0 12px}
+  .daystrip{margin-bottom:12px}
+  .sched.dyn{grid-template-columns:60px repeat(var(--cols),20px);grid-auto-rows:52px;column-gap:2px;row-gap:6px}
+  .sched.dyn .c-head{height:36px;font-size:11px;border-radius:9px}
+  .sched.dyn .c-head.is-now span{font-size:9px}
+  .sched.dyn .c-name{flex-direction:column;justify-content:center;gap:3px;padding:4px;border-radius:12px;text-align:center}
+  .sched.dyn .c-name .av{width:26px;height:26px;font-size:10px}
+  .sched.dyn .c-name div{width:100%}
+  .sched.dyn .c-name b{font-size:11px;line-height:1.1}
+  .sched.dyn .c-name .ln{display:none}
+  .sched.dyn .c-name.corner{padding:0;justify-content:center;font-size:9px;letter-spacing:.04em}
+  .sched.dyn .cell{border-radius:8px}
+  .sched.dyn .cell.off span{display:none}
+  .sched.dyn .les{gap:5px;padding:0 6px;border-radius:12px}
+  .sched.dyn .les .ic{width:22px;height:22px}
+  .sched.dyn .les .ic svg{width:13px;height:13px}
+  .sched.dyn .les b{font-size:12px}
+  .sched.dyn .les small{font-size:10.5px}
+  .sched.dyn .les.len1 .lt{display:none}
+  .ag-blur{width:36px}
+  .ag-wrap.is-scrolled .ag-scroller{--ag-ramp:linear-gradient(to right,transparent calc(var(--ag-sc-edge) + 4px * var(--ag-k)),#000 calc(var(--ag-sc-edge) + 4px * var(--ag-k) + 28px * var(--ag-k)))}
+  .ag-bar{margin-left:calc(var(--ag-edge) + 4px)}
+}

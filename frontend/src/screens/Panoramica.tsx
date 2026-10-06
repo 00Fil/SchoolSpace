@@ -120,7 +120,7 @@ function TutorsDay({ cap }: { cap: Cap | null }) {
               return <button key={l.id} className={"tday-ev" + (off ? " off" : "") + (l.mode === "ONLINE" ? " online" : "") + (new Date(l.end_at).getTime() < now ? " past" : "")} style={{ left: pos(s) + "%", width: Math.max(2, pos(e) - pos(s)) + "%" }}
                 onClick={() => go("agenda", { d: day, l: l.id })} title={`${l.subject_name} · ${rangeOf(l.start_at, l.end_at)} · ${l.participants.map((p) => p.name).join(", ")}${off ? " · annullata" : ""}`}
                 aria-label={`${l.subject_name}, ${rangeOf(l.start_at, l.end_at)}, ${l.participants.map((p) => p.name).join(", ")}, ${MODE[l.mode] || l.mode}${off ? ", annullata" : ""}`}>
-                <b>{l.subject_name}</b><small>{rangeOf(l.start_at, l.end_at)} · {l.participants.map((p) => p.name.split(/\s+/)[0]).join(", ")}</small></button>; })
+                <b><Icon n={l.mode === "ONLINE" ? "video" : "pin"} size={13} />{l.subject_name}</b><small>{rangeOf(l.start_at, l.end_at)} · {l.participants.map((p) => p.name.split(/\s+/)[0]).join(", ")}</small></button>; })
               : <span className="tday-free">Libero</span>}
           </div></div>; })}
       </div></div>}

@@ -209,7 +209,7 @@ services:
   # Redis privato: solo rete interna, AUTH (ACL) + TLS, nessuna persistenza obbligatoria
   # (trasporto, non fonte di verità). Sostituibile con un Redis gestito UE (stesse regole).
   redis:
-    image: redis:7.4-alpine
+    image: redis:8.10-alpine
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     volumes:
       - ./infra/redis/redis-tls.conf:/usr/local/etc/redis/redis.conf:ro

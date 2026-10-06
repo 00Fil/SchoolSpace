@@ -279,7 +279,7 @@ services:
 
   # Redis privato con password: solo trasporto/cache, nessuna persistenza.
   redis:
-    image: redis:7.4-alpine
+    image: redis:8.10-alpine
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD mancante}
       REDISCLI_AUTH: ${REDIS_PASSWORD}

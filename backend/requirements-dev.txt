@@ -285,9 +285,9 @@ djangorestframework==3.17.2 \
     --hash=sha256:89ed713b6dc83e1539f214b7d10808ae19bb8511004beba886225da6d5c9dafa \
     --hash=sha256:cb0546a7415d5b46c04e0f4fe0a54b2109f4fdd5e83ca773c8c6183a6493d042
     # via -r requirements.txt
-gunicorn==23.0.0 \
-    --hash=sha256:ec400d38950de4dfd418cff8328b2c8faed0edb0d517d3394e457c317908ca4d \
-    --hash=sha256:f014447a0101dc57e294f6c18ca6b40227a4c90e9bdb586042628030cba004ec
+gunicorn==26.2.0 \
+    --hash=sha256:62b864895d9ebff0b2f9867ba04fe811c93121596540830c9c916d0769668447 \
+    --hash=sha256:bd249d0b3f7972f7432f0a6b6ff3b3ee2d129f70cd1ff6c09a9dd9e29a2b88e3
     # via -r requirements.txt
 hypothesis==6.168.3 \
     --hash=sha256:01768a03a30dc54df7fe457c0b34016c84d598fa00d5965ededab93ba4eb3408 \
@@ -514,7 +514,6 @@ packaging==26.3 \
     --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
     # via
     #   -r requirements.txt
-    #   gunicorn
     #   kombu
     #   pytest
 pandas==3.0.6 \
@@ -607,7 +606,7 @@ protobuf==6.33.6 \
     # via
     #   -r requirements.txt
     #   ortools
-psycopg==3.2.13 \
+psycopg[binary]==3.2.13 \
     --hash=sha256:309adaeda61d44556046ec9a83a93f42bbe5310120b1995f3af49ab6d9f13c1d \
     --hash=sha256:a481374514f2da627157f767a9336705ebefe93ea7a0522a6cbacba165da179a
     # via -r requirements.txt
@@ -674,7 +673,9 @@ psycopg-binary==3.2.13 \
     --hash=sha256:fae933e4564386199fc54845d85413eedb49760e0bcd2b621fde2dd1825b99b3 \
     --hash=sha256:fbc7c46da9b0db8126f8ebcdcc966c0a14e87c187af7978b47f6971bfbb9cc2c \
     --hash=sha256:ff7df7bd8ec2c805f3a4896b8ade971139af0f9f8cf45d05014ac71fe54887be
-    # via -r requirements.txt
+    # via
+    #   -r requirements.txt
+    #   psycopg
 pycparser==3.0 \
     --hash=sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29 \
     --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992

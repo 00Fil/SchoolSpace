@@ -44,7 +44,7 @@ export default function Famiglie() {
   let body: ReactNode;
   if (fams.error) body = <section className="module"><ErrorState error={fams.error} onRetry={reload} /></section>;
   else if (!fams.data) body = <section className="module"><Skeleton rows={5} /></section>;
-  else if (fid && !fam) body = <section className="module"><Empty title="Famiglia non trovata">Potrebbe essere stata rinominata o non sei autorizzato a vederla.</Empty><Btn kind="sm" icon="left" onClick={() => go("anagrafica")}>Tutte le famiglie</Btn></section>;
+  else if (fid && !fam) body = <section className="module"><Empty title="Famiglia non trovata" /><Btn kind="sm" icon="left" onClick={() => go("anagrafica")}>Tutte le famiglie</Btn></section>;
   else if (fam) body = <FamilyPage f={fam} ctx={ctx} />;
   else body = <FamilyList all={all} q={q} filter={filter} ctx={ctx} />;
 
@@ -82,7 +82,7 @@ function FamilyList({ all, q, filter, ctx }: { all: Family[]; q: string; filter:
     return [f.reference, f.contact_name, f.contact_email, ...f.children.map((c) => c.display_name), ...f.guardians.flatMap((g) => [g.name, g.email])].some((s) => (s || "").toLowerCase().includes(needle));
   }), [all, needle, filter]);
   const kids = all.reduce((n, f) => n + f.children.length, 0), waiting = all.reduce((n, f) => n + f.guardians.filter(pending).length, 0);
-  const lead = all.length ? `${plural(all.length, "famiglia", "famiglie")} · ${plural(kids, "figlio", "figli")}${waiting ? ` · ${plural(waiting, "accesso da completare", "accessi da completare")}` : ""}` : "Iscrivi la prima famiglia partendo dal genitore.";
+  const lead = all.length ? `${plural(all.length, "famiglia", "famiglie")} · ${plural(kids, "figlio", "figli")}${waiting ? ` · ${plural(waiting, "accesso da completare", "accessi da completare")}` : ""}` : "";
   return <section className="fm" aria-labelledby="h-fm">
     <PageHead id="h-fm" title="Famiglie" lead={lead}>
       <Btn kind="ghost" icon="download" onClick={() => ctx.setForm({ k: "import" })}>Importa CSV</Btn>
@@ -93,7 +93,7 @@ function FamilyList({ all, q, filter, ctx }: { all: Family[]; q: string; filter:
       <SegCtl label="Mostra" value={filter} onChange={(v) => setQuery((x) => (v === "tutte" ? x.delete("vista") : x.set("vista", v)))} options={[["tutte", "Tutte"], ["attesa", "Accesso da completare"], ["senza-figli", "Senza figli"]]} />
     </div>}
     {!all.length ? <div className="module fm-empty"><span className="fm-empty-ic"><Icon n="users" /></span><b>Nessuna famiglia ancora</b><p>Parti dal genitore o tutore: gli mandi l’invito (o gli mostri un QR code) e poi aggiungi i figli.</p><Btn kind="primary" isle="plus" onClick={() => ctx.setForm({ k: "new" })}>Nuova famiglia</Btn></div>
-      : !shown.length ? <div className="module"><Empty title={needle ? `Nessun risultato per “${q}”` : "Nessuna famiglia in questo filtro"}>Prova con un altro nome o mostra tutte.</Empty></div>
+      : !shown.length ? <div className="module"><Empty title={needle ? `Nessun risultato per “${q}”` : "Nessuna famiglia in questo filtro"} /></div>
       : <div className="fm-grid">{shown.map((f) => <FamilyCard key={f.id} f={f} ctx={ctx} />)}</div>}
   </section>;
 }
@@ -141,12 +141,12 @@ function FamilyPage({ f, ctx }: { f: Family; ctx: Ctx }) {
       <section className="module fm-col" aria-labelledby="h-fg">
         <div className="fm-col-h"><h2 className="m-title" id="h-fg">Genitori e tutori <span className="fm-n">{f.guardians.length}</span></h2><Btn kind="sm" icon="plus" onClick={() => ctx.setForm({ k: "guardian", f })}>Aggiungi</Btn></div>
         <p className="fm-col-p">Vedono tutti i figli della famiglia, anche quelli aggiunti dopo.</p>
-        {f.guardians.length ? <div className="fm-stack">{f.guardians.map((g) => <GuardianCard key={guardianKey(g)} f={f} g={g} ctx={ctx} />)}</div> : <Empty title="Nessun genitore o tutore">Aggiungilo per dargli l’accesso.</Empty>}
+        {f.guardians.length ? <div className="fm-stack">{f.guardians.map((g) => <GuardianCard key={guardianKey(g)} f={f} g={g} ctx={ctx} />)}</div> : <Empty title="Nessun genitore o tutore" />}
       </section>
       <section className="module fm-col" aria-labelledby="h-fc">
         <div className="fm-col-h"><h2 className="m-title" id="h-fc">Figli <span className="fm-n">{f.children.length}</span></h2><Btn kind="sm" icon="plus" onClick={() => ctx.setForm({ k: "child", f })}>Aggiungi</Btn></div>
         <p className="fm-col-p">Le disponibilità e le richieste di lezioni partono da qui.</p>
-        {f.children.length ? <div className="fm-stack">{f.children.map((c) => <ChildCard key={c.id} f={f} c={c} />)}</div> : <Empty title="Nessun figlio">Aggiungi il primo figlio della famiglia.</Empty>}
+        {f.children.length ? <div className="fm-stack">{f.children.map((c) => <ChildCard key={c.id} f={f} c={c} />)}</div> : <Empty title="Nessun figlio" />}
       </section>
     </div>
   </section>;
@@ -173,12 +173,12 @@ function GuardianActions({ f, g, ctx, only }: { f: Family; g: Guardian; ctx: Ctx
 }
 
 function GuardianBody({ f, g }: { f: Family; g: Guardian }) {
-  const [label, tone, hint] = G_STATUS[g.status];
+  const [label, tone] = G_STATUS[g.status];
   const sees = f.children.filter((c) => g.students.includes(c.id)).map((c) => c.display_name.split(" ")[0]);
   const p = g.permissions;
   return <>
     <div className="fm-g-top"><Avatar name={guardianName(g)} k={g.email} size={48} /><div><b>{guardianName(g)}</b><small>{relText(g.relationship)}{g.legacy ? " · collegato figlio per figlio" : ""}</small></div><Pill tone={tone}>{label}</Pill></div>
-    <p className="fm-g-hint">{hint}</p>
+    
     <ul className="fm-facts">
       <li><Icon n="mail" /><span>{g.email}</span></li>
       {g.phone && <li><Icon n="phone" /><span>{g.phone}</span></li>}

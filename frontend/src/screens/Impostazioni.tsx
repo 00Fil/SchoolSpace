@@ -7,7 +7,6 @@ import { Check, Field, Input, SegCtl } from "../ui/controls";
 import { Modal, useToast } from "../ui/layers";
 import { Motion, setPrefs, setTheme, Theme, usePrefs } from "../ui/prefs";
 import { setQuery, useRoute } from "../ui/route";
-import { Help } from "../ui/help";
 import { classify, ErrorState, ViewState } from "../ui/states";
 import { useData } from "../app/data";
 import { roleName } from "../app/Shell";
@@ -21,12 +20,11 @@ const when = (iso?: string | null) => (iso ? new Intl.DateTimeFormat("it-IT", { 
 export default function Impostazioni() {
   const r = useRoute(), t = (r.q.get("t") || "generale") as Tab;
   return <section className="module planner" aria-labelledby="h-set">
-    <PageHead id="h-set" title="Impostazioni" lead="Account, sicurezza, notifiche e calendario personale." />
+    <PageHead id="h-set" title="Impostazioni" />
     <div className="toolbar seg-scroll" style={{ marginBottom: 14 }}>
       <SegCtl<Tab> label="Sezione" value={t} options={[["generale", "Generale"], ["sicurezza", "Sicurezza"], ["notifiche", "Notifiche"], ["calendario", "Calendario"]]} onChange={(v) => setQuery((q) => (v === "generale" ? q.delete("t") : q.set("t", v)))} />
     </div>
     {t === "sicurezza" ? <Sicurezza /> : t === "notifiche" ? <Notifiche /> : t === "calendario" ? <Calendario /> : <Generale />}
-    <Help topic="account" />
   </section>;
 }
 
@@ -67,7 +65,7 @@ function Password() {
     catch (x) { if (x instanceof ApiError && x.code === "INVALID_CREDENTIALS") setBad({ cur: "La password attuale non è corretta." }); else setErr(x); } finally { setBusy(false); }
   }
   return <div className="setting" style={{ display: "block" }}>
-    <b>Password</b><p className="muted">Cambiarla chiude le sessioni sugli altri dispositivi.</p>
+    <b>Password</b>
     <form ref={form} onSubmit={submit} noValidate style={{ maxWidth: 420, marginTop: 10 }}>
       <Field label="Password attuale" id="pc-cur" error={bad.cur}><Input id="pc-cur" name="current" type="password" autoComplete="current-password" /></Field>
       <Field label="Nuova password" id="pc-new" error={bad.pw} hint="Almeno 12 caratteri."><Input id="pc-new" name="new" type="password" autoComplete="new-password" /></Field>
@@ -122,7 +120,7 @@ function Sessions() {
   }
   const rows = ss.data?.results || [];
   return <div className="setting" style={{ display: "block" }}>
-    <div className="m-head"><div><b>Sessioni attive</b><p className="muted">I browser in cui hai effettuato l’accesso.</p></div>
+    <div className="m-head"><div><b>Sessioni attive</b></div>
       {rows.filter((x) => !x.current).length > 0 && <Btn kind="sm ghost" onClick={() => { setErr(null); setConfirm({ all: true }); }}>Chiudi le altre</Btn>}</div>
     {ss.error ? <ErrorState error={ss.error} onRetry={ss.reload} /> : !ss.data ? <ViewState kind="loading" compact /> : <div className="list-rows">{rows.map((x) => <div className="list-row" key={x.id}>
       <div><b>{device(x.user_agent)}{x.current ? " · questo browser" : ""}</b><small>Accesso {when(x.created_at)} · ultima attività {when(x.last_seen_at)}{x.mfa_verified ? " · verificata con secondo fattore" : ""}</small></div>
@@ -182,7 +180,7 @@ function Calendario() {
   return <div className="settings wide">
     <div className="setting" style={{ display: "block" }}>
       <b>Collega il tuo calendario</b>
-      <p className="muted">Crea un link da aggiungere a Google Calendar, Apple Calendario o Outlook (“iscriviti a un calendario”). Contiene solo le tue lezioni pubblicate e si aggiorna da solo.</p>
+      
       <form onSubmit={create} noValidate className="row-actions" style={{ alignItems: "flex-end" }}>
         <Field label="Nome del link" id="ft-label" optional hint="Per riconoscerlo, es. «Telefono»."><Input id="ft-label" value={label} maxLength={60} onChange={(e) => setLabel(e.target.value)} /></Field>
         <Btn kind="primary" type="submit" isle="plus" disabled={busy}>{busy && !revoke ? "Creo…" : "Crea link"}</Btn>

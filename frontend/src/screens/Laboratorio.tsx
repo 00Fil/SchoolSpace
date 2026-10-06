@@ -68,14 +68,14 @@ export default function Laboratorio() {
   const problems = result ? result.diagnostics.length + (result.empty_domain_diagnostics?.length || 0) + result.validation.violations.length : 0;
   return <>
     <section className="module planner" aria-labelledby="h-lab">
-      <PageHead id="h-lab" title="Laboratorio" lead="Prova il motore di pianificazione su uno scenario inventato. Non legge l’anagrafica del centro e non crea lezioni.">
+      <PageHead id="h-lab" title="Laboratorio">
         <Btn icon="download" disabled={!!busy} onClick={example}>{busy === "ex" ? "Carico…" : "Carica lo scenario di prova"}</Btn>
       </PageHead>
       <form onSubmit={run} noValidate>
         <div className="seg-scroll" style={{ marginBottom: 12 }}><SegCtl label="Vista dello scenario" value={view} onChange={setView} options={[["sum", "Riepilogo"], ["json", "JSON avanzato"]]} /></div>
         {view === "json" ? <Field label="Scenario (JSON)" id="lab-in" hint="Solo dati sintetici, nel formato del contratto planning-input.">
           <TextArea id="lab-in" rows={10} value={input} placeholder="Carica lo scenario di prova o incolla uno scenario compatibile…" onChange={(e) => setInput(e.target.value)} />
-        </Field> : !input.trim() ? <Empty title="Nessuno scenario">Carica lo scenario di prova oppure incollane uno in “JSON avanzato”.</Empty>
+        </Field> : !input.trim() ? <Empty title="Nessuno scenario" />
           : !dto ? <Notice kind="warn" title="Riepilogo non disponibile">Lo scenario non è leggibile come planning-input: correggilo in “JSON avanzato”.</Notice>
           : <div className="lab-sum">
             <div className="stats">
@@ -92,13 +92,13 @@ export default function Laboratorio() {
               <Check checked={!off.includes(u.demand_key)} onChange={(on) => setOff((o) => on ? o.filter((k) => k !== u.demand_key) : [...o, u.demand_key])}>
                 <span className="grow"><b>{u.subject} · {u.duration_minutes} min</b><small>{u.type === "GROUP" ? "Gruppo" : "Individuale"}: {u.participants.map((p) => nameOf(p, "s")).join(", ")} · {u.allowed_modes.map((m) => MODE[m] || m).join("/")} · {u.mandatory ? "obbligatoria" : "facoltativa"} · {u.priority}</small></span>
               </Check></div>)}</div>
-            <p className="muted" style={{ margin: "8px 0 12px" }}>Le richieste escluse non vengono inviate al motore: utile per capire quale richiesta rende lo scenario impossibile. Lo scenario resta invariato.</p>
+            
           </div>}
         <div className="grid2">
           <Field label="Che cosa deve coprire"><SegCtl label="Copertura" value={mode} onChange={setMode} options={[["STRICT", "Tutte le richieste"], ["COVERAGE", "Il più possibile"]]} /></Field>
           <Field label="Tempo massimo di ricerca"><SegCtl label="Tempo massimo" value={budget} onChange={setBudget} options={BUDGETS} /></Field>
         </div>
-        <p className="muted" style={{ margin: "4px 0 14px" }}>Le richieste obbligatorie restano obbligatorie anche con “Il più possibile”. Disponibilità sconosciute e vincoli non supportati bloccano il calcolo: nessun rilassamento silenzioso.</p>
+        
         {err && <Notice kind="bad">{err}</Notice>}
         <div className="toolbar"><button className="pill-btn primary island" disabled={!!busy || !input.trim() || (!!dto && dto.units.every((u) => off.includes(u.demand_key)))}>{busy === "run" ? "Ricerca e controllo in corso…" : "Calcola la proposta"}<span className="isle"><Icon n="spark" /></span></button></div>
       </form>
@@ -128,12 +128,12 @@ export default function Laboratorio() {
           <td className="hide-m">{MODE[a.mode] || a.mode}, {(LOCATION[a.location] || a.location).toLowerCase()}</td>
           <td className="hide-m">{a.space_id ? "Assegnato" : a.video_id ? "Canale video" : "Nessuno"}</td></tr>)}</tbody></table></div>
         : <Empty title="Nessuna lezione collocata">{OUTCOME[result.solver_status]}</Empty>}
-      <p className="fine">Una proposta senza collisioni non è una prenotazione: in questa schermata nulla viene salvato nel calendario.</p>
+      
       <Tech><dl className="facts"><dt>Hash scenario</dt><dd><code>{result.input_hash}</code></dd><dt>Motore</dt><dd><code>{result.solver_version}</code></dd>
         <dt>Livelli dimostrati</dt><dd>{result.optimality_proven_levels.join(", ") || "nessuno"}</dd><dt>Fuso</dt><dd>{result.timezone}</dd>
         <dt>Unità</dt><dd><code>{result.assignments.map((a) => `${a.demand_key} → ${a.tutor_id}${a.space_id ? " @ " + a.space_id : ""}`).join("\n")}</code></dd>
         {result.unassigned.length > 0 && <><dt>Escluse</dt><dd><code>{result.unassigned.map((u) => `${u.demand_key}: ${u.reason_codes.join(", ")}`).join("\n")}</code></dd></>}</dl></Tech>
     </section>}
-    {!result && !busy && input && <div style={{ marginTop: 18 }}><Empty title="Pronto per il calcolo">Scegli copertura e tempo massimo, poi premi “Calcola la proposta”.</Empty></div>}
+    {!result && !busy && input && <div style={{ marginTop: 18 }}><Empty title="Pronto per il calcolo" /></div>}
   </>;
 }

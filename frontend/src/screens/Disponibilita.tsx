@@ -58,7 +58,7 @@ export default function Disponibilita() {
   const approveAll = () => run(() => api("/availability/bulk-review", { method: "POST", body: JSON.stringify({ ids: drafts.map((x) => x.id), status: "APPROVED" }) }), `${plural(drafts.length, "disponibilità approvata", "disponibilità approvate")}`);
 
   return <section className="module planner" aria-labelledby="h-av">
-    <PageHead id="h-av" title="Disponibilità" lead="Le fasce della settimana in cui studenti e tutor possono fare lezione. Disegnale sul calendario: le nuove fasce dei portali restano in bozza finché il centro non le approva.">
+    <PageHead id="h-av" title="Disponibilità">
       {canAdd ? <Btn kind="primary" isle="plus" onClick={() => setQuery((x) => { x.set("nuova", "1"); if (who) x.set("chi", who.id); })}>Nuova disponibilità</Btn> : o && <span className="tag plain" title="La delega non consente di proporre disponibilità">Sola lettura</span>}
     </PageHead>
     {d.center && drafts.length > 0 && <div className="card" style={{ marginBottom: 14 }}>
@@ -79,7 +79,7 @@ export default function Disponibilita() {
         <SegCtl<Mode> label="Modalità" value={mode} onChange={setMode} options={[["IN_PERSON", "In sede"], ["ONLINE", "Online"]]} />
       </div>
       {!d.loaded || year === undefined ? <Skeleton /> : !who ? <>
-        <Empty title="Scegli una persona">Vedrai la sua settimana tipo: trascina sul calendario per aggiungere una fascia, spostala o allungala tirandone i bordi.</Empty>
+        <Empty title="Scegli una persona" />
         {withPeople.length > 0 && <div className="chips" role="group" aria-label="Persone con disponibilità">{withPeople.slice(0, 24).map(({ p, n }) => <button key={p.id} type="button" className="chip" onClick={() => setQuery((q) => q.set("chi", p.id))}>{p.label} · {n}</button>)}</div>}
       </> : <>
         <WeekPlanner label={`Disponibilità di ${who.label} ${mode === "ONLINE" ? "online" : "in sede"}`} blocks={blocks} bands={hours} editable={editable && !busy} newLabel="Disponibile"
@@ -137,7 +137,7 @@ function RuleForm({ open, preset, allow, onClose, onSaved }: { open: boolean; pr
   return <Modal open={open} onClose={onClose} guard={g.guard} labelledBy="rf-title"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="rf-title">Nuova disponibilità</h2>
-      <p className="lead">Una fascia che si ripete ogni settimana nel periodo scelto. {d.center ? "Viene approvata subito." : "Resta in bozza: non prenota nulla e non viene usata finché il centro non la approva."}</p>
+      
       <Field label="Per chi" id="rf-who" error={bad.who}><Combo id="rf-who" value={v.who} items={people} invalid={!!bad.who} placeholder="Cerca uno studente o un tutor…" onPick={(x) => set({ who: x as typeof people[number] | null })} /></Field>
       <Field label="Giorno della settimana"><div className="seg-scroll"><SegCtl label="Giorno" value={String(v.wd)} options={WD_SHORT.map((w, i) => [String(i), w])} onChange={(x) => set({ wd: Number(x) })} /></div></Field>
       <div className="when" role="group" aria-labelledby="rf-when">
@@ -157,7 +157,7 @@ function RuleForm({ open, preset, allow, onClose, onSaved }: { open: boolean; pr
         <Field label="Dove"><SegCtl label="Dove" value={v.loc} options={[["ON_SITE", "In sede"], ["REMOTE", "Da remoto"]]} onChange={(x) => set({ loc: x })} /></Field>
       </div>
       {remoteBad && <div className="conflict show" role="alert">Da remoto si può fare solo lezione online. Puoi <button type="button" onClick={() => set({ mode: "ONLINE" })}>passare a online</button> oppure <button type="button" onClick={() => set({ loc: "ON_SITE" })}>scegliere in sede</button>.</div>}
-      <p className="fine">Fuso orario Europe/Rome. Il server verifica anche le deleghe di chi modifica.</p>
+      
       {err && <Notice kind="bad">{err}</Notice>}
     </div>
     {g.asking ? <GuardFoot onKeep={g.keep} onDiscard={() => { g.allow(); onClose(); }} /> :

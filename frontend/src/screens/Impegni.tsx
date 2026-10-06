@@ -44,7 +44,6 @@ export default function Impegni() {
   const once = (rows || []).filter((c) => c.kind === "ONE_OFF" && c.date! >= today).sort((a, b) => a.date!.localeCompare(b.date!));
   const blocks: PlanBlock[] = weekly.map((c) => ({ id: c.id, weekday: c.weekday!, start: toMin(c.start_time), end: toMin(c.end_time), label: labelOf(c), tone: toneOf(c.label), sub: c.valid_until ? `fino al ${dateLong(c.valid_until)}` : c.valid_from && c.valid_from > today ? `dal ${dateLong(c.valid_from)}` : undefined, locked: c.id.startsWith("tmp-") }));
   const free = hours.reduce((a, h) => a + h.end - h.start, 0), busy = hours.reduce((a, h) => a + covered(h.start, h.end, blocks.filter((b) => b.weekday === h.weekday)), 0);
-  const lead = d.center ? "Gli impegni di studenti e tutor: il pianificatore programma le lezioni fuori da questi orari." : "Indica quando tu o i tuoi figli siete già impegnati (scuola, sport, lavoro…): il centro programmerà le lezioni negli altri momenti.";
   const body = (s: Slot) => ({ start_time: fmt(s.start), end_time: fmtEnd(s.end) });
   async function create(s: Slot) {
     if (!who || !rows) return;
@@ -63,13 +62,13 @@ export default function Impegni() {
     catch (x) { toast(human(x).text); load(); }
   }
   return <section className="module planner" aria-labelledby="h-imp">
-    <PageHead id="h-imp" title="Impegni" lead={lead}>{who?.canEdit && <Btn kind="primary" isle="plus" onClick={() => setForm({})}>Aggiungi impegno</Btn>}</PageHead>
+    <PageHead id="h-imp" title="Impegni">{who?.canEdit && <Btn kind="primary" isle="plus" onClick={() => setForm({})}>Aggiungi impegno</Btn>}</PageHead>
     {d.center ? <div className="card" style={{ marginBottom: 14 }}><Field label="Persona" id="imp-who"><Combo id="imp-who" value={who ? { id: who.id, label: who.name, sub: who.sub } : null} items={people.map((p): ComboItem => ({ id: p.id, label: p.name, sub: p.sub }))} placeholder="Cerca uno studente o un tutor…" onPick={(x) => setQuery((q) => (x ? q.set("chi", x.id) : q.delete("chi")))} /></Field></div>
       : people.length > 1 && <div className="imp-people" role="tablist" aria-label="Persona">{people.map((p) => <button key={p.id} role="tab" aria-selected={p.id === who?.id} className={"imp-person" + (p.id === who?.id ? " on" : "")} onClick={() => setQuery((q) => q.set("chi", p.id))}><Avatar name={p.name} size={28} /><span><b>{p.name}</b><small>{p.sub}</small></span></button>)}</div>}
-    {!who ? (d.center ? <Empty title="Scegli una persona">Vedrai la sua settimana tipo con gli impegni e potrai aggiungerne di nuovi trascinando sul calendario.</Empty> : ov.loading ? <Skeleton /> : <Empty title="Nessuna persona da gestire">Il centro non ha ancora collegato figli o profilo tutor al tuo account.</Empty>)
+    {!who ? (d.center ? <Empty title="Scegli una persona" /> : ov.loading ? <Skeleton /> : <Empty title="Nessuna persona da gestire" />)
       : err ? <ErrorState error={err} onRetry={load} /> : !rows ? <Skeleton /> : <div className="imp-grid">
         <div className="card">
-          <div className="oc-head"><span className="oc-ic violet"><Icon n="cal" /></span><div><h2>Settimana tipo · {who.name}</h2><p className="muted">{who.canEdit ? "Disegna gli impegni direttamente sul calendario: il nome è facoltativo." : "Impegni che si ripetono ogni settimana."}</p></div></div>
+          <div className="oc-head"><span className="oc-ic violet"><Icon n="cal" /></span><div><h2>Settimana tipo · {who.name}</h2></div></div>
           <WeekPlanner label={`Impegni settimanali di ${who.name}`} blocks={blocks} bands={hours} editable={who.canEdit} newLabel="Impegno"
             noOverlap onBlocked={(m) => toast(m.replace("blocco", "impegno"))} onCreate={create} onChange={move} onPick={(b) => { const row = rows.find((c) => c.id === b.id); if (row && who.canEdit) setForm({ row }); }}
             emptyText={!who.canEdit ? "Nessun impegno settimanale: si considera libero quando il centro è aperto." : undefined} />
@@ -77,7 +76,7 @@ export default function Impegni() {
         </div>
         <div className="imp-side">
           <div className="card">
-            <div className="oc-head"><span className="oc-ic amber"><Icon n="clock" /></span><div><h2>Impegni occasionali</h2><p className="muted">Un giorno preciso: gita, visita, esame…</p></div></div>
+            <div className="oc-head"><span className="oc-ic amber"><Icon n="clock" /></span><div><h2>Impegni occasionali</h2></div></div>
             {once.length ? <ul className="oc-list">{once.map((c) => <li key={c.id}>
               <div className="oc-date"><b>{+c.date!.slice(8)}</b><small>{WD_SHORT[(new Date(c.date + "T12:00:00Z").getUTCDay() + 6) % 7]}</small></div>
               <div className="oc-what"><b>{labelOf(c)}</b><small>{dateLong(c.date!)}, {c.start_time === "00:00" && c.end_time === "24:00" ? "tutto il giorno" : `${c.start_time}–${c.end_time}`}</small></div>
@@ -136,7 +135,7 @@ function CommitmentForm({ who, row, rows, onClose, onDone }: { who: Person; row?
   return <Modal open onClose={onClose} labelledBy="cm-t"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="cm-t">{editing ? "Modifica impegno" : "Nuovo impegno"}</h2>
-      <p className="lead">Per {who.name}. In questi orari il centro non programma lezioni.</p>
+      <p className="lead">Per {who.name}.</p>
       <Field label="Nome" id="cm-l" optional><Input id="cm-l" value={v.label} maxLength={80} placeholder="Es. Scuola, Calcio, Pianoforte (puoi lasciarlo vuoto)" onChange={(e) => setV({ ...v, label: e.target.value })} /></Field>
       <div className="chips" role="group" aria-label="Suggerimenti">{SUGGEST.map((s) => <button key={s} type="button" className={"chip" + (v.label === s ? " on" : "")} onClick={() => setV({ ...v, label: v.label === s ? "" : s })}>{s}</button>)}</div>
       {!editing && <Field label="Si ripete?"><SegCtl label="Ripetizione" value={v.kind} onChange={(k) => setV({ ...v, kind: k })} options={[["WEEKLY", "Ogni settimana"], ["ONE_OFF", "Un giorno solo"]]} /></Field>}

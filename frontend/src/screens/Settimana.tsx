@@ -13,7 +13,6 @@ import { ChangeRequestModal, CrTarget } from "../portal/Cambi";
 import { AttendanceModal } from "../portal/Presenze";
 import type { S } from "../api/schema.gen";
 import { ViewState } from "../ui/states";
-import { Help } from "../ui/help";
 
 export const who = (l: MyLesson) => {
   const names = l.participants.map((p) => p.name);
@@ -66,13 +65,12 @@ export default function Settimana() {
         <button className="circle" aria-label="Settimana successiva" onClick={() => setDay(addDays(day, 7))}><Icon n="right" /></button>
       </div>{day !== today && <button className="pill-btn sm" onClick={() => setDay(today)}>Oggi</button>}</div>
     </div>
-    <div className="page-help"><Help topic={tutor ? "tutor" : "cambi"} /></div>
     <DayStrip week={week} day={day} today={today} counts={(x) => of(x).filter((l) => l.state !== "CANCELLED").length} onPick={setDay} />
     {err ? <Notice kind="bad" title="Non riesco a caricare le lezioni">{err}</Notice>
       : list === null ? <Skeleton rows={3} />
       : dayRows.length ? <div className="events">{list.length >= 300 && <ViewState kind="partial">Questa settimana ha più lezioni di quante se ne possano mostrare insieme: alcune potrebbero mancare.</ViewState>}{dayRows.map((l, i) => <LessonCard key={l.id} l={l} hl={i === 0 && l.state !== "CANCELLED"} actions={actionsFor(l)} />)}</div>
-      : <Empty title="Nessuna lezione">{tutor ? "Quando il centro pubblica le lezioni assegnate a te, le trovi qui." : "Quando il centro pubblica le lezioni dei tuoi studenti, le trovi qui."}</Empty>}
-    <p className="mv-hint" style={{ marginTop: 14 }}>Vedi solo le lezioni tue o degli studenti a cui sei collegato. Cambi e assenze sono richieste al centro: il calendario cambia solo se le accoglie. Se i pulsanti non compaiono, la delega è in sola lettura.</p>
+      : <Empty title="Nessuna lezione" />}
+    
     <ChangeRequestModal target={cr} onClose={() => setCr(null)} onDone={(m) => { toast(m); ov.reload(); }} />
     <AttendanceModal lesson={att} onClose={() => setAtt(null)} onDone={(m) => toast(m)} />
   </section>;

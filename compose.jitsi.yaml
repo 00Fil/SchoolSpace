@@ -67,6 +67,10 @@ services:
     environment:
       <<: *jitsi-env
       DISABLE_HTTPS: "1"            # TLS terminato da Traefik
+      # Pagina di benvenuto di https://meet.<dominio>/ (senza stanza).
+      CENTER_NAME: ${CENTER_NAME:-Centro ripetizioni}
+      CENTER_SITE_URL: ${CENTER_SITE_URL:-}   # sito del centro (pulsante principale)
+      CENTER_APP_URL: ${CENTER_APP_URL:-}     # gestionale (pulsante secondario)
       # Websocket del bridge video (colibri): nome del servizio jvb, non l'alias "jvb".
       COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME: jitsi-jvb
       ENABLE_HTTP_REDIRECT: "0"

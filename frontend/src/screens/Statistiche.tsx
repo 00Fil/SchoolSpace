@@ -32,7 +32,7 @@ export default function Statistiche() {
     { k: "invii", label: "Invii da controllare", n: q?.deliveries ?? null, run: () => go("operativita", { tab: "invii" }) },
   ];
   return <>
-    <PageHead id="h-stats" title="Statistiche" lead="I numeri del centro e l’andamento del mese." />
+    <PageHead id="h-stats" title="Statistiche" />
     <section className="module" aria-labelledby="h-st-month">
       <div className="m-head"><h2 className="m-title" id="h-st-month">Lezioni del mese</h2>
         <div className="datenav">

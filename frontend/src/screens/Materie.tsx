@@ -35,7 +35,7 @@ export default function Materie() {
   const shown = all.filter((s) => (f === "tutte" || (f === "attive") === s.active) && (!q || (s.name + " " + s.description).toLowerCase().includes(q.toLowerCase())));
   const noTutor = all.filter((s) => s.active && !s.tutors.some((t) => t.levels.length)).length;
   return <section className="module" aria-labelledby="h-sj">
-    <PageHead id="h-sj" title="Materie" lead="Le materie che il centro insegna. Una materia si può richiedere quando almeno un tutor ha la competenza approvata.">
+    <PageHead id="h-sj" title="Materie">
       <Btn kind="primary" isle="plus" onClick={() => setForm(null)}>Nuova materia</Btn>
     </PageHead>
     <div className="stats">
@@ -70,8 +70,8 @@ export default function Materie() {
           {s.deletable && <Btn kind="sm ghost" onClick={() => setDel(s)}>Elimina</Btn>}
         </div>
       </article>;
-    })}</div> : <Empty title={all.length ? "Nessuna materia in questo filtro" : "Nessuna materia registrata"}>{all.length ? "Cambia il filtro o la ricerca." : "Aggiungi le materie che il centro insegna: poi registra le competenze dei tutor."}</Empty>}
-    <p className="fine">Le competenze (livello e modalità) si assegnano dalla scheda di ogni tutor nella pagina <button type="button" className="link-btn" onClick={() => go("tutor")}>Tutor</button>. Una materia archiviata resta nello storico ma non si propone per nuove richieste.</p>
+    })}</div> : <Empty title={all.length ? "Nessuna materia in questo filtro" : "Nessuna materia registrata"} />}
+    
     <SubjectForm edit={form} onClose={() => setForm(undefined)} onDone={async (m) => { setForm(undefined); toast(m); await load(); }} />
     <Modal open={!!del} onClose={() => setDel(null)} labelledBy="sj-del"><div className="modal-body">
       <h2 id="sj-del">Eliminare {del?.name}?</h2>
@@ -99,7 +99,7 @@ export function SubjectForm({ edit, onClose, onDone }: { edit: SubjectRow | null
   return <Modal open={open} onClose={onClose} guard={g.guard} labelledBy="sj-form"><form onSubmit={save} noValidate>
     <div className="modal-body">
       <h2 id="sj-form">{edit ? `Modifica ${edit.name}` : "Nuova materia"}</h2>
-      <p className="lead">{edit ? "Il nuovo nome compare ovunque: richieste, percorsi, calendario." : "Il nome come lo usa il centro. Dopo, assegna la competenza ai tutor che la insegnano."}</p>
+      
       <Field label="Nome" id="sj-name" error={tried && !name.trim() && "Scrivi il nome della materia."}><Input id="sj-name" maxLength={80} value={name} onChange={(e) => setName(e.target.value)} placeholder="Es. Matematica" /></Field>
       <Field label="Descrizione" optional id="sj-desc" hint="Es. programma, livelli seguiti o testi adottati."><Input id="sj-desc" maxLength={300} value={desc} onChange={(e) => setDesc(e.target.value)} /></Field>
       {err && <Notice kind="bad">{err}</Notice>}

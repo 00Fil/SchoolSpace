@@ -63,13 +63,19 @@ x-app-env: &app-env
   VIDEO_JITSI_APP_ID: ${JITSI_JWT_APP_ID:-ripetizioni}
   VIDEO_JITSI_APP_SECRET: ${JITSI_JWT_APP_SECRET:-}
 
+# Un'unica build dell'immagine backend (nel servizio "migrate"): gli altri servizi la
+# riusano dal disco locale (pull_policy: never). Prima ogni servizio aveva il proprio
+# "build:" e Dokploy avviava 6 build parallele della stessa immagine (lento, picchi di RAM,
+# deploy apparentemente fermo su "load build definition").
+x-backend-build: &backend-build
+  context: .
+  dockerfile: infra/backend.Dockerfile
+  args:
+    BUILD_VERSION: ${BUILD_VERSION:-dokploy}
+
 x-backend: &backend
   image: ripetizioni-backend:dokploy
-  build:
-    context: .
-    dockerfile: infra/backend.Dockerfile
-    args:
-      BUILD_VERSION: ${BUILD_VERSION:-dokploy}
+  pull_policy: never
   environment:
     <<: *app-env
   read_only: true
@@ -153,6 +159,8 @@ services:
   # Migrazioni con il ruolo app_migrator (DDL), mai dal web.
   migrate:
     <<: *backend
+    build: *backend-build
+    pull_policy: build
     command: ["python", "manage.py", "migrate", "--noinput"]
     environment:
       <<: *app-env

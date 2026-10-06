@@ -12,7 +12,6 @@ import { human } from "../messages";
 import { Btn, Icon, Notice, PageHead, Tag, Tech } from "../ui/core";
 import { Choices, DateField, Field, SegCtl, TextArea, Wheel } from "../ui/controls";
 import { GuardFoot, Modal, useDirtyGuard, useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 import { setQuery, useRoute } from "../ui/route";
 import { classify, ErrorState, ViewState } from "../ui/states";
 import { loadMine, MyLesson } from "../app/myApi";
@@ -33,8 +32,7 @@ export default function Cambi() {
   const rows = all.filter((x) => (f === "aperte" ? x.state === "SUBMITTED" : f === "chiuse" ? x.state !== "SUBMITTED" : true));
   return <section className="module planner" aria-labelledby="h-cambi">
     <ConfermeGenitori />
-    <PageHead id="h-cambi" title="Richieste di cambio" lead="Cambi, cancellazioni e assenze che hai chiesto al centro. Una richiesta non modifica il calendario finché il centro non la accoglie." />
-    <div className="page-help"><Help topic="cambi" /></div>
+    <PageHead id="h-cambi" title="Richieste di cambio" />
     <div className="toolbar" style={{ marginBottom: 12 }}>
       <SegCtl label="Stato" value={f} options={[["aperte", "In attesa"], ["chiuse", "Chiuse"], ["tutte", "Tutte"]]} onChange={(v) => setQuery((q) => (v === "aperte" ? q.delete("f") : q.set("f", v)))} />
     </div>
@@ -101,7 +99,7 @@ export function ChangeRequestModal({ target, onClose, onDone }: { target: CrTarg
   return <Modal open={!!target} onClose={onClose} guard={g.guard} labelledBy="cr-title"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="cr-title">{v.kind === "ABSENCE" ? "Segnala un’assenza" : "Chiedi un cambio"}</h2>
-      <p className="lead">{l.subject_name}, {dayShort(rome(l.start_at).date)} {rangeOf(l.start_at, l.end_at)}. Il centro valuta la richiesta: finché non risponde la lezione resta com’è.</p>
+      <p className="lead">{l.subject_name}, {dayShort(rome(l.start_at).date)} {rangeOf(l.start_at, l.end_at)}.</p>
       <Field label="Tipo di richiesta"><div className="seg-scroll"><SegCtl label="Tipo di richiesta" value={v.kind} options={kinds} onChange={(k) => set({ kind: k })} /></div></Field>
       {needStudent && (t.students.length > 1
         ? <Field label="Per chi" id="cr-student" error={bad.student}><Choices label="Per chi" name="cr-student" value={v.student} onChange={(x) => set({ student: x })} options={t.students.map((s) => ({ v: s.id, label: s.name, av: s.name }))} /></Field>
@@ -111,7 +109,7 @@ export function ChangeRequestModal({ target, onClose, onDone }: { target: CrTarg
           <Field label="Nuovo giorno" id="cr-date" error={bad.when}><DateField id="cr-date" label="Nuovo giorno" value={v.date} min={todayRome()} onChange={(x) => set({ date: x })} /></Field>
           <Field label={`Nuovo inizio: ${hm(v.min)}`}><Wheel label="Nuovo inizio" items={STEPS.map((m) => ({ v: m, label: hm(m) }))} value={v.min} onChange={(m) => set({ min: m })} onLive={(m) => setV((x) => ({ ...x, min: m }))} /></Field>
         </div>
-        <p className="fine">È una proposta: il centro verifica tutor, spazi e altri partecipanti prima di decidere.</p>
+        
       </>}
       <Field label="Note per il centro" id="cr-reason" optional error={bad.reason} hint={`${v.reason.length}/${MAX} · senza dati sanitari o dettagli personali non necessari.`}>
         <TextArea id="cr-reason" value={v.reason} maxLength={MAX} onChange={(e) => set({ reason: e.target.value })} aria-invalid={!!bad.reason || undefined} style={{ minHeight: 80, fontFamily: "inherit" }} placeholder={v.kind === "ABSENCE" ? "Es. impegno scolastico, viaggio…" : "Es. preferiremmo il pomeriggio…"} /></Field>

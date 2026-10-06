@@ -75,7 +75,7 @@ export function NewLessonModal({ open, prefill, onClose, onCreated }: { open: bo
   return <Modal open={open} onClose={onClose} guard={g.guard} labelledBy="nl-title" width={720}><form onSubmit={(e) => { e.preventDefault(); void create(); }} noValidate>
     <div className="modal-body rq-form">
       <h2 id="nl-title">Nuova lezione</h2>
-      <p className="lead">Scegli con la famiglia studente, materia e tutor: il motore propone solo gli orari liberi per tutti. La lezione va subito in calendario.</p>
+      
 
       <section className="rq-sec" aria-labelledby="nl-s1"><h3 id="nl-s1">{n(1)}Per chi e quale materia</h3>
         <Field label="Studente" id="nl-student">{people.length ? <Combo id="nl-student" value={student} items={people} placeholder="Cerca per nome" onPick={setStudent} /> : <Notice kind="warn">Nessuno studente registrato: aggiungilo nella pagina Famiglie.</Notice>}</Field>
@@ -110,7 +110,7 @@ export function NewLessonModal({ open, prefill, onClose, onCreated }: { open: bo
       <Field label="Note" optional id="nl-notes"><Input id="nl-notes" value={notes} maxLength={500} onChange={(e) => setNotes(e.target.value)} placeholder="Es. concordata in sede con la mamma" /></Field>
       {pick && student && subj && <div className="rq-recap" aria-live="polite"><p><b>Riepilogo</b> {subj.name} per {student.label}, {dayLabel(pick.date).toLowerCase()} {rangeOf(pick.start_at, pick.end_at)}, con {pick.tutor_name || tutorName(pick.tutor_id)}, {mode === "ONLINE" ? "online" : "in sede"}. Famiglia e tutor ricevono la notifica.</p></div>}
       {err && <Notice kind="bad">{err}</Notice>}
-      <p className="fine">Servono lezioni ogni settimana? <button type="button" className="linklike" onClick={() => { g.allow(); onClose(); go("richieste", { nuova: "1" }); }}>Crea una richiesta ricorrente</button></p>
+      
     </div>
     {g.asking ? <GuardFoot onKeep={g.keep} onDiscard={() => { g.allow(); onClose(); }} />
       : <div className="modal-foot"><button type="button" className="pill-btn ghost" onClick={() => { if (g.guard()) onClose(); }}>Chiudi</button>

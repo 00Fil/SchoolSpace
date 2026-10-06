@@ -26,7 +26,7 @@ export default function TutorScreen() {
   const accountTag = (t: Tutor) => !t.active ? <Tag>Disattivato</Tag> : t.has_account ? <Tag tone="green">Account attivo</Tag> : t.invitation ? <Tag tone="amber">Invito: {INVITE_STATUS[t.invitation.status] || t.invitation.status}</Tag> : <Tag>Da invitare</Tag>;
 
   return <section className="module planner" aria-labelledby="h-tu">
-    <PageHead id="h-tu" title="Tutor" lead="Chi insegna, cosa può insegnare e con quali limiti. Un tutor si può registrare prima che abbia un account.">
+    <PageHead id="h-tu" title="Tutor">
       <Btn kind="primary" isle="plus" onClick={() => setForm({ kind: "tutor" })}>Nuovo tutor</Btn>
     </PageHead>
     <div className="toolbar" style={{ marginBottom: 12 }}>
@@ -39,7 +39,7 @@ export default function TutorScreen() {
           <tbody>{shown.map((t) => <tr key={t.id} className="row" tabIndex={0} aria-label={`Apri la scheda di ${t.display_name}`} onClick={() => setQuery((p) => p.set("t", t.id))} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setQuery((p) => p.set("t", t.id)); } }}>
             <td><span className="who"><Avatar name={t.display_name} k={t.id} /><span><b>{t.display_name}</b><small className="muted">{t.email || "Email non indicata"}</small></span></span></td>
             <td className="hide-m num">{(skills.data || []).filter((s) => s.tutor === t.id).length}</td><td>{accountTag(t)}</td></tr>)}</tbody></table>
-        : <Empty title={q ? `Nessun tutor corrisponde a “${q}”` : "Nessun tutor registrato"}>Aggiungi un tutor e invialo per email.</Empty>}
+        : <Empty title={q ? `Nessun tutor corrisponde a “${q}”` : "Nessun tutor registrato"} />}
     </div>
 
     <Sheet open={!!sel} onClose={() => setQuery((x) => x.delete("t"))} labelledBy="sheet-tu">
@@ -56,7 +56,7 @@ export default function TutorScreen() {
           const mine = (skills.data || []).filter((s) => s.tutor === sel.id);
           return mine.length ? <table className="list"><thead><tr><th scope="col">Materia</th><th scope="col">Livello</th><th scope="col" className="hide-m">Modalità</th><th scope="col">Stato</th></tr></thead>
             <tbody>{mine.map((s) => <tr key={s.id}><td>{subj(s.subject)}</td><td>{s.level}</td><td className="hide-m">{MODE[s.mode]}</td><td>{s.approved ? <Tag tone="green">Approvata</Tag> : <Btn onClick={async () => { try { await send("PATCH", `/tutor-skills/${s.id}/`, { approved: true, expected_version: s.version }); toast("Competenza approvata"); skills.reload(); } catch (e) { toast(writeError(e)); } }}>Approva</Btn>}</td></tr>)}</tbody></table>
-            : <p className="muted">Nessuna competenza: senza competenze approvate il tutor non viene pianificato.</p>;
+            : <p className="muted">Nessuna competenza.</p>;
         })()}
         <Btn isle="plus" onClick={() => setForm({ kind: "skill", tutor: sel })}>Aggiungi competenza</Btn>
         <h3>Regole di lavoro</h3>
@@ -116,7 +116,7 @@ function TutorForm({ form, subjects, onClose, onDone }: { form: any; subjects: S
       {!t && <Check checked={invite} onChange={setInvite}>Invia subito l’invito per creare l’account</Check>}</>}
     {form.kind === "skill" && <>
       {subjects.length ? <Field label="Materia" id="t-subj"><select id="t-subj" className="inp" value={v.subject} onChange={set("subject")}>{subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></Field> : <Notice kind="warn">Nessuna materia configurata: aggiungila nella pagina Materie.</Notice>}
-      <Field label="Livello" id="t-level" hint="Usa gli stessi livelli degli studenti."><Input id="t-level" required maxLength={80} value={v.level} onChange={set("level")} /></Field>
+      <Field label="Livello" id="t-level"><Input id="t-level" required maxLength={80} value={v.level} onChange={set("level")} /></Field>
       <Field label="Modalità" id="t-mode"><select id="t-mode" className="inp" value={v.mode} onChange={set("mode")}><option value="IN_PERSON">Presenza</option><option value="ONLINE">Online</option></select></Field>
       <Field label="Valida dal" id="t-vf"><Input id="t-vf" type="date" required value={v.valid_from} onChange={set("valid_from")} /></Field>
       <Field label="Valida fino al" id="t-vu"><Input id="t-vu" type="date" required min={v.valid_from} value={v.valid_until} onChange={set("valid_until")} /></Field>

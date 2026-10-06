@@ -103,7 +103,7 @@ export default function Proposte() {
   const pol = policies?.find((p) => p.id === policy);
   return <>
     <section className="module planner" aria-labelledby="h-gen">
-      <PageHead id="h-gen" title="Genera l’orario" lead="Partendo da richieste e disponibilità approvate, il sistema propone l’orario di una settimana e lo verifica. Il risultato è una proposta: le lezioni si creano solo quando la pubblichi dall’Agenda." />
+      <PageHead id="h-gen" title="Genera l’orario" />
       {!policies ? <Skeleton rows={3} /> : !policies.length ? <Empty title="Nessuna regola di pianificazione">Creane una in Centro › Configurazione › Regole di pianificazione.<div style={{ marginTop: 12 }}><Btn kind="sm" onClick={() => go("configurazione", { tab: "regole" })}>Apri la configurazione</Btn></div></Empty> : <>
         <div className="grid2">
           <Field label="Regola di pianificazione"><Choices label="Regola di pianificazione" value={policy} onChange={(v) => { setPolicy(v); reset(); }} options={policies.map((p) => ({ v: p.id, label: p.name + (p.approved_for_exploration ? "" : " (non abilitata)") }))} /></Field>
@@ -128,9 +128,9 @@ export default function Proposte() {
     </section>
 
     <section className="module" aria-labelledby="h-runs" style={{ marginTop: 18 }}>
-      <div className="m-head"><div><h2 className="m-title" id="h-runs">Calcoli</h2><p className="sub-line">{active ? "Aggiorno lo stato ogni pochi secondi." : "Gli ultimi calcoli avviati."}</p></div>
+      <div className="m-head"><div><h2 className="m-title" id="h-runs">Calcoli</h2></div>
         <div className="controls"><Btn kind="sm" onClick={() => loadRuns().catch((e) => setErr(human(e).text))}>Aggiorna</Btn><a className="pill-btn sm" href="#/agenda"><Icon n="cal" />Vai all’Agenda</a></div></div>
-      {!runs ? <Skeleton rows={2} /> : !runs.length ? <Empty title="Nessun calcolo avviato">Verifica i dati e genera la prima proposta.</Empty>
+      {!runs ? <Skeleton rows={2} /> : !runs.length ? <Empty title="Nessun calcolo avviato" />
         : <div className="mini-list">{runs.slice(0, 8).map((x, i) => <div key={x.id} className="mini">
           <span className="mini-ic"><Icon n={live(x) ? "clock" : x.status === "SUCCEEDED" ? "check" : "x"} /></span>
           <span className="grow"><b>Calcolo {runs.length - i}</b><small>{PHASE[x.status] || "Stato sconosciuto"}{x.stale ? " · dati cambiati nel frattempo: rigenera" : ""}{x.result ? ` · ${plural(x.result.assignments.length, "lezione proposta", "lezioni proposte")}${x.result.is_complete ? "" : ", parziale"}` : ""}{x.error_code ? " · non è stato possibile produrre una proposta" : ""}</small>
@@ -154,12 +154,12 @@ export function AdvancedConfig({ onSaved }: { onSaved?: () => void }) {
   useEffect(() => { setRows(null); setErr(""); load(kind); }, [kind]);
   const info = ADVANCED.find((c) => c[0] === kind)!;
   return <div aria-labelledby="h-adv">
-    <div className="m-head"><div><h2 className="m-title" id="h-adv">Impostazioni avanzate</h2><p className="sub-line">Margini delle aule e segnalazioni da verificare sulle disponibilità.</p></div>
+    <div className="m-head"><div><h2 className="m-title" id="h-adv">Impostazioni avanzate</h2></div>
       <div className="controls"><Btn kind="sm" icon="plus" onClick={() => setEdit({ row: null })}>Nuovo</Btn></div></div>
     <div className="seg-scroll"><SegCtl label="Categoria" value={kind} onChange={setKind} options={ADVANCED.map(([k, l]) => [k, l] as [string, string])} /></div>
     <p className="muted" style={{ margin: "10px 0" }}>{info[2]}.</p>
     {err && <Notice kind="bad">{err}</Notice>}
-    {!rows ? <Skeleton rows={2} /> : !rows.length ? <Empty title="Nessun elemento">Aggiungine uno con “Nuovo”.</Empty>
+    {!rows ? <Skeleton rows={2} /> : !rows.length ? <Empty title="Nessun elemento" />
       : <div className="mini-list">{rows.map((x) => <button type="button" key={x.id} className="mini" onClick={() => setEdit({ row: x })}>
         <span className="mini-ic"><Icon n="gear" /></span><span className="grow"><b>{rowText(kind, x, names)[0]}</b><small>{rowText(kind, x, names)[1]}</small></span><Tag tone="plain">Modifica</Tag></button>)}</div>}
     <JsonModal v={edit} kind={kind} label={info[1]} onClose={() => setEdit(null)} onSaved={async (msg) => { setEdit(null); await load(); toast(msg); onSaved?.(); }} />

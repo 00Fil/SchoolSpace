@@ -22,7 +22,7 @@ export default function Studenti() {
   const sel = rows.find((x) => x.s.id === open);
   const close = () => setQuery((x) => x.delete("s"));
   return <section className="module planner" aria-labelledby="h-st">
-    <PageHead id="h-st" title="Studenti" lead={d.loaded ? `${plural(d.students.length, "studente visibile", "studenti visibili")}.${d.center ? "" : " Vedi solo gli studenti a cui il centro ti ha collegato."}` : "Carico gli studenti…"} />
+    <PageHead id="h-st" title="Studenti" lead={d.loaded ? `${plural(d.students.length, "studente visibile", "studenti visibili")}` : "Carico gli studenti…"} />
     <div className="toolbar" style={{ marginBottom: 12 }}>
       <label className="field-search"><Icon n="search" /><span className="sr">Cerca studenti</span><input type="search" placeholder="Cerca per nome o livello…" value={q} autoComplete="off" spellCheck={false} onChange={(e) => setQuery((x) => (e.target.value ? x.set("q", e.target.value) : x.delete("q")))} /></label>
       <SegCtl label="Mostra" value={f} options={[["tutti", "Tutti"], ["richieste", "Con richieste"], ["mancanti", "Senza disponibilità"]]} onChange={(v) => setQuery((x) => (v === "tutti" ? x.delete("f") : x.set("f", v)))} />
@@ -35,8 +35,8 @@ export default function Studenti() {
         <td className="hide-m num">{x.req.length ? plural(x.req.length, "richiesta", "richieste") : <span className="muted">Nessuna</span>}</td>
         <td><Tag tone={x.status[1]}>{x.status[0]}</Tag></td>
       </tr>)}</tbody></table>
-      : d.students.length ? <Empty title={q ? `Nessuno studente corrisponde a “${q}”` : "Nessuno studente in questo filtro"}>Prova con un altro nome o mostra tutti.</Empty>
-        : <Empty title="Nessuno studente visibile">{d.center ? "Aggiungi famiglie e studenti dalla scheda Famiglie." : "Il centro non ha ancora collegato studenti al tuo account."}</Empty>}</div>
+      : d.students.length ? <Empty title={q ? `Nessuno studente corrisponde a “${q}”` : "Nessuno studente in questo filtro"} />
+        : <Empty title="Nessuno studente visibile" />}</div>
     <Sheet open={!!sel} onClose={close} labelledBy="sheet-st">
       {sel && <><div className="sheet-body">
         <div className="sheet-top"><div className="kind"><Tag tone="blue">Studente</Tag><Tag tone={sel.status[1]}>{sel.status[0]}</Tag></div><button className="circle sm raised" aria-label="Chiudi" onClick={close}><Icon n="x" /></button></div>

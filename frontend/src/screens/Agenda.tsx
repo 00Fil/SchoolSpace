@@ -185,7 +185,7 @@ export default function Agenda() {
       {pick && <Notice kind="info" action={<Btn kind="sm" onClick={() => setPick(null)}>Annulla</Btn>}>Scambio: hai scelto {pick.subject_name} ({rangeOf(pick.start_at, pick.end_at)}). Clicca la lezione con cui scambiare l’orario, anche in un altro giorno della settimana (Esc per annullare).</Notice>}
       {err && <Notice kind="bad" action={<Btn kind="sm" onClick={() => load().catch((e) => setErr(human(e).text))}>Riprova</Btn>}>{err}</Notice>}
       {!cap || !lessons ? <Skeleton rows={5} /> : !cap.enabled ? <Notice kind="warn" title="Calendario non disponibile">Il calendario non è attivo al momento, quindi lezioni e comandi restano spenti. Contatta l’assistenza del centro.<Tech><code>{cap.database} · {cap.reason_code}</code></Tech></Notice>
-        : <>{!dayLessons.length && <p className="empty-hint muted">{weekday(day) === 6 ? "Domenica: nessuna lezione." : "Nessuna lezione in questo giorno."} Trascina sulla riga di un tutor per crearne una{nextDay ? <>, oppure <button className="linklike" onClick={() => setDay(nextDay)}>vai a {dayShort(nextDay).toLowerCase()}</button>, {nextDay > day ? "la prossima giornata con lezioni" : "l’ultima giornata con lezioni della settimana"}</> : ""}.</p>}
+        : <>{!dayLessons.length && <p className="empty-hint muted">{weekday(day) === 6 ? "Domenica: nessuna lezione." : "Nessuna lezione in questo giorno."}{nextDay ? <> <button className="linklike" onClick={() => setDay(nextDay)}>Vai a {dayShort(nextDay).toLowerCase()}</button></> : null}</p>}
         <Grid rows={rows} geo={geo} day={day} lessons={dayLessons} rules={d.rules} avail={av} empty={!dayLessons.length} nextDay={nextDay} onGo={setDay}
           onOpen={openOrSwap} onDrag={dragChange} onRefuse={(m) => toast(m)} picked={pick?.id}
           drafts={draft.by} ghosts={draft.ghosts.filter((g) => rome(g.start_at).date === day)} onGhost={setGhost}
@@ -195,8 +195,6 @@ export default function Agenda() {
         <span><i className="cell off" style={{ borderRadius: 4 }} />{av?.hours.length ? "Centro chiuso o tutor impegnato" : "Tutor non disponibile"}</span>
         <span><i className="lg-pend" />In bozza, da pubblicare</span>
         <span><i className="lg-pend lg-rv" />Richiesta in verifica</span>
-        <span className="legend-tip">Trascina su uno spazio libero per creare una lezione · Ctrl+clic su due lezioni per scambiarle</span>
-        <span className="hint"><span className="hint-fine">Trascina una lezione per spostarla o tira il suo bordo per cambiarne la durata: la modifica va in bozza finché non la pubblichi. Alt + frecce dalla tastiera.</span><span className="hint-coarse">Tieni premuto su una lezione per spostarla.</span></span>
       </div>}
     </section>
     {cap?.enabled && <Proposals cap={cap} onPublished={async (firstDay, n) => { await load(mondayOf(firstDay || week)).catch(() => {}); if (firstDay) setDay(firstDay); toast(`${plural(n, "lezione pubblicata", "lezioni pubblicate")} nel calendario.`); }} />}
@@ -290,7 +288,34 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
   const nowCol = isToday && now.min >= geo.open && now.min < geo.close ? Math.floor((now.min - geo.open) / 30) : -1;
   const t = isToday ? Math.min(Math.max((now.min - geo.open) / (geo.close - geo.open), 0), 1) : 0;
   const gaps = (geo.cols - 1) * 8, passed = Math.min(Math.floor(Math.max(now.min - geo.open, 0) / Q), geo.cols - 1) * 8;
-  return <div className="scroller" ref={scroller}>
+  useEffect(() => { // scorrendo, la griglia si sfoca e sparisce dietro la colonna dei tutor
+    const sc = scroller.current, wrap = sc?.parentElement; if (!sc || !wrap) return;
+    let raf = 0;
+    const paint = () => {
+      raf = 0;
+      const name = sc.querySelector<HTMLElement>(".c-name"); if (!name) return;
+      const n = name.getBoundingClientRect(), w = wrap.getBoundingClientRect(), b = sc.getBoundingClientRect();
+      const k = Math.min(sc.scrollLeft / 48, 1), cs = getComputedStyle(name);
+      const pitch = n.height + (parseFloat(getComputedStyle(name.parentElement!).rowGap) || 0);
+      const rx = parseFloat(cs.borderTopLeftRadius) || 0;
+      // maschera della colonna: solo le celle dei tutor (angoli arrotondati inclusi) restano visibili,
+      // cosi' nulla di cio' che scorre dietro spunta negli spazi tra le righe o ai lati.
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${n.width}' height='${pitch}'><rect width='${n.width}' height='${n.height}' rx='${rx}'/></svg>`;
+      wrap.style.setProperty("--ag-edge", `${Math.round(n.right - w.left)}px`);
+      wrap.style.setProperty("--ag-sc-edge", `${n.right - b.left}px`);
+      wrap.style.setProperty("--ag-col", `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+      wrap.style.setProperty("--ag-col-pos", `${n.left - b.left}px ${n.top - b.top}px`);
+      wrap.style.setProperty("--ag-col-size", `${n.width}px ${pitch}px`);
+      wrap.style.setProperty("--ag-k", k.toFixed(3));
+      wrap.classList.toggle("is-scrolled", sc.scrollLeft > 0);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
+    paint();
+    sc.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    return () => { cancelAnimationFrame(raf); sc.removeEventListener("scroll", queue); window.removeEventListener("resize", queue); };
+  }, [rows.length, geo.cols]);
+  return <div className="ag-wrap"><div className="scroller ag-scroller" ref={scroller}>
     <div className="sched dyn" id="sched" ref={sched} role="group" aria-label="Lezioni per tutor e orario" style={{ "--cols": geo.cols } as React.CSSProperties}>
       <div className="c-name corner" style={{ gridRow: 1 }}>Tutor</div>
       {slots.map((m, i) => <div key={m} className={"c-head" + (i === nowCol ? " is-now" : "")} style={{ gridColumn: `${col(m)} / span 2` }} data-min={m}>{i === nowCol && <span>Ora</span>}{hm(m)}</div>)}
@@ -341,7 +366,7 @@ function Grid({ rows, geo, day, lessons, rules, avail: am, empty, nextDay, onGo,
       })}
       <div className="nowlayer" aria-hidden="true"><i className="nowline" hidden={nowCol < 0} style={{ transform: `translateX(calc(${t} * (100% - ${gaps}px) + ${passed}px))` }} /></div>
     </div>
-  </div>;
+  </div><div className="ag-blur" aria-hidden="true" /></div>;
 }
 
 /* Gesti: trascina lungo la riga per spostare (mouse dopo 6 px, touch con pressione lunga) o tira un bordo
@@ -554,7 +579,7 @@ function PendingChange({ c, onConfirm, onWithdraw }: { c: NonNullable<Lesson["ti
   return <div className="pend-box" role="status">
     <div className="pend-head"><span className="oc-ic amber"><Icon n="clock" /></span><div><b>Modifica in attesa di conferma</b><small>{dayLabel(rome(c.start_at).date)}, {rangeOf(c.start_at, c.end_at)} · {duration((new Date(c.end_at).getTime() - new Date(c.start_at).getTime()) / 60000)}</small></div></div>
     <ul className="pend-who">{c.answers.map((a, i) => <li key={i}><span>{a.who}<small>{a.party === "TUTOR" ? "tutor" : "famiglia"}</small></span><Tag tone={a.status === "ACCEPTED" ? "green" : a.status === "REJECTED" ? "red" : "amber"}>{a.status === "ACCEPTED" ? "Ha accettato" : a.status === "REJECTED" ? "Ha rifiutato" : "Deve rispondere"}</Tag></li>)}</ul>
-    <p className="fine">{waiting.length ? "La lezione resta all’orario attuale finché tutti non accettano. Puoi confermarla subito senza attendere." : "Tutti hanno risposto."}</p>
+    
     <div className="toolbar"><Btn kind="ghost" onClick={onWithdraw}>Ritira proposta</Btn><Btn kind="primary" isle="check" onClick={onConfirm}>Conferma subito</Btn></div>
   </div>;
 }
@@ -609,7 +634,7 @@ function MoveModal({ m, week, onClose, propose }: { m: { l: Lesson; date: string
   return <Modal open={!!m} onClose={onClose} labelledBy="mv-title"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="mv-title">Sposta la lezione</h2>
-      <p className="lead">{l.subject_name} con {l.tutor_name}. Tutor, durata e partecipanti restano gli stessi; il server ricontrolla spazi, conflitti e le altre rettifiche in bozza. Per cambiare la durata tira il bordo della lezione nell’Agenda.</p>
+      <p className="lead">{l.subject_name} con {l.tutor_name}.</p>
       <Field label="Giorno (stessa settimana)"><Choices label="Giorno" value={v.date} options={days.map((dd) => { const n = freeCount(dd); return { v: dd, label: dayShort(dd) + (n === 0 ? " · pieno" : "") }; })} onChange={(dd) => setV({ ...v, date: dd })} /></Field>
       <div className="when" role="group" aria-labelledby="mv-when">
         <div className="when-top"><b id="mv-when" className="num" aria-live="polite">{hm(v.start)}–{hm(v.start + dur)}</b><small>{same ? "Orario attuale" : `Prima: ${dayShort(o.date).toLowerCase()}, ${hm(o.s)}`}</small></div>
@@ -617,9 +642,9 @@ function MoveModal({ m, week, onClose, propose }: { m: { l: Lesson; date: string
       </div>
       {(c || past) && <div className="conflict show" role="alert">{past ? "Quell’orario è già passato." : c!.tutor === l.tutor ? `${l.tutor_name} ha già ${c!.subject_name} dalle ${timeOf(c!.start_at)}.` : `Uno studente ha già ${c!.subject_name} dalle ${timeOf(c!.start_at)}.`}{free && <> Puoi <button type="button" onClick={() => setV({ ...v, start: free.v })}>usare le {free.label}</button>.</>}</div>}
       {blocked.length > 0 && <div className="conflict show" role="alert">Non si può: {blocked.join("; ")}.{free ? <> Puoi <button type="button" onClick={() => setV({ ...v, start: free.v })}>usare le {free.label}</button>.</> : " Nessun orario libero in questo giorno: prova un altro giorno."}</div>}
-      {!c && !past && !blocked.length && !same && <p className="mv-hint" aria-live="polite">{checking ? "Verifico gli orari disponibili…" : "Orario compatibile con disponibilità e vincoli: il server lo ricontrolla al salvataggio."}</p>}
+      {!c && !past && !blocked.length && !same && <p className="mv-hint" aria-live="polite">{checking ? "Verifico gli orari disponibili…" : "Orario compatibile."}</p>}
       <Check checked={now_} onChange={setNow}>Pubblica subito la rettifica</Check>
-      <p className="fine">{now_ ? "La lezione si sposta adesso nel calendario pubblico e tutor e famiglie ricevono l’avviso del nuovo orario." : "Lo spostamento entra nella bozza del mese: tutor e famiglie vedono l’orario attuale finché non pubblichi le rettifiche."}</p>
+      
       {err && <Notice kind="bad">{err}</Notice>}
     </div>
     <div className="modal-foot"><button type="button" className="pill-btn ghost" onClick={onClose}>Chiudi</button>
@@ -644,9 +669,9 @@ function CancelModal({ l, onClose, propose }: { l: Lesson | null; onClose: () =>
   return <Modal open={!!l} onClose={onClose} labelledBy="cl-title"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="cl-title">Cancellare la lezione?</h2>
-      <p className="lead">{x.subject_name}, {dayLabel(rome(x.start_at).date).toLowerCase()} {rangeOf(x.start_at, x.end_at)}. La lezione resta nello storico e libera tutor, spazi e studenti. Non viene creato un recupero: la richiesta torna da pianificare con una nuova proposta.</p>
+      <p className="lead">{x.subject_name}, {dayLabel(rome(x.start_at).date).toLowerCase()} {rangeOf(x.start_at, x.end_at)}.</p>
       <Check checked={now_} onChange={setNow}>Pubblica subito la rettifica</Check>
-      <p className="fine">{now_ ? "La lezione si cancella adesso e tutor e famiglie ricevono l’avviso." : "La cancellazione entra nella bozza del mese: puoi scartarla finché non pubblichi le rettifiche."}</p>
+      
       {err && <Notice kind="bad">{err}</Notice>}
     </div>
     <div className="modal-foot"><button type="button" className="pill-btn ghost" onClick={onClose}>Non cancellare</button>

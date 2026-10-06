@@ -31,7 +31,7 @@ type Tab = "anno" | "orari" | "chiusure" | "aule" | "approva" | "regole" | "ecce
 export default function Configurazione() {
   const r = useRoute(), want = (r.q.get("tab") || "anno") as Tab, tab: Tab = TECH_ADMIN || want === "aule" ? want : "anno";
   return <section className="module planner" aria-labelledby="h-cfg">
-    <PageHead id="h-cfg" title="Anno scolastico e aule" lead="Le date dell’anno (le pause diventano chiusure automatiche) e le aule disponibili per le lezioni in presenza. Orari di apertura e ferie si impostano in «Orari e chiusure»." />
+    <PageHead id="h-cfg" title="Anno scolastico e aule" />
     <div className="toolbar" style={{ marginBottom: 12, overflowX: "auto" }}>
       <SegCtl<Tab> label="Sezione" value={tab} onChange={(v) => setQuery((x) => x.set("tab", v))} options={TECH_ADMIN ? [["anno", "Anno scolastico"], ["aule", "Aule"], ["orari", "Finestre motore settimanale"], ["chiusure", "Chiusure (tecnico)"], ["approva", "Da approvare"], ["eccezioni", "Eccezioni"], ["dichiarazioni", "Dichiarazioni"], ["regole", "Regole di pianificazione"], ["avanzate", "Avanzate"]] : [["anno", "Anno scolastico"], ["aule", "Aule"]]} />
     </div>
@@ -54,7 +54,7 @@ function Anno() {
   if (!years.data) return <Skeleton />;
   return <>
     <div className="toolbar" style={{ marginBottom: 12 }}><Btn kind="primary" isle="plus" onClick={() => setForm({ kind: "year" })}>Nuovo anno scolastico</Btn></div>
-    {!years.data.length ? <Empty title="Nessun anno scolastico">Crea l’anno: le sue date diventano il periodo di default di orari e disponibilità.</Empty>
+    {!years.data.length ? <Empty title="Nessun anno scolastico" />
       : years.data.map((y) => <div className="card" key={y.id} style={{ marginBottom: 12 }}>
         <h3 style={{ marginTop: 0 }}>{y.name} {!y.active && <Tag>Non attivo</Tag>}</h3>
         <p className="muted">{it(y.start_date)} – {it(y.end_date)}</p>
@@ -65,7 +65,7 @@ function Anno() {
             <td><small>{it(p.start_date)} – {it(p.end_date)}</small></td>
             <td className="hide-m">{effect(p)}</td>
             <td><Btn onClick={() => setForm({ kind: "period", year: y, period: p })} aria-label={`Modifica ${p.kind_label}`}>Modifica</Btn></td></tr>)}</tbody></table>
-          : <p className="muted">Nessun periodo. Aggiungi inizio lezioni, pause e periodi per i recuperi.</p>}
+          : <p className="muted">Nessun periodo.</p>}
       </div>)}
     {form?.kind === "year" && <YearForm year={form.year} onClose={() => setForm(null)} onDone={() => { setForm(null); years.reload(); toast("Anno salvato"); }} />}
     {form?.kind === "period" && <PeriodForm year={form.year} period={form.period} onClose={() => setForm(null)} onDone={(m) => { setForm(null); years.reload(); toast(m); }} />}
@@ -156,10 +156,10 @@ function Chiusure() {
   const rows = [...closures.data].sort((a, b) => a.start_at.localeCompare(b.start_at));
   return <>
     <div className="toolbar" style={{ marginBottom: 12 }}><Btn kind="primary" isle="plus" onClick={() => setOpen(true)}>Chiusura straordinaria</Btn></div>
-    <p className="muted">Le pause dell’anno scolastico compaiono qui automaticamente e si modificano dalla sezione «Anno scolastico».</p>
+    
     {rows.length ? <table className="list"><thead><tr><th scope="col">Chiusura</th><th scope="col">Dal – al</th><th scope="col" className="hide-m">Vale per</th></tr></thead>
       <tbody>{rows.map((c) => <tr key={c.id}><td>{c.reason}</td><td><small>{dt(c.start_at)} – {dt(c.end_at)}</small></td><td className="hide-m">{c.mode === "ALL" ? "Tutte le modalità" : c.mode === "ONLINE" ? "Online" : "In sede"}</td></tr>)}</tbody></table>
-      : <Empty title="Nessuna chiusura">Aggiungi le pause nell’anno scolastico o una chiusura straordinaria.</Empty>}
+      : <Empty title="Nessuna chiusura" />}
     {open && <Dialog id="m-clo" title="Chiusura straordinaria" onClose={() => setOpen(false)} onSubmit={submit} foot={<><Btn onClick={() => setOpen(false)}>Annulla</Btn><Btn kind="primary" type="submit">Aggiungi</Btn></>}>
       {err && <Notice kind="bad">{err}</Notice>}
       <Field label="Inizio" id="c-s"><Input id="c-s" type="datetime-local" value={v.start} onChange={(e) => setV({ ...v, start: e.target.value })} required /></Field>
@@ -197,7 +197,7 @@ function Aule() {
     {res.data.length ? <table className="list"><thead><tr><th scope="col">Nome</th><th scope="col">Tipo</th><th scope="col">Capienza</th><th scope="col" aria-label="Azioni"></th></tr></thead>
       <tbody>{res.data.map((x) => <tr key={x.id}><td>{x.name} {!x.active && <Tag>Non attiva</Tag>}</td><td>{x.kind === "SPACE" ? "Aula" : "Canale video"}</td><td className="num">{x.student_capacity ?? "—"}</td>
         <td><Btn kind="sm" onClick={() => edit(x)}>Modifica</Btn> <Btn kind="sm" onClick={() => toggle(x)}>{x.active ? "Disattiva" : "Riattiva"}</Btn></td></tr>)}</tbody></table>
-      : <Empty title="Nessuna aula">Aggiungi le aule con la loro capienza e i canali video per le lezioni online.</Empty>}
+      : <Empty title="Nessuna aula" />}
     {open && <Dialog id="m-res" title={v.id ? "Modifica aula o canale" : "Nuova aula o canale"} onClose={() => setOpen(false)} onSubmit={submit} foot={<><Btn onClick={() => setOpen(false)}>Annulla</Btn><Btn kind="primary" type="submit" disabled={busy}>{v.id ? "Salva" : "Aggiungi"}</Btn></>}>
       {err && <Notice kind="bad">{err}</Notice>}
       <Field label="Nome" id="r-n"><Input id="r-n" value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} maxLength={80} required /></Field>
@@ -222,7 +222,7 @@ function Approva() {
       toast(`${out.changed.length} ${status === "APPROVED" ? "approvate" : "respinte"}${out.skipped.length ? `, ${out.skipped.length} già gestite` : ""}`);
     } catch (x) { setErr(writeError(x)); } finally { setBusy(false); }
   };
-  if (!drafts.length) return <Empty title="Niente da approvare">Le disponibilità inserite da famiglie e tutor compaiono qui finché il centro non le approva.</Empty>;
+  if (!drafts.length) return <Empty title="Niente da approvare" />;
   return <div className="card">
     <Notice kind="info">Solo il centro approva: finché una disponibilità è in bozza, non viene usata per l’orario.</Notice>
     <Check checked={sel.size === drafts.length} onChange={(c) => setSel(c ? new Set(drafts.map((d) => d.id)) : new Set())}>Seleziona tutte ({drafts.length})</Check>
@@ -234,9 +234,9 @@ function Approva() {
 
 type Row = Record<string, unknown> & { id: string; version: number };
 const TABS: Record<string, { kind: string; title: string; lead: string; empty: string }> = {
-  eccezioni: { kind: "availability-exceptions", title: "eccezione", lead: "Variazioni puntuali: un giorno in più o in meno rispetto alle fasce settimanali (es. una gita, un esame).", empty: "Nessuna eccezione registrata." },
-  dichiarazioni: { kind: "availability-declarations", title: "dichiarazione", lead: "Stato dei dati di ogni persona: completi, «nessuna disponibilità» o ancora incompleti. Serve alla verifica dei dati.", empty: "Nessuna dichiarazione: la verifica dei dati segnalerà chi non ha ancora dati completi." },
-  regole: { kind: "planning-policies", title: "regola di pianificazione", lead: "Impostazioni con cui il sistema cerca l’orario: tempo di ricerca, requisiti di aule e canali, settimane parziali.", empty: "Nessuna regola: creane una prima di generare proposte." },
+  eccezioni: { kind: "availability-exceptions", title: "eccezione", lead: "Variazioni puntuali: un giorno in più o in meno rispetto alle fasce settimanali (es. una gita, un esame).", empty: "Nessuna eccezione" },
+  dichiarazioni: { kind: "availability-declarations", title: "dichiarazione", lead: "Stato dei dati di ogni persona: completi, «nessuna disponibilità» o ancora incompleti. Serve alla verifica dei dati.", empty: "Nessuna dichiarazione" },
+  regole: { kind: "planning-policies", title: "regola di pianificazione", lead: "Impostazioni con cui il sistema cerca l’orario: tempo di ricerca, requisiti di aule e canali, settimane parziali.", empty: "Nessuna regola" },
 };
 
 function ConfigTab({ kind, title, lead, empty }: { kind: string; title: string; lead: string; empty: string }) {
@@ -279,16 +279,14 @@ function ConfigTab({ kind, title, lead, empty }: { kind: string; title: string; 
   if (!rows.data) return <Skeleton />;
   const cols = fields.filter((f) => f.t !== "list").slice(0, 4);
   return <>
-    <p className="muted">{lead}</p>
     <div className="toolbar" style={{ marginBottom: 12 }}><Btn kind="primary" isle="plus" onClick={() => start()}>{`Nuova ${title}`}</Btn></div>
     {rows.data.length ? <div className="list-wrap"><table className="list"><thead><tr>{cols.map((f, i) => <th scope="col" key={f.k} className={i > 1 ? "hide-m" : ""}>{f.label}</th>)}<th scope="col"><span className="sr">Azioni</span></th></tr></thead>
       <tbody>{rows.data.map((row) => <tr key={row.id}>{cols.map((f, i) => <td key={f.k} className={i > 1 ? "hide-m" : ""}>{show(f, row[f.k])}</td>)}
         <td><Btn onClick={() => start(row)} aria-label={`Modifica ${title} ${show(cols[0], row[cols[0].k])}`}>Modifica</Btn></td></tr>)}</tbody></table></div>
-      : <Empty title="Ancora niente">{empty}</Empty>}
+      : <Empty title={empty} />}
     {open && <Modal open onClose={() => setOpen(null)} labelledBy="m-cfg"><form onSubmit={save} noValidate>
       <div className="modal-body"><h2 id="m-cfg">{open.row ? `Modifica ${title}` : `Nuova ${title}`}</h2>
         <ConfigForm kind={kind} value={val} onChange={(nv) => { setVal(nv); setBad((b) => b.filter((k) => nv[k] === "" || nv[k] === null || nv[k] === undefined)); }} refs={refs} bad={bad} />
-        {open.row && <p className="fine">Se qualcuno l’ha modificata nel frattempo, il salvataggio viene rifiutato: ricarica e riprova.</p>}
         {err && <Notice kind="bad">{err}</Notice>}</div>
       <div className="modal-foot"><Btn onClick={() => setOpen(null)}>Annulla</Btn><Btn kind="primary" type="submit" disabled={busy}>{busy ? "Salvataggio…" : "Salva"}</Btn></div>
     </form></Modal>}

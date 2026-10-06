@@ -9,7 +9,6 @@ import { dayShort, rangeOf, rome } from "../format";
 import { Btn, Icon, PageHead } from "../ui/core";
 import { Field, Input, SegCtl } from "../ui/controls";
 import { Modal, useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 import { classify, ErrorState, ViewState } from "../ui/states";
 import { ATT_LABEL } from "./data";
 
@@ -27,8 +26,7 @@ export default function Presenze() {
     try { const p = await request<S.PortalAttendancePage>("GET", next); setRows((x) => [...(x || []), ...p.results]); setNext(nextPath(p.next, location.origin)); } catch (x) { setErr(x); } finally { setBusy(false); }
   }
   return <section className="module planner" aria-labelledby="h-pres">
-    <PageHead id="h-pres" title="Presenze" lead="Lezioni concluse negli ultimi 14 giorni in cui manca la presenza di almeno un partecipante." />
-    <div className="page-help"><Help topic="tutor" /></div>
+    <PageHead id="h-pres" title="Presenze" />
     {err ? (classify(err) === "disabled" ? <ViewState kind="disabled" title="Calendario non attivo">Le presenze si registrano sulle lezioni del calendario, che non è ancora attivo.</ViewState> : <ErrorState error={err} onRetry={() => setN((k) => k + 1)} />)
       : rows === null ? <ViewState kind="loading" />
       : rows.length ? <>
@@ -75,7 +73,7 @@ export function AttendanceModal({ lesson, onClose, onDone }: { lesson: S.PortalA
         <div className="seg-scroll"><SegCtl label={`Presenza di ${name(x.student_id)}`} value={x.status} options={(["PRESENT", "ABSENT", "JUSTIFIED"] as S.AttendanceStatus[]).map((s) => [s, ATT_LABEL[s]])} onChange={(s) => upd(i, { status: s })} /></div>
         <Field label="Minuti" id={"att-m-" + i} optional><Input id={"att-m-" + i} type="number" inputMode="numeric" min={0} max={full} placeholder={String(full)} disabled={x.status !== "PRESENT"} value={x.minutes} onChange={(e) => upd(i, { minutes: e.target.value })} /></Field>
       </div>)}
-      <p className="fine">Minuti vuoti = lezione intera ({full} min). Una presenza già registrata si può correggere: resta lo storico.</p>
+      
       {err !== null && <ErrorState error={err} onRetry={classify(err) === "stale" ? () => setN((k) => k + 1) : undefined} />}
     </div>
     <div className="modal-foot"><button type="button" className="pill-btn ghost" onClick={onClose}>Chiudi</button>

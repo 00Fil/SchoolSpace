@@ -126,7 +126,7 @@ export default function LessonActions({ l, lessons, onDone, propose }: { l: Less
       onConfirm={() => { const changes = { mode, location: mode === "ONLINE" ? "REMOTE" : "ON_SITE", ...(mode === "ONLINE" ? { space_id: null } : { video_id: null }) };
         if (scope === "FOLLOWING") run(() => splitFrom(l, changes, reason.trim()), "Lezione modificata");
         else corr({ op: "modify", changes }, `Modalità di ${l.subject_name}`, () => post(`/occurrences/${l.id}/modify/`, { expected_version: l.version, reason: reason.trim(), changes }), "Lezione modificata"); }}>
-      <p className="muted">Per cambiare giorno o ora usa «Sposta»; per il tutor «Sostituisci il tutor».</p>
+      
       <SegCtl label="Modalità" value={mode} options={[["IN_PERSON", MODE.IN_PERSON], ["ONLINE", MODE.ONLINE]]} onChange={setMode} />
       <ScopePick l={l} value={scope} onChange={setScope} />
       {scope === "FOLLOWING" && <Notice kind="info">Le lezioni della serie da {dayLabel(rome(l.start_at).date)} in poi seguiranno la nuova modalità; quelle precedenti restano com’erano.</Notice>}
@@ -136,7 +136,7 @@ export default function LessonActions({ l, lessons, onDone, propose }: { l: Less
     <Dialog open={open === "swap"} title="Scambia l’orario" onClose={() => setOpen("")} busy={busy} err={err} confirm="Scambia" disabled={!other}
       onConfirm={() => { const o = candidates.find((x) => x.id === other)!; corr({ op: "swap", other_id: o.id }, `Scambio ${l.subject_name} ↔ ${o.subject_name}`, () => post("/occurrences/swap/", { first_id: l.id, first_version: l.version, second_id: o.id, second_version: o.version, reason: reason.trim() }), "Orari scambiati"); }}>
       <Field label="Con quale lezione" id="la-swap"><select id="la-swap" className="inp" value={other} onChange={(e) => setOther(e.target.value)}><option value="">Scegli…</option>{candidates.map((x) => <option key={x.id} value={x.id}>{when(x)} · {x.subject_name} · {x.participants.map((p) => p.name).join(", ")}</option>)}</select></Field>
-      <p className="muted">Le due lezioni si scambiano giorno e ora. Il controllo verifica che entrambe restino valide.</p>
+      
       {propose && <NowPick value={now_} onChange={setNow} />}
     </Dialog>
 
@@ -148,7 +148,6 @@ export default function LessonActions({ l, lessons, onDone, propose }: { l: Less
       {!att ? <Skeleton rows={2} /> : att.entries.map((x) => <div key={x.student_id} style={{ marginBottom: 10 }}><SegCtl label={name(x.student_id)} value={entries[x.student_id]} options={STATUS} onChange={(v) => setEntries({ ...entries, [x.student_id]: v })} />{presence && (() => { const p = presence.students.find((s) => s.student_id === x.student_id); return p ? <p className="fine">{p.joined ? `In videolezione ${p.minutes} min su ${presence.lesson_minutes}` : "Mai entrato nella videolezione"}</p> : null; })()}</div>)}
       {presence && <p className="muted">Proposta automatica dalla videolezione: controlla prima di salvare.</p>}
       {open === "fix" && <><Notice kind="warn">La lezione è già conclusa: la correzione resta nello storico.</Notice><Check checked={sure} onChange={setSure}>Confermo la correzione</Check></>}
-      {open === "close" && entryList().some((e) => e.status === "ABSENT") && <p className="muted">Per un’assenza avvisata almeno 24 ore prima crea il recupero da «Da gestire».</p>}
     </Dialog>
   </>;
 }

@@ -169,7 +169,6 @@ export function ReviewModal({ id, onClose, onDone }: { id: string | null; onClos
       {!done && rv.plan && rv.missing > 0 && <Check checked={accept} onChange={setAccept}>Completa anche senza {plural(rv.missing, "lezione mancante", "lezioni mancanti")} (le cercherà il calendario mensile)</Check>}
       {!done && rv.plan && <><Check checked={pubNow} onChange={setPubNow}>Pubblica subito nel calendario del mese</Check>
         <p className="fine">{pubNow ? "Le lezioni entrano adesso nel calendario pubblico: tutor e famiglie ricevono gli orari." : "Le lezioni entrano nella bozza del calendario del mese: le pubblichi dall’Agenda con «Pubblica le rettifiche», insieme alle altre modifiche."}</p></>}
-      {!done && rv.plan && rv.conflicts > 0 && <p className="fine">Risolvi i conflitti (sposta o togli le lezioni) per poter confermare.</p>}
     </>}
   </div>
     <div className="modal-foot rv-foot">

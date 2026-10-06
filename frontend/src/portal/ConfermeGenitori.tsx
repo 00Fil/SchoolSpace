@@ -27,7 +27,7 @@ export default function ConfermeGenitori() {
   }
   return <section aria-labelledby="cg-title" className="module" style={{ marginBottom: 20 }}>
     <h2 id="cg-title" className="m-title">Modifiche proposte dal tutor</h2>
-    <p className="muted">Il centro le ha già valutate: servono anche la vostra conferma prima che cambino le lezioni.</p>
+    
     {err && <Notice kind="bad">{err}</Notice>}
     {rows.map((r) => <div className="card" key={r.id} style={{ marginBottom: 10 }}>
       <b>Lezione del {at(r.lesson_start_at)}</b>

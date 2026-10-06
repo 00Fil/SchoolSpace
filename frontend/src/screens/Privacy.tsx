@@ -6,7 +6,6 @@ import { human } from "../messages";
 import { Btn, Notice, PageHead, Skeleton, Tag, Tech } from "../ui/core";
 import { Field, SegCtl } from "../ui/controls";
 import { Modal, useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 
 /** P6 · Area privacy del centro: richieste degli interessati, export, conservazione con approvazione,
  *  registro delle operazioni consultabile, revisione maggiore età. Solo ruolo CENTER (il server lo impone). */
@@ -160,8 +159,7 @@ export default function Privacy() {
   const [tab, setTab] = useState(new URLSearchParams(location.hash.split("?")[1] || "").get("tab") || "richieste");
   const [act, setAct] = useState<Act | null>(null);
   return <section className="module" aria-labelledby="h-privacy">
-    <PageHead id="h-privacy" title="Privacy" lead="Richieste degli interessati, export, conservazione dei dati e registro delle operazioni." />
-    <div className="page-help"><Help topic="privacy" /></div>
+    <PageHead id="h-privacy" title="Privacy" />
     <div className="controls"><SegCtl label="Sezione" value={tab} onChange={setTab} options={TABS} /></div>
     <div key={tab} style={{ marginTop: 14 }}>
       {tab === "richieste" && <Richieste act={setAct} />}

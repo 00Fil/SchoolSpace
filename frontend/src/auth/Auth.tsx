@@ -10,7 +10,6 @@ import { human } from "../messages";
 import { Btn, Icon, Notice, Skeleton, Tag, Tech } from "../ui/core";
 import { Check, Choices, Field, Input } from "../ui/controls";
 import { useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 import { ENV_LABEL } from "../env";
 import { cleanCode, CONTEXT_LABEL, isTotp, nextStep, passwordHints, savePendingInvite, Step } from "./flow";
 
@@ -52,7 +51,6 @@ export function Login({ onStep, onForgot, notice }: { onStep: (s: Step) => void;
     </form>
     <p className="login-foot"><LinkBtn onClick={onForgot}>Password dimenticata?</LinkBtn></p>
     <p className="login-foot">L’account lo crea il centro con un invito via email. Non esistono credenziali predefinite.</p>
-    <Help topic="login" />
   </AuthCard>;
 }
 function ErrorNotice({ error }: { error: unknown }) {
@@ -88,7 +86,6 @@ export function MfaVerify({ onStep, onRestart, stepUp }: { onStep: (s: Step) => 
     </form>
     <p className="login-foot"><LinkBtn onClick={() => { setRecovery(!recovery); setBad(""); }}>{recovery ? "Usa il codice dell’app" : "Non hai il telefono? Usa un codice di recupero"}</LinkBtn></p>
     {!stepUp && <p className="login-foot"><LinkBtn onClick={() => onRestart()}>Accedi con un altro account</LinkBtn></p>}
-    <Help topic="login" />
   </AuthCard>;
 }
 
@@ -262,7 +259,6 @@ export function InviteAccept({ token, signedIn, onDone, onLogin }: { token: stri
   return <AuthCard title="Benvenuto nel centro" id="h-inv" lead="Scegli una password per attivare il tuo account. Se hai già un account con questa email, ti chiederemo di accedere.">
     <NewPassword busy={busy} err={err} cta="Attiva l’account" busyText="Attivazione…" onSubmit={(pw) => accept(pw)} />
     <p className="login-foot"><LinkBtn onClick={() => { savePendingInvite(token); onLogin("Accedi: l’invito verrà attivato subito dopo."); }}>Ho già un account</LinkBtn></p>
-    <Help topic="famiglia" />
   </AuthCard>;
 }
 

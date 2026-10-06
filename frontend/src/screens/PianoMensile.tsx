@@ -92,12 +92,12 @@ export default function PianoMensile() {
         <section className="pm-panel" aria-labelledby="pm-s1">
           <header className="pm-ph"><div><span className="pm-step">Passo 1</span><h2 id="pm-s1">Dati di {label}</h2></div>
             <span className="pm-count">{data.readiness.items.filter((i) => i.ok).length} di {data.readiness.items.length} completi</span></header>
-          <p className="pm-note">Le voci obbligatorie servono per generare; quelle consigliate migliorano il risultato.</p>
+          
           <Checklist items={data.readiness.items} onGo={(k) => { const g = GO[k]; if (g) go(g[0], g[1]); }} />
         </section>
         <section className="pm-panel" aria-labelledby="pm-s2">
           <header className="pm-ph"><div><span className="pm-step">Passo 2</span><h2 id="pm-s2">Genera il calendario</h2></div></header>
-          <p className="pm-note">Il motore sceglie giorno, ora, tutor e aula di ogni lezione rispettando queste regole, in ordine di importanza.</p>
+          
           <table className="pm-table pm-rules">
             <thead><tr><th scope="col">Regola</th><th scope="col">Come viene applicata</th></tr></thead>
             <tbody>
@@ -188,7 +188,7 @@ function LessonDetail({ l, onRemove }: { l: PlanLesson; onRemove?: () => void })
     {l.confirmations.length > 0 && <><h3>Conferme</h3><ul className="pm-conf">{l.confirmations.map((c) => <li key={c.id}>
       <div><b>{c.who}</b><small>{c.party === "TUTOR" ? "Tutor" : "Famiglia"} · sfora di {c.minutes} min{c.labels.length ? ` «${c.labels.join(", ")}»` : ""}</small>{c.note && <small>“{c.note}”</small>}</div>
       <Tag tone={CONF[c.status]?.[1] as "plain"}>{CONF[c.status]?.[0] || c.status}</Tag></li>)}</ul></>}
-    {onRemove && <div style={{ marginTop: 24 }}><Btn kind="ghost" onClick={onRemove}>Togli dalla bozza</Btn><p className="fine">La lezione non verrà pubblicata; potrai rigenerare il mese o inserirla a mano dall’agenda.</p></div>}
+    {onRemove && <div style={{ marginTop: 24 }}><Btn kind="ghost" onClick={onRemove}>Togli dalla bozza</Btn></div>}
   </div>;
 }
 

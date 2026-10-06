@@ -39,9 +39,7 @@ export default function Richieste() {
   }
   const kinds: [string, string][] = [["tutti", "Tutti i tipi"], ["SINGLE", "Singole"], ["RECURRING", "Ricorrenti"]];
   return <section className="module planner" aria-labelledby="h-rq">
-    <PageHead id="h-rq" title={d.center ? "Richieste didattiche" : "Richieste di lezioni"} lead={d.center
-      ? "Le richieste delle famiglie e del centro. A ogni richiesta inserita o approvata il motore colloca subito le lezioni: verificale e conferma per completarla."
-      : "Chiedi al centro una lezione singola o lezioni ricorrenti ogni settimana per i tuoi figli. Dopo l’approvazione l’orario viene calcolato sulle disponibilità che hai inserito."}>
+    <PageHead id="h-rq" title={d.center ? "Richieste didattiche" : "Richieste di lezioni"}>
       {canAsk && <Btn kind="primary" isle="plus" onClick={() => setEdit(null)}>{d.center ? "Nuova richiesta" : "Chiedi delle lezioni"}</Btn>}
     </PageHead>
     <div className="stats">
@@ -69,8 +67,7 @@ export default function Richieste() {
           {!d.center && x.own && x.status === "PENDING" && <Btn kind="sm ghost" onClick={() => act(x, "withdraw")}>Ritira</Btn>}
         </td>
       </tr>)}</tbody></table>
-      : <Empty title={all.length ? "Nessuna richiesta in questo filtro" : "Nessuna richiesta registrata"}>{all.length ? "Cambia i filtri o la ricerca." : d.center ? "Crea una richiesta o attendi quelle delle famiglie." : "Usa «Chiedi delle lezioni» per inviarne una al centro."}</Empty>}</div>
-    {d.center && waiting.length > 0 && <p className="fine">Per vedere l’effetto delle richieste sull’orario apri <button type="button" className="link-btn" onClick={() => go("pianificazione")}>Pianificazione</button>.</p>}
+      : <Empty title={all.length ? "Nessuna richiesta in questo filtro" : "Nessuna richiesta registrata"} />}</div>
     <RequestModal open={edit !== undefined} edit={edit || null} onClose={() => setEdit(undefined)} onSaved={async (r) => { setEdit(undefined); await d.refresh(); if (!reviewIfNeeded(r)) toast(d.center ? "Richiesta salvata." : "Richiesta inviata al centro."); }} />
     <ApproveModal req={approving} onClose={() => setApproving(null)} onDone={async (r) => { setApproving(null); await d.refresh(); if (!reviewIfNeeded(r)) toast("Richiesta approvata."); }} />
   </section>;

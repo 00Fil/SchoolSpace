@@ -19,7 +19,7 @@ export default function Utenti() {
   const toast = useToast();
   const me = (d.me as { id?: string }).id;
   return <section className="module planner" aria-labelledby="h-ut">
-    <PageHead id="h-ut" title="Utenti e ruoli" lead="Chi lavora nel centro e con quale ruolo. Famiglie, figli e genitori si gestiscono da Persone › Famiglie.">
+    <PageHead id="h-ut" title="Utenti e ruoli">
       <Btn kind="primary" isle="plus" onClick={() => setAct({ kind: "invite" })}>Invita un gestore</Btn>
     </PageHead>
     <Notice kind="info">I tutor si invitano dalla loro scheda in <b>Tutor</b>, così l’account resta collegato alle competenze e alle lezioni.</Notice>
@@ -35,7 +35,7 @@ export default function Utenti() {
               {u.id !== me && <Btn kind="ghost" onClick={() => setAct({ kind: "mfa", user: u })}>Azzera MFA</Btn>}
               <Btn kind="ghost" onClick={() => setAct({ kind: "sessions", user: u })}>Chiudi sessioni</Btn>
             </span></td></tr>)}</tbody></table>
-        : <Empty title="Nessun utente del centro">Invita il primo gestore o un tutor.</Empty>}
+        : <Empty title="Nessun utente del centro" />}
     </div>
     <h3>Inviti in attesa</h3>
     {invs.error ? <ErrorState error={invs.error} onRetry={invs.reload} /> : !invs.data ? <Skeleton rows={2} /> : invs.data.length ? <div className="mini-list">{invs.data.map((i) => <div key={i.id} className="mini"><span><b>{i.email}</b><small>{ROLE[i.role]} · {INVITE_STATUS[i.status]}{i.expires_at ? " · scade il " + new Date(i.expires_at).toLocaleDateString("it-IT") : ""}</small></span></div>)}</div> : <p className="muted">Nessun invito in attesa.</p>}
@@ -59,7 +59,7 @@ function ActModal({ act, onClose, onDone }: { act: Act; onClose: () => void; onD
   return <Modal open onClose={onClose} labelledBy="m-ut"><form className="modal-body" onSubmit={submit}>
     <h2 id="m-ut">{title}</h2>
     {err && <Notice kind="bad">{err}</Notice>}
-    {act.kind === "invite" && <><Field label="Email" id="u-email"><Input id="u-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field><p className="muted">Il nuovo gestore configurerà la MFA al primo accesso.</p></>}
+    {act.kind === "invite" && <><Field label="Email" id="u-email"><Input id="u-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field></>}
     {act.kind === "revoke" && <p>{act.user.email} perderà subito il ruolo di {ROLE[act.role]?.toLowerCase()}. Deve sempre restare almeno un gestore.</p>}
     {act.kind === "mfa" && <p>Le sessioni di {act.user.email} verranno chiuse e dovrà configurare di nuovo l’app di autenticazione.</p>}
     {act.kind === "sessions" && <p>{act.user.email} verrà disconnesso da tutti i dispositivi.</p>}

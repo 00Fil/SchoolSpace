@@ -44,7 +44,7 @@ export default function Percorsi() {
 
   if (!paths) return <section className="module planner"><Skeleton rows={5} /></section>;
   if (!path) return <section className="module planner" aria-labelledby="h-pa">
-    <PageHead id="h-pa" title="Percorsi" lead="Per chi svolge con il centro l’intero programma scolastico: materie, iscritti, sottogruppi e minuti settimanali. Il programma è interno e non certifica crediti o adempimenti.">
+    <PageHead id="h-pa" title="Percorsi">
       {center && <><Btn icon="book" onClick={() => go("materie")}>Materie</Btn><Btn kind="primary" isle="plus" onClick={() => setForm("path")} disabled={!subjects.length}>Nuovo percorso</Btn></>}
     </PageHead>
     {err && <Notice kind="bad">{err}</Notice>}
@@ -52,7 +52,7 @@ export default function Percorsi() {
     {paths.length ? <div className="mini-list">{paths.map((p) => { const n = enrollments.filter((e) => e.path === p.id).length; return <button type="button" key={p.id} className="mini" onClick={() => setQuery((q) => q.set("p", p.id))}>
       <span className="mini-ic"><Icon n="book" /></span><span className="grow"><b>{p.title}</b><small>{p.level} · {p.academic_year} · {plural(p.required_subjects.length, "materia", "materie")}</small></span>
       <Tag tone="plain">{plural(n, "iscritto", "iscritti")}</Tag><Icon n="right" /></button>; })}</div>
-      : <Empty title="Nessun percorso">{center ? "Crea il primo percorso con le materie previste per il livello." : "Non ci sono percorsi visibili per il tuo profilo."}</Empty>}
+      : <Empty title="Nessun percorso" />}
     {subjects.length > 0 && <p className="fine">Materie registrate: {subjects.map((s) => s.name).join(", ")}. Si gestiscono nella pagina <button type="button" className="link-btn" onClick={() => go("materie")}>Materie</button>.</p>}
     <Forms kind={form} path={null} subjects={subjects} own={own} onClose={() => setForm(null)} onDone={done} />
   </section>;
@@ -76,18 +76,18 @@ export default function Percorsi() {
     <div className="grid2" style={{ marginTop: 18 }}>
       <Card title="Iscritti" action={center && <Btn kind="sm" icon="plus" onClick={() => setForm("enroll")} disabled={d.students.every((s) => own.enr.some((e) => e.student === s.id))}>Iscrivi</Btn>}>
         {own.enr.length ? <div className="pop-list">{own.enr.map((e) => <a key={e.id} className="pop-item" href={`#/studenti?s=${e.student}`}><Avatar name={e.student_name} k={e.student} /><div><b>{e.student_name}</b><small>Apri la scheda</small></div></a>)}</div>
-          : <Empty title="Nessuno studente iscritto">{center ? "Iscrivi gli studenti che seguono questo percorso." : ""}</Empty>}
+          : <Empty title="Nessuno studente iscritto" />}
       </Card>
       {center && <Card title="Sottogruppi" action={<><Btn kind="sm" onClick={() => setForm("member")} disabled={!own.grp.length || !own.enr.length}>Aggiungi membro</Btn><Btn kind="sm" icon="plus" onClick={() => setForm("group")}>Nuovo</Btn></>}>
         {own.grp.length ? <div className="mini-list">{own.grp.map((g) => { const ms = members.filter((m) => m.group === g.id).map((m) => d.students.find((s) => s.id === m.student)?.display_name || "Studente"); return <div key={g.id} className="mini">
           <span className="mini-ic"><Icon n="users" /></span><span className="grow"><b>{g.name}</b><small>{subj(g.subject)} · {ms.length ? ms.join(", ") : "nessun membro"}</small></span>
           <Tag tone={g.approved ? "green" : "amber"}>{g.approved ? "Approvato" : "Da approvare"}</Tag></div>; })}</div>
-          : <Empty title="Nessun sottogruppo">Un sottogruppo raccoglie alcuni iscritti per una materia. In presenza, al massimo due studenti per lezione.</Empty>}
+          : <Empty title="Nessun sottogruppo" />}
       </Card>}
     </div>
 
     {center && <section className="module" aria-labelledby="h-blk" style={{ marginTop: 18 }}>
-      <div className="m-head"><div><h2 className="m-title" id="h-blk">Programma</h2><p className="sub-line">Minuti settimanali per materia, per studente o sottogruppo.</p></div>
+      <div className="m-head"><div><h2 className="m-title" id="h-blk">Programma</h2></div>
         <div className="controls"><Btn kind="sm" icon="plus" disabled={!own.enr.length} onClick={() => setForm("block")}>Nuovo blocco</Btn></div></div>
       {own.blk.length ? <div className="list-wrap"><table className="list">
         <thead><tr><th scope="col">Materia</th><th scope="col">Per chi</th><th scope="col" className="hide-m">Periodo</th><th scope="col" style={{ textAlign: "right" }}>A settimana</th></tr></thead>
@@ -95,18 +95,18 @@ export default function Percorsi() {
           <td><b style={{ fontWeight: 500 }}>{b.subject_name}</b><small className="muted" style={{ display: "block" }}>{b.objective}</small></td>
           <td>{b.student ? <span className="who"><Avatar name={who} k={b.student} /><b>{who}</b></span> : <Tag tone="violet">{who}</Tag>}</td>
           <td className="hide-m">{period(b.period_start, b.period_end)}</td><td className="amount">{hours(b.minutes_per_week)}</td></tr>; })}</tbody></table></div>
-        : <Empty title="Programma vuoto">{own.enr.length ? "Aggiungi un blocco per ogni materia e destinatario." : "Iscrivi prima almeno uno studente."}</Empty>}
+        : <Empty title="Programma vuoto" />}
     </section>}
 
     <section className="module" aria-labelledby="h-cov" style={{ marginTop: 18 }}>
-      <div className="m-head"><div><h2 className="m-title" id="h-cov">Copertura del programma</h2><p className="sub-line">Minuti richiesti, non ore già in calendario o presenze svolte.</p></div></div>
+      <div className="m-head"><div><h2 className="m-title" id="h-cov">Copertura del programma</h2></div></div>
       {!sum ? <Skeleton rows={3} /> : sum.students.length ? <div className="cov">{sum.students.map((s) => <article key={s.student_id} className="cov-st">
         <div className="who"><Avatar name={s.student_name} k={s.student_id} /><b>{s.student_name}</b></div>
         <div className="mini-list">{s.subjects.map((x) => <div key={x.subject_name} className="mini">
           <span className="grow"><b>{x.subject_name}</b><small>{x.segments.length ? x.segments.map((g) => `${period(g.period_start, g.period_end)}: ${hours(g.required_minutes_per_week)}/sett.${g.overlap ? " (blocchi sovrapposti)" : ""}`).join(" · ") : "Nessun blocco definito"}</small>
             {x.validation_codes.length > 0 && <Tech label="Perché da verificare"><code>{x.validation_codes.join(", ")}</code></Tech>}</span>
           <Tag tone={x.covered_full_period ? "green" : "amber"}>{x.covered_full_period ? "Coperto" : "Da completare"}</Tag></div>)}</div>
-      </article>)}</div> : <Empty title="Ancora nulla da mostrare">Iscrivi gli studenti e definisci il programma di ogni materia.</Empty>}
+      </article>)}</div> : <Empty title="Ancora nulla da mostrare" />}
     </section>
     <Forms kind={form} path={path} subjects={subjects} own={own} onClose={() => setForm(null)} onDone={done} />
     <DeriveModal open={derive} path={path} blocks={own.blk.length} onClose={() => setDerive(false)} onDone={async (rc) => { setDerive(false); await refresh().catch(() => {}); toast(rc.created ? `${plural(rc.created, "nuova richiesta creata", "nuove richieste create")} (${rc.request_ids.length} in tutto). Calendario invariato.` : `Nessuna nuova richiesta: le ${rc.request_ids.length} esistenti sono già allineate.`, { action: "Vedi richieste", onAction: () => go("richieste") }); }} onStale={() => load().catch(() => {})} />
@@ -207,7 +207,7 @@ function Forms({ kind, path, subjects, own, onClose, onDone }: { kind: FormKind 
           <Field label="Priorità" error={e("prio")} hint="P0 è la più alta."><div id="pf-prio" tabIndex={-1}><Choices label="Priorità" value={v.prio} options={["P0", "P1", "P2"].map((x) => ({ v: x, label: x }))} onChange={(x) => set({ prio: x })} /></div></Field>
         </div>
         <Check checked={v.mandatory} onChange={(x) => set({ mandatory: x })}>Obbligatoria: va collocata anche quando si chiede “il più possibile”</Check>
-        <p className="fine">Due blocchi sovrapposti della stessa materia per lo stesso studente non si sommano.</p>
+        
       </>}
       {err && <Notice kind="bad">{err}</Notice>}
     </div>

@@ -10,7 +10,6 @@ import { CSSProperties, ReactNode, useEffect, useMemo, useState } from "react";
 import { get, post } from "../api/client";
 import { addDays, addMonths, dayLabel, duration, initials, monthYear, plural, rome, timeOf, todayRome } from "../format";
 import { Btn, Empty, Icon, Skeleton, Tag } from "../ui/core";
-import { Help } from "../ui/help";
 import { ErrorState, ViewState } from "../ui/states";
 import { go } from "../ui/route";
 import { useData } from "../app/data";
@@ -43,7 +42,6 @@ function Hero({ id, title, sub, help, children }: { id: string; title: string; s
   return <section className="module planner" aria-labelledby={id}>
     <div className="m-head"><div className="titlebox"><h1 className="h-display" id={id}>{title}</h1><p className="sub-line">{sub}</p></div>
       {children && <div className="controls">{children}</div>}</div>
-    <div className="page-help"><Help topic={help} /></div>
   </section>;
 }
 /** Lezioni personali in un intervallo, comprese quelle annullate. */
@@ -104,11 +102,11 @@ function TutorHome({ o }: { o: Overview }) {
     <div className="two wide-left">
       <section className="module" aria-labelledby="h-today">
         <div className="m-head"><div><h2 className="m-title" id="h-today">La tua giornata</h2><p className="sub-line">{sub}</p></div></div>
-        {!o.calendar_enabled ? <Empty title="Calendario non ancora attivo">Le lezioni compariranno qui quando il centro attiverà il calendario.</Empty>
+        {!o.calendar_enabled ? <Empty title="Calendario non ancora attivo" />
           : rows === null ? <Skeleton rows={3} />
           : todays.length ? <LessonAccordion rows={todays} join={join} extra={extra} />
           : <>
-            <Empty title="Nessuna lezione oggi">{upcoming[0] ? "Ecco la prossima in programma." : "Quando il centro ti assegna lezioni, le trovi qui."}</Empty>
+            <Empty title="Nessuna lezione oggi" />
             {upcoming[0] && <div className="next-box"><b className="next-title">{upcoming[0].subject_name}</b><LessonDetail l={upcoming[0]} join={join} extra={extra(upcoming[0])} /></div>}
           </>}
       </section>
@@ -142,7 +140,7 @@ function TutorMonth({ o }: { o: Overview }) {
         <span className="datebtn" aria-live="polite">{monthYear(ym)}</span>
         <button className="circle" aria-label="Mese successivo" onClick={() => setYm(addMonths(ym, 1))}><Icon n="right" /></button>
       </div></div>
-    {!o.calendar_enabled ? <Empty title="Calendario non ancora attivo">Il riepilogo del mese comparirà quando il centro attiverà il calendario.</Empty>
+    {!o.calendar_enabled ? <Empty title="Calendario non ancora attivo" />
       : !st ? <Skeleton rows={3} /> : <div className="month-body">
         <Donut parts={parts}>
           {rate ? <><small>Ricavato finora</small><b>{eur.format(earned || 0)}</b><span>su {eur.format(expected || 0)} previsti</span></>
@@ -251,11 +249,11 @@ function StudentHome({ o }: { o: Overview }) {
     <div className="two top">
       {me ? <div className="kid-grid big one"><KidCard c={me} self color={colors.of(me.student_id, 0)} onColor={(k) => colors.set(me.student_id, k)} join={join} now={now}
         lessons={rows === null ? null : rows.filter((l) => new Date(l.end_at).getTime() > now).map(fromMine)} /></div>
-        : <section className="module"><Empty title="Profilo non collegato">Chiedi al centro di collegare il tuo account.</Empty></section>}
+        : <section className="module"><Empty title="Profilo non collegato" /></section>}
       <section className="module" aria-labelledby="h-st-req">
         <div className="m-head"><h2 className="m-title" id="h-st-req">Cambi e assenze</h2></div>
         {o.policies.student_can_request_changes
-          ? <>{o.open_change_requests ? <p>{plural(o.open_change_requests, "richiesta in attesa del centro", "richieste in attesa del centro")}.</p> : <p className="muted">Per chiedere un cambio o segnalare un’assenza apri la lezione nel calendario.</p>}
+          ? <>{o.open_change_requests ? <p>{plural(o.open_change_requests, "richiesta in attesa del centro", "richieste in attesa del centro")}.</p> : null}
             <div className="todo-foot"><Btn kind="sm" isle="arrow" onClick={() => go("cambi")}>Le mie richieste</Btn></div></>
           : <p className="muted">Per spostare una lezione o segnalare un’assenza chiedi a un genitore o contatta il centro.</p>}
         <div className="todo" style={{ marginTop: 14 }}>

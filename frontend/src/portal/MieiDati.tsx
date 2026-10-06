@@ -5,7 +5,6 @@ import { human } from "../messages";
 import { Btn, Notice, PageHead, Skeleton, Tag } from "../ui/core";
 import { Field, SegCtl } from "../ui/controls";
 import { Modal, useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 
 /** P5 · «I miei dati»: informativa, consenso dello studente, export personale, richieste (artt. 15-21). */
 type Subject = { type: "ACCOUNT" | "STUDENT"; id: string; label: string };
@@ -55,8 +54,7 @@ export default function MieiDati() {
   }
   const minorStudent = d?.role === "STUDENT" && !d.consent?.adult_confirmed;
   return <section className="module" aria-labelledby="h-dati">
-    <PageHead id="h-dati" title="I miei dati" lead="Cosa conserva il centro, come scaricarlo e come chiedere correzioni o cancellazioni." />
-    <div className="page-help"><Help topic="dati" /></div>
+    <PageHead id="h-dati" title="I miei dati" />
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={() => { setErr(""); load(); }}>Riprova</Btn>}>{err}</Notice>}
     {!d ? <Skeleton rows={4} /> : <>
       <h2 className="m-title">Informativa</h2>
@@ -73,7 +71,7 @@ export default function MieiDati() {
             <div className="list-rows">{d.consent.reconfirmations.map((r) => <div className="list-row" key={r.link_id}>
               <div><b>{r.guardian}</b>{r.due_at && <small>entro il {day(r.due_at)}; poi la delega scade da sola</small>}</div>
               <div className="controls"><Btn kind="sm" disabled={busy} onClick={() => reconfirm(r.link_id, true)}>Confermo</Btn><Btn kind="sm" disabled={busy} onClick={() => setDecline(r.link_id)}>Non confermo</Btn></div></div>)}</div></div>}
-        </> : <p className="muted">Finché sei minorenne il tuo accesso è in sola visione: lezioni e link delle lezioni online. Al compimento dei 18 anni il centro ti chiederà se i genitori possono continuare a vedere le tue lezioni.</p>}
+        </> : null}
       </div>}
 
       <h2 className="m-title" style={{ marginTop: 18 }}>Scarica o chiedi</h2>

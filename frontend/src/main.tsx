@@ -12,8 +12,6 @@ import { initPrefs } from "./ui/prefs";
 import { Btn, Notice, Skeleton, Sprite } from "./ui/core";
 import { ToastHost, useToast } from "./ui/layers";
 import { classify, ErrorState } from "./ui/states";
-import { Help } from "./ui/help";
-import { HELP } from "./help";
 import { useRoute } from "./ui/route";
 import { DataProvider, Me, useData } from "./app/data";
 import Shell, { sectionsFor } from "./app/Shell";
@@ -59,7 +57,6 @@ const SCREENS: Record<string, () => ReactNode> = {
 };
 
 /** Aiuto in linea per le schermate del centro (GAP-G09); i portali lo mostrano in testata. */
-const CENTER_HELP: Record<string, keyof typeof HELP> = { operativita: "operativita", panoramica: "centro", statistiche: "centro", agenda: "agenda", disponibilita: "disponibilita", proposte: "proposte", pianificazione: "proposte", laboratorio: "proposte", studenti: "studenti", anagrafica: "anagrafica", tutor: "tutori", utenti: "utenti", configurazione: "configurazione", richieste: "centro", percorsi: "centro", materie: "centro", decisioni: "centro" };
 function Screens() {
   const d = useData(), r = useRoute(); const [err, setErr] = useState<unknown>(null);
   const load = useCallback(() => { setErr(null); d.refresh().catch((e) => setErr(e)); }, [d.refresh]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -71,7 +68,6 @@ function Screens() {
   return <Shell>
     {err !== null && <div style={{ marginBottom: 14 }}><ErrorState error={err} onRetry={load} title={classify(err) === "error" ? "Non riesco a caricare i dati" : undefined} /></div>}
     <ScreenBoundary key={key}>{key === "panoramica" && !d.center ? <PortalHome /> : SCREENS[key]()}</ScreenBoundary>
-    {d.center && CENTER_HELP[key] && <div className="page-help" style={{ marginTop: 14 }}><Help topic={CENTER_HELP[key]} /></div>}
   </Shell>;
 }
 

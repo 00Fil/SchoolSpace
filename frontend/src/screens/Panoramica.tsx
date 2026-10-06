@@ -107,9 +107,9 @@ function TutorsDay({ cap }: { cap: Cap | null }) {
         {day !== today && <button className="pill-btn sm" onClick={() => setDay(today)}>Oggi</button>}
         <button className="pill-btn sm island" onClick={() => go("agenda", day === today ? {} : { d: day })}>Gestisci nell’agenda<span className="isle"><Icon n="arrow" /></span></button>
       </div></div>
-    {cap && !cap.enabled ? <Empty title="Calendario non disponibile">Il calendario non è attivo al momento.</Empty>
+    {cap && !cap.enabled ? <Empty title="Calendario non disponibile" />
       : rows === null ? <Skeleton rows={3} />
-      : !tutors.length ? <Empty title="Nessun tutor">Aggiungi i tutor in Persone › Tutor.</Empty>
+      : !tutors.length ? <Empty title="Nessun tutor" />
       : <div className="tday-scroll" ref={box}><div className="tday" role="table" aria-label={`Lezioni dei tutor, ${dayLabel(day)}`}>
         <div className="tday-row tday-hours" role="row" aria-hidden="true"><span className="tday-name" /><div className="tday-line">{hours.map((h) => <span key={h} style={{ left: pos(h) + "%" }}>{hm(h)}</span>)}</div></div>
         {shown.map((t) => { const ls = (rows || []).filter((l) => l.tutor === t.id); return <div className="tday-row" role="row" key={t.id}>
@@ -144,6 +144,6 @@ function MyDay({ cap, tutor }: { cap: Cap | null; tutor: string }) {
     <div className="m-head"><div><h2 className="m-title" id="h-myday">Le tue lezioni di oggi</h2><p className="sub-line">Come tutor</p></div></div>
     {cap && !cap.enabled ? <Empty title="Calendario non disponibile" /> : rows === null ? <Skeleton rows={2} />
       : rows.length ? <LessonAccordion rows={rows.map((l) => fromCenter(l, places, true))} join={join} extra={(l) => <Btn kind="sm ghost" onClick={() => go("agenda", { l: l.id })}>Apri nell’agenda</Btn>} />
-      : <Empty title="Oggi non insegni">Le tue lezioni come tutor compariranno qui.</Empty>}
+      : <Empty title="Oggi non insegni" />}
   </section>;
 }

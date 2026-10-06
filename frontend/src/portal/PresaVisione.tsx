@@ -5,7 +5,6 @@ import { human, MODE } from "../messages";
 import { Btn, Empty, Notice, PageHead, Skeleton, Tag } from "../ui/core";
 import { Check, Field, SegCtl, TextArea } from "../ui/controls";
 import { Modal, useToast } from "../ui/layers";
-import { Help } from "../ui/help";
 
 export type AckLesson = { id: string; start_at: string; end_at: string; subject: string; mode: string };
 export type Ack = {
@@ -44,10 +43,9 @@ export default function PresaVisione() {
   const open = (rows || []).filter((a) => a.state === "PENDING");
   return <>
     <FamilyConfirmations />
-    <PageHead id="h-ack" title="Orari da confermare" lead="Gli orari pubblicati dal centro: conferma di averli visti oppure proponi delle modifiche. Decide il centro, che può sentire anche le famiglie." />
-    <div className="page-help"><Help topic="orari" /></div>
+    <PageHead id="h-ack" title="Orari da confermare" />
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={load}>Riprova</Btn>}>{err}</Notice>}
-    {!rows ? <Skeleton rows={3} /> : !rows.length ? <Empty title="Nessun orario da confermare">Quando il centro pubblica lezioni con te, le trovi qui.</Empty> : <>
+    {!rows ? <Skeleton rows={3} /> : !rows.length ? <Empty title="Nessun orario da confermare" /> : <>
       {open.length > 0 && <Notice kind="warn">{plural(open.length, "pubblicazione attende", "pubblicazioni attendono")} la tua presa visione.</Notice>}
       {rows.map((a) => <section key={a.id} className="module" aria-labelledby={`ack-${a.id}`} style={{ marginTop: 14 }}>
         <div className="m-head"><div><h2 className="m-title" id={`ack-${a.id}`}>Pubblicazione del {dayLabel(rome(a.published_at).date).toLowerCase()}</h2>
@@ -81,7 +79,7 @@ function CounterModal({ ack, onClose, onDone }: { ack: Ack | null; onClose: () =
   return <Modal open={!!ack} onClose={onClose} labelledBy="ct-title"><form onSubmit={submit} noValidate>
     <div className="modal-body">
       <h2 id="ct-title">Proponi modifiche agli orari</h2>
-      <p className="lead">Scegli le lezioni da cambiare e scrivi cosa proponi. Le lezioni restano invariate finché il centro non decide.</p>
+      
       {tried && !chosen.length && <Notice kind="bad">Scegli almeno una lezione.</Notice>}
       {ack.lessons.map((l) => { const on = l.id in pick; return <div key={l.id} className="fld">
         <Check checked={on} onChange={(v) => setPick((p) => { const n = { ...p }; if (v) n[l.id] = ""; else delete n[l.id]; return n; })}>{lessonLine(l)}</Check>
@@ -107,7 +105,7 @@ export function AckQueue() {
     <div className="m-head"><div><h2 className="m-title" id="h-acks">Prese visione dei tutor</h2>
       <p className="sub-line">{rows ? `${plural(counters.length, "controproposta da decidere", "controproposte da decidere")} · ${plural(pending.length, "tutor deve ancora confermare", "tutor devono ancora confermare")}` : "Carico…"}</p></div></div>
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={() => { setErr(""); load(); }}>Riprova</Btn>}>{err}</Notice>}
-    {!rows ? <Skeleton rows={2} /> : !rows.length ? <Empty title="Nessuna pubblicazione">Dopo la pubblicazione ogni tutor coinvolto riceve gli orari da confermare.</Empty>
+    {!rows ? <Skeleton rows={2} /> : !rows.length ? <Empty title="Nessuna pubblicazione" />
       : <div className="mini-list">{[...counters, ...pending].slice(0, 12).map((a) => <button key={a.id} type="button" className="mini" onClick={() => a.state === "COUNTER" && setCur(a)} aria-disabled={a.state !== "COUNTER"}>
         <span className="grow"><b>{a.tutor_name}</b><small>{plural(a.lessons.length, "lezione", "lezioni")}{a.state === "COUNTER" ? ` · ${plural(a.items.length, "modifica proposta", "modifiche proposte")}` : ""}</small></span>
         <Tag tone={ACK_STATE[a.state][1]}>{ACK_STATE[a.state][0]}</Tag></button>)}
@@ -137,7 +135,7 @@ function DecideModal({ ack, onClose, onDone }: { ack: Ack | null; onClose: () =>
       {ack.note && <p className="lead">{ack.note}</p>}
       <LessonList ack={{ ...ack, lessons: ack.lessons.filter((l) => ack.items.some((i) => i.lesson_id === l.id)) }} highlight />
       <SegCtl<Decision> label="Decisione" value={d} onChange={(v) => { setD(v); setReason(PREFILL[v]); }} options={[["ASK_GUARDIANS", "Chiedi alle famiglie"], ["ACCEPTED", "Accogli"], ["REJECTED", "Respingi"]]} />
-      <p className="muted" style={{ marginTop: 8 }}>{d === "REJECTED" ? "Il tutor dovrà confermare di nuovo gli orari pubblicati." : "Ogni modifica diventa una richiesta nella coda Richieste: lo spostamento vero si fa da lì, dopo le conferme."}</p>
+      
       {err && <Notice kind="bad">{err}</Notice>}
     </div>
     <div className="modal-foot"><button type="button" className="pill-btn ghost" onClick={onClose}>Annulla</button>

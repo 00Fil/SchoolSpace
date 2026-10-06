@@ -178,7 +178,7 @@ export function WeekPlanner({ label, blocks, bands = [], from, to, step = 15, da
         })}
       </div>
     </div>
-    {editable && onCreate && <p className="wp-help"><Icon n="move" size={14} />Clicca o trascina su uno spazio vuoto per aggiungere · trascina un blocco per spostarlo · tira i bordi per allungarlo</p>}
+    
     {!blocks.length && emptyText && <p className="wp-empty">{emptyText}</p>}
   </div>;
 }

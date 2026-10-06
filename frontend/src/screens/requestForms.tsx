@@ -233,7 +233,7 @@ export function RequestModal({ open, edit, student, prefill, onClose, onSaved }:
             <Check checked={f.timed} onChange={(v) => set("timed", v)}>{center ? "Piazza la lezione a un orario preciso" : "Indica anche l’orario"}</Check>
             {f.timed ? <Field label="Ora di inizio" id="rq-time" hint={center ? "La lezione viene collocata esattamente qui, se tutor e spazio sono liberi." : "Il centro prova a rispettarlo; se non è possibile ti propone un altro orario."}>
               <select id="rq-time" className="inp" value={f.time} onChange={(e) => set("time", e.target.value)}>{TIMES.map((t) => <option key={t} value={t}>{t}</option>)}</select></Field>
-              : <p className="muted rq-tip">L’orario viene scelto tra le fasce libere di studente e tutor in quel giorno.</p>}
+              : null}
           </> : <Field label="Settimana" hint={`Da ${dayLabel(f.week).toLowerCase()} a ${dayLabel(addDays(f.week, 6)).toLowerCase()}: giorno e ora si trovano tra le fasce libere.`}>
             <DateField label="Settimana" value={f.week} min={edit ? undefined : mondayOf(today)} onChange={(v) => set("week", mondayOf(v))} /></Field>}
         </>}

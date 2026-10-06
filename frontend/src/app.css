@@ -1239,3 +1239,22 @@ button.chip{cursor:pointer;height:30px}
 @media (prefers-reduced-motion:reduce){
   .vroom,.vroom *{animation:none!important;transition:none!important}
 }
+
+/* v0.10 · Agenda: scorrendo in orizzontale, lezioni e orari si sfocano e poi spariscono del
+   tutto dietro la colonna dei tutor (niente pezzi di lezione che spuntano tra le righe).
+   --ag-edge = bordo destro della colonna (px dal contenitore), --ag-k = 0..1 in base allo
+   scorrimento: a inizio riga l'effetto è spento e non copre la prima colonna oraria. */
+.ag-wrap{position:relative;--ag-edge:0px;--ag-k:0}
+.ag-wrap.is-scrolled .ag-scroller{
+  --ag-ramp:linear-gradient(to right,transparent calc(var(--ag-sc-edge) + 10px * var(--ag-k)),#000 calc(var(--ag-sc-edge) + 10px * var(--ag-k) + 64px * var(--ag-k)));
+  -webkit-mask-image:var(--ag-ramp),var(--ag-col);mask-image:var(--ag-ramp),var(--ag-col);
+  -webkit-mask-repeat:no-repeat,repeat-y;mask-repeat:no-repeat,repeat-y;
+  -webkit-mask-position:0 0,var(--ag-col-pos);mask-position:0 0,var(--ag-col-pos);
+  -webkit-mask-size:100% 100%,var(--ag-col-size);mask-size:100% 100%,var(--ag-col-size)}
+.ag-blur{position:absolute;top:0;bottom:14px;left:var(--ag-edge);width:76px;pointer-events:none;z-index:5;opacity:0;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  -webkit-mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);
+  mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);
+  transition:opacity var(--d2) var(--out)}
+.ag-wrap.is-scrolled .ag-blur{opacity:var(--ag-k)}
+@media (prefers-reduced-transparency:reduce){.ag-blur{display:none}}

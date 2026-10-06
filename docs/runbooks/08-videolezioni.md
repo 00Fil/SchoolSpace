@@ -56,6 +56,21 @@ Verifica: `https://meet.<dominio>/static/lumen/branding.json` deve mostrare un J
 (se dà 404 il tema non è nell'immagine: lo stack non è stato costruito dal repository).
 Dopo il deploy ricaricare la pagina senza cache (il browser conserva il vecchio config.js).
 
+## Pagina di benvenuto (meet.<dominio> senza stanza)
+Chi apre `https://meet.<dominio>/` senza una stanza vede una pagina del centro, non Jitsi:
+sfondo a onde blu su nero (WebGL, sfumato ai bordi, reagisce al cursore) con velo scuro per
+la leggibilità, una frase centrale e due pulsanti. Variabili dello stack Jitsi:
+
+```
+CENTER_NAME=Denuvo Studio
+CENTER_SITE_URL=https://<sito del centro>      # «Torna al sito del centro»
+CENTER_APP_URL=https://space.denuvo.studio     # «Accedi al gestionale» (facoltativo)
+```
+Senza `CENTER_SITE_URL` il pulsante principale porta al gestionale. File:
+`infra/jitsi/static/welcome.{html,css,js}`; il reindirizzamento è in `plugin.head.html`,
+la configurazione è scritta all'avvio da `05-lumen-theme.sh` (solo URL http(s)).
+Senza WebGL resta un gradiente statico; con «riduci movimento» lo sfondo è fermo.
+
 ## Tema grafico (Lumen)
 La stanza usa il tema scuro Lumen del gestionale, applicato nell'immagine `web` costruita da
 `infra/jitsi/web.Dockerfile` (nessuna modifica al codice di Jitsi):

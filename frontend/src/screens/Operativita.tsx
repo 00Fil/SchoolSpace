@@ -50,7 +50,7 @@ function Richieste() {
   if (!rows) return <Skeleton rows={3} />;
   return <>
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={load}>Riprova</Btn>}>{err}</Notice>}
-    {!rows.length && !err ? <Empty title="Nessuna richiesta in attesa">Le richieste di famiglie e tutor compaiono qui.</Empty> :
+    {!rows.length && !err ? <Empty title="Nessuna richiesta in attesa" /> :
       <div className="list-wrap"><table className="list"><thead><tr><th scope="col">Richiesta</th><th scope="col">Lezione</th><th scope="col" className="hide-m">Da</th><th scope="col">Stato</th><th scope="col"><span className="sr">Azioni</span></th></tr></thead>
         <tbody>{rows.map((r) => <tr key={r.id}>
           <td><b style={{ fontWeight: 500 }}>{KIND[r.kind] || r.kind}</b><div className="muted">{r.reason}{r.proposal?.start_at ? ` · nuovo orario ${when(r.proposal.start_at)}` : ""}</div></td>
@@ -104,7 +104,7 @@ function Recuperi() {
   }
   return <>
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={load}>Riprova</Btn>}>{err}</Notice>}
-    <p className="muted">Regola del centro: il recupero spetta se l’assenza è avvisata almeno 24 ore prima; il centro può concederlo anche dopo. Va fatto entro la fine dell’anno scolastico.</p>
+    
     {!rows.length && !err ? <Empty title="Nessun recupero da fissare" /> :
       <div className="list-wrap"><table className="list"><thead><tr><th scope="col">Per chi</th><th scope="col">Lezione persa</th><th scope="col" className="hide-m">Motivo</th><th scope="col">Entro</th><th scope="col"><span className="sr">Azioni</span></th></tr></thead>
         <tbody>{rows.map((o) => { const soon = o.due_by && o.due_by <= new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10); return <tr key={o.id}>
@@ -127,7 +127,7 @@ function Recuperi() {
       </div> : null}
       {!manual && <>
         <span className="lbl sp-lbl">Orari proposti dal motore{opts?.date_from ? ` · dal ${day(opts.date_from)} al ${day(opts.date_to || opts.date_from)}` : ""}</span>
-        <p className="fine">Liberi per il tutor e per {fix && fix.participants.length > 1 ? "tutti gli studenti" : "lo studente"}: aperture, chiusure, impegni, altre lezioni e aule. Prima gli orari vicini a quello della lezione persa, con lo stesso tutor.</p>
+        
         <SlotPicker slots={opts ? opts.options : null} value={pick ? slotKey(pick) : ""} onPick={setPick} empty={opts?.message || "Nessun orario libero per tutti nel periodo: prova l’altra modalità, un altro tutor o un periodo successivo."} />
       </>}
       <p className="fine"><button type="button" className="linklike" onClick={() => setManual(!manual)}>{manual ? "Torna agli orari proposti" : "Scegli un orario a mano"}</button></p>
@@ -150,7 +150,7 @@ function Conflitti() {
   return <>
     <div className="controls" style={{ marginBottom: 10 }}><Btn kind="sm" disabled={busy} onClick={async () => { setBusy(true); try { const r = await post("/conflict-cases/detect/", {}); toast(r?.opened ? plural(r.opened, "conflitto trovato", "conflitti trovati") : "Controllo completato"); await load(); } catch (e) { toast(human(e).text); } finally { setBusy(false); } }}>{busy ? "Controllo…" : "Cerca conflitti"}</Btn></div>
     {err && <Notice kind="bad" action={<Btn kind="sm" onClick={load}>Riprova</Btn>}>{err}</Notice>}
-    {!rows.length && !err ? <Empty title="Nessun conflitto aperto">Assenze, chiusure e cambi di disponibilità che toccano lezioni già pubblicate compaiono qui.</Empty> :
+    {!rows.length && !err ? <Empty title="Nessun conflitto aperto" /> :
       <div className="list-wrap"><table className="list"><thead><tr><th scope="col">Conflitto</th><th scope="col">Settimana</th><th scope="col"><span className="sr">Azioni</span></th></tr></thead>
         <tbody>{rows.map((c) => <tr key={c.id}><td><b style={{ fontWeight: 500 }}>{CASE[c.kind] || c.kind}</b>{c.kind === "TUTOR_ABSENCE" && <div className="muted">Cerca un sostituto abilitato dall’Agenda; se non c’è, annulla con recupero.</div>}</td>
           <td>{day(c.week_start)}</td>
@@ -159,7 +159,6 @@ function Conflitti() {
       onConfirm={async (reason) => { const c = act!; await post(`/conflict-cases/${c.id}/resolve/`, { expected_version: c.version, resolution: res, reason, ...(res === "CANCEL" && recover ? { recovery_cause: cause(c), grant_late_notice: late } : {}) }).catch(async (e) => { await load(); if (human(e).code === "LATE_NOTICE") throw new Error("Avviso arrivato con meno di 24 ore: spunta «Concedi comunque il recupero» per concederlo."); throw e; }); toast("Conflitto risolto"); await load(); }}>
       <SegCtl label="Decisione" value={res} options={[["CANCEL", "Annulla la lezione"], ["CONFIRM", "Conferma com’è"]]} onChange={setRes} />
       {res === "CANCEL" && <div style={{ margin: "10px 0" }}><Check checked={recover} onChange={setRecover}>Crea il recupero</Check>{recover && act?.kind === "STUDENT_ABSENCE" && <Check checked={late} onChange={setLate}>Concedi comunque il recupero se l’avviso è arrivato con meno di 24 ore</Check>}</div>}
-      {res === "CONFIRM" && <p className="muted">La lezione resta com’è solo se il controllo sui dati di oggi la considera ancora valida.</p>}
     </ReasonModal>
   </>;
 }
@@ -174,7 +173,7 @@ function Invii() {
   const portal = st?.counts?.IN_APP || {};
   return <>
     {err && <Notice kind="bad">{err}</Notice>}
-    <p className="muted">Famiglie e tutor ricevono gli avvisi nel portale. L’email si usa solo per inviti e messaggi di sicurezza.</p>
+    
     {st && <div className="stats">
       <div className="stat"><small>Avvisi nel portale</small><b>{Object.values(portal).reduce((a, b) => a + b, 0)}</b></div>
       <div className="stat"><small>Falliti</small><b>{st.dead_letter}</b></div>
@@ -195,7 +194,7 @@ const TABS: [string, string][] = [["richieste", "Richieste"], ["recuperi", "Recu
 export default function Operativita() {
   const r = useRoute(); const tab = TABS.some(([k]) => k === r.q.get("tab")) ? r.q.get("tab")! : "richieste";
   return <section className="module" aria-labelledby="h-op">
-    <PageHead id="h-op" title="Da gestire" lead="Le decisioni di ogni giorno: richieste di famiglie e tutor, recuperi da fissare, conflitti sulle lezioni pubblicate e invii da controllare." />
+    <PageHead id="h-op" title="Da gestire" />
     <div className="seg-scroll"><SegCtl label="Coda" value={tab} options={TABS} onChange={(v) => setQuery((q) => q.set("tab", v))} /></div>
     <div style={{ marginTop: 14 }}>{tab === "richieste" ? <Richieste /> : tab === "recuperi" ? <Recuperi /> : tab === "conflitti" ? <Conflitti /> : <Invii />}</div>
   </section>;

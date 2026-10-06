@@ -10,7 +10,6 @@ import { addDays, dayShort, mondayOf, rangeOf, rome, todayRome } from "../format
 import { LOCATION, MODE } from "../messages";
 import { Avatar, Btn, Icon, PageHead, Tag } from "../ui/core";
 import { Check, SegCtl } from "../ui/controls";
-import { Help } from "../ui/help";
 import { go, setQuery, useRoute } from "../ui/route";
 import { ErrorState, ViewState } from "../ui/states";
 import { Rule, useData } from "../app/data";
@@ -33,8 +32,7 @@ export default function Profilo() {
   const guardian = d.me.roles.includes("GUARDIAN");
   const title = guardian ? "Figli" : "Disponibilità e assenze";
   return <section className="module planner" aria-labelledby="h-prof">
-    <PageHead id="h-prof" title={title} lead={guardian ? "Disponibilità, eccezioni e permessi per ogni studente collegato a te." : "Le tue fasce settimanali, la disponibilità effettiva e le eccezioni registrate dal centro."} />
-    <div className="page-help"><Help topic={cur?.kind === "tutor" ? "tutor" : "figlio"} /></div>
+    <PageHead id="h-prof" title={title} />
     {ov.error ? <ErrorState error={ov.error} onRetry={ov.reload} />
       : !o ? <ViewState kind="loading" />
       : !subjects.length ? <ViewState kind="revoked" title="Nessuno studente visibile">Non ci sono deleghe attive. Se il centro ha revocato una delega, i dati non sono più visibili.</ViewState>
@@ -78,7 +76,7 @@ function TypicalWeek({ s, rules }: { s: Subject; rules: Rule[] }) {
     ...rules.filter((x) => x.status !== "REVOKED").map((x): PlanBlock => ({ id: "r" + x.id, weekday: x.weekday, start: toMin(x.start_time), end: toMin(x.end_time), label: x.status === "DRAFT" ? "Fascia in bozza" : "Disponibile", sub: MODE[x.mode || ""], tone: x.status === "DRAFT" ? "amber" : "green", draft: x.status === "DRAFT", locked: true })),
   ];
   return <div className="card" aria-labelledby="h-week">
-    <div className="oc-head"><span className="oc-ic violet"><Icon n="cal" /></span><div><h2 id="h-week">Settimana tipo</h2><p className="muted">Gli impegni che si ripetono ogni settimana: fuori da questi, quando il centro è aperto, si può fare lezione.</p></div>
+    <div className="oc-head"><span className="oc-ic violet"><Icon n="cal" /></span><div><h2 id="h-week">Settimana tipo</h2></div>
       {s.canManage && !s.readOnly && <Btn kind="sm" isle="right" onClick={() => go("impegni", { chi: `${s.kind}:${s.id}` })}>Modifica impegni</Btn>}</div>
     {err ? <ErrorState error={err} onRetry={() => setN((k) => k + 1)} /> : !items ? <ViewState kind="loading" compact /> : <>
       <WeekPlanner label={`Settimana tipo di ${s.name}`} blocks={blocks} bands={hours} emptyText="Nessun impegno settimanale: libero quando il centro è aperto." />

@@ -117,7 +117,7 @@ export function DraftModal({ g, onClose, onChanged, toast }: { g: Ghost | null; 
     <div className="kind" style={{ marginBottom: 8 }}><Tag tone="amber">{x.kind === "review" ? "In verifica" : "In bozza"}</Tag>{c && <Tag tone="plain">{OP_LABEL[c.op]}</Tag>}</div>
     <h2 id="dm-title">{x.subject}</h2>
     <p className="lead">{x.who} · {dayLabel(rome(x.start_at).date)}, {rangeOf(x.start_at, x.end_at)}</p>
-    {c ? <p className="muted">{c.summary}</p> : x.kind === "review" ? <p className="muted">Lezione calcolata per una richiesta ancora da verificare: occupa già l’orario, ma entra nel calendario del mese solo dopo «Conferma e completa».</p> : <p className="muted">Lezione della bozza mensile del pianificatore: si rivede e si pubblica in Pianificazione.</p>}
+    {c ? <p className="muted">{c.summary}</p> : x.kind === "review" ? null : <p className="muted">Lezione della bozza mensile del pianificatore: si rivede e si pubblica in Pianificazione.</p>}
     <Notice kind="info">Tutor e famiglie vedono ancora il calendario pubblicato: {x.kind === "review" ? "questa lezione non è ancora visibile." : "la modifica arriva loro quando la pubblichi."}</Notice>
   </div><div className="modal-foot">
     {c ? <><Btn kind="ghost" disabled={!!busy} onClick={() => act("d", () => discardOne(c.id), "Rettifica scartata: resta il calendario pubblicato")}>Scarta</Btn><span className="grow" />
@@ -136,7 +136,7 @@ export function DraftNote({ c, onChanged, toast }: { c: Correction; onChanged: (
   }
   return <div className="pend-box draft-box" role="status">
     <div className="pend-head"><span className="oc-ic amber"><Icon n="clock" /></span><div><b>Rettifica in bozza</b><small>{c.summary}</small></div></div>
-    <p className="fine">Tutor e famiglie vedono ancora l’orario pubblicato finché non pubblichi la rettifica.</p>
+    
     <div className="toolbar"><Btn kind="ghost" disabled={!!busy} onClick={() => act("d", () => discardOne(c.id), "Rettifica scartata")}>Scarta</Btn>
       <Btn kind="primary" isle="send" disabled={!!busy} onClick={() => act("p", async () => (await publishOne(c.id)).month, "Rettifica pubblicata: tutor e famiglie ricevono l’avviso")}>{busy === "p" ? "Pubblico…" : "Pubblica subito"}</Btn></div>
   </div>;

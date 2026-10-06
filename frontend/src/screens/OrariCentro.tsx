@@ -24,7 +24,7 @@ export function useSetup() {
 export default function OrariCentro() {
   const st = useSetup();
   return <section className="module planner" aria-labelledby="h-oc">
-    <PageHead id="h-oc" title="Orari e chiusure" lead="Il pianificatore colloca le lezioni solo quando il centro è aperto: questi orari e le chiusure non vengono mai superati." />
+    <PageHead id="h-oc" title="Orari e chiusure" />
     {st.error ? <ErrorState error={st.error} onRetry={st.reload} /> : !st.data ? <Skeleton /> : <div className="oc-grid">
       <Apertura setup={st.data} onSaved={st.set} />
       <Chiusure setup={st.data} reload={st.reload} />
@@ -46,7 +46,7 @@ function Apertura({ setup, onSaved }: { setup: Setup; onSaved: (s: Setup) => voi
     catch (x) { setErr(human(x).text); } finally { setBusy(false); }
   }
   return <div className="card oc-card">
-    <div className="oc-head"><span className="oc-ic green"><Icon n="clock" /></span><div><h2>Orari di apertura</h2><p className="muted">Trascina sul calendario le fasce in cui il centro è aperto; sposta o allunga una fascia trascinandola. Valgono ogni settimana, per tutte le lezioni.</p></div></div>
+    <div className="oc-head"><span className="oc-ic green"><Icon n="clock" /></span><div><h2>Orari di apertura</h2></div></div>
     <div className="oc-days" aria-label="Riepilogo orari">
       {days.map((d) => <div key={d.w} className={"oc-day" + (d.list.length ? "" : " off")}><b>{d.w.slice(0, 3)}</b><span>{d.list.length ? d.list.map((s) => `${fmt(s.start)}–${fmt(s.end)}`).join(", ") : "Chiuso"}</span></div>)}
     </div>
@@ -70,13 +70,13 @@ function Chiusure({ setup, reload }: { setup: Setup; reload: () => void }) {
     try { await api(`/planner/closures/${del.id}`, { method: "DELETE" }); toast("Chiusura eliminata"); setDel(null); reload(); } catch (x) { setErr(human(x).text); }
   }
   return <div className="card oc-card">
-    <div className="oc-head"><span className="oc-ic red"><Icon n="cal" /></span><div><h2>Ferie e chiusure</h2><p className="muted">Nei giorni chiusi non si programma nulla. Le pause dell’anno scolastico compaiono qui da sole.</p></div>
+    <div className="oc-head"><span className="oc-ic red"><Icon n="cal" /></span><div><h2>Ferie e chiusure</h2></div>
       <Btn kind="primary" isle="plus" onClick={() => setOpen(true)}>Aggiungi</Btn></div>
     {rows.length ? <ul className="oc-list">{rows.map((c) => <li key={c.id}>
       <div className="oc-date"><b>{+c.start_date.slice(8)}</b><small>{dateLong(c.start_date).split(" ")[1]?.slice(0, 3)}</small></div>
       <div className="oc-what"><b>{c.reason}</b><small>{c.start_date === c.end_date ? dateLong(c.start_date) : `${dateLong(c.start_date)} – ${dateLong(c.end_date)}`}{c.all_day ? ", tutto il giorno" : `, ${c.start_time}–${c.end_time}`}</small></div>
       {c.source === "SCHOOL_YEAR" ? <Tag tone="blue">Anno scolastico</Tag> : <button type="button" className="pill-btn sm ghost" onClick={() => setDel(c)} aria-label={`Elimina ${c.reason}`}><Icon n="x" />Elimina</button>}
-    </li>)}</ul> : <Empty title="Nessuna chiusura in programma">Aggiungi ferie, ponti o chiusure straordinarie.</Empty>}
+    </li>)}</ul> : <Empty title="Nessuna chiusura in programma" />}
     {past > 0 && <p className="fine">{past} chiusure passate non mostrate.</p>}
     {err && <Notice kind="bad">{err}</Notice>}
     {open && <ClosureForm onClose={() => setOpen(false)} onDone={() => { setOpen(false); reload(); toast("Chiusura aggiunta: il pianificatore la rispetterà"); }} />}

@@ -69,7 +69,7 @@ export function NewFamily({ onClose, onDone, onOpen }: { onClose: () => void; on
       {err && <Notice kind="bad">{err}</Notice>}
 
       {step === 1 && <form onSubmit={next}>
-        <p className="fm-lead">Inizia da chi seguirà i figli: riceverà l’invito e potrà entrare nel portale.</p>
+        
         <GuardianFields v={g} set={setGp} />
         <div className="modal-foot"><Btn kind="ghost" onClick={onClose}>Annulla</Btn><Btn type="submit" kind="primary" isle="arrow">Continua</Btn></div>
       </form>}
@@ -77,7 +77,7 @@ export function NewFamily({ onClose, onDone, onOpen }: { onClose: () => void; on
       {step === 2 && <form onSubmit={create}>
         <div className="fm-who-sum"><Avatar name={g.name} k={g.email} /><span><b>{g.name}</b><small>{g.email} · {RELS.find((r) => r[0] === g.relationship)?.[1]}</small></span><button type="button" className="link-btn" onClick={() => setStep(1)}>Modifica</button></div>
         <Field label="Nome della famiglia" id="nf-ref" hint="Come la trovi nell’elenco. Deve essere unico."><Input id="nf-ref" required maxLength={80} value={ref} onChange={(e) => setRef(e.target.value)} /></Field>
-        <div className="fm-kids"><span className="lbl">Figli <span className="muted">(puoi aggiungerli anche dopo)</span></span>
+        <div className="fm-kids"><span className="lbl">Figli</span>
           {kids.map((k, i) => <div key={i} className="fm-kid">
             <Input aria-label={`Nome del figlio ${i + 1}`} placeholder={surname ? `Nome e cognome (es. Luca ${surname})` : "Nome e cognome"} maxLength={120} value={k.display_name} onChange={(e) => setKids((x) => x.map((y, j) => (j === i ? { ...y, display_name: e.target.value } : y)))} />
             <Input aria-label={`Classe del figlio ${i + 1}`} placeholder="Classe (es. 2ª media)" maxLength={60} value={k.level} onChange={(e) => setKids((x) => x.map((y, j) => (j === i ? { ...y, level: e.target.value } : y)))} />
@@ -116,7 +116,7 @@ export function GuardianModal({ family, guardian, onClose, onDone }: { family: F
   return <Modal open onClose={onClose} labelledBy="gm-h" width={600}>
     <form className="modal-body" onSubmit={submit}>
       <h2 id="gm-h">{guardian ? `Modifica ${guardianName(guardian)}` : "Aggiungi genitore o tutore"}</h2>
-      <p className="fm-lead">{guardian ? "Le modifiche ai permessi valgono subito per tutti i figli della famiglia." : `Avrà accesso a tutti i figli di ${family.reference}, anche a quelli aggiunti dopo.`}</p>
+      
       {err && <Notice kind="bad">{err}</Notice>}
       <GuardianFields v={v} set={(p) => setV((x) => ({ ...x, ...p }))} edit={!!guardian} />
       <div className="modal-foot"><Btn kind="ghost" onClick={onClose}>Annulla</Btn><Btn type="submit" kind="primary" disabled={busy}>{guardian ? "Salva" : v.verified ? "Aggiungi e invita" : "Aggiungi"}</Btn></div>
@@ -149,7 +149,6 @@ export function ChildModal({ family, child, onClose, onDone }: { family: Family;
         <Field label="Classe" id="c-l" optional hint="Es. «2ª media»."><Input id="c-l" maxLength={60} value={v.level} onChange={set("level")} /></Field>
         <Field label="Data di nascita" id="c-b" optional hint="Per il passaggio alla maggiore età."><Input id="c-b" type="date" value={v.birth_date} onChange={set("birth_date")} /></Field>
       </div>
-      {!child && <p className="fm-lead">{active.length ? `${active.map(guardianName).join(" e ")} ${active.length === 1 ? "lo vedrà" : "lo vedranno"} subito nel portale.` : "Lo vedranno i genitori della famiglia appena attivano l’accesso."}</p>}
       <div className="modal-foot"><Btn kind="ghost" onClick={onClose}>Annulla</Btn><Btn type="submit" kind="primary" disabled={busy}>{child ? "Salva" : "Aggiungi"}</Btn></div>
     </form>
   </Modal>;
@@ -211,7 +210,7 @@ export function ImportModal({ onClose, onDone }: { onClose: () => void; onDone: 
   return <Modal open onClose={onClose} labelledBy="imp-h" width={620}>
     <form className="modal-body" onSubmit={submit}>
       <h2 id="imp-h">Importa famiglie da CSV</h2>
-      <p className="fm-lead">Scarica il <a href="/api/v1/privacy/imports/template/v1">modello CSV</a>, compilalo e incollalo qui. Prima vedi l’anteprima degli errori: nulla si salva finché non confermi.</p>
+      <p className="fm-lead"><a href="/api/v1/privacy/imports/template/v1">Modello CSV</a></p>
       {err && <Notice kind="bad">{err}</Notice>}
       <Field label="Contenuto CSV" id="imp-c"><TextArea id="imp-c" required rows={8} value={content} onChange={(e) => { setContent(e.target.value); setPreview(null); setApply(false); }} /></Field>
       {preview && (preview.errors?.length ? <Notice kind="bad" title={`${preview.errors.length} errori: correggi il file`}><ul>{preview.errors.slice(0, 50).map((x, i) => <li key={i}>{x.row ? `Riga ${x.row}: ` : ""}{x.field ? `${x.field} — ` : ""}{x.message || JSON.stringify(x)}</li>)}</ul></Notice>

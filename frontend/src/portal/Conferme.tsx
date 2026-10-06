@@ -63,7 +63,7 @@ export default function Conferme() {
   }
   const pending = (c.rows || []).filter((x) => x.status === "PENDING"), done = (c.rows || []).filter((x) => x.status !== "PENDING");
   return <section className="module" aria-labelledby="h-cf">
-    <PageHead id="h-cf" title="Da confermare" lead="Lezioni e cambi di orario proposti dal centro che aspettano la tua risposta." />
+    <PageHead id="h-cf" title="Da confermare" />
     <LessonChanges />
     {err && <Notice kind="bad">{err}</Notice>}
     {c.err ? <ErrorState error={c.err} onRetry={c.load} /> : !c.rows ? <Skeleton /> : <>
@@ -72,7 +72,7 @@ export default function Conferme() {
           <div><h2>{x.lesson.subject}</h2><small>{rangeOf(x.lesson.start_at, x.lesson.end_at)} · {x.lesson.mode === "ONLINE" ? "Online" : "In sede"} · {x.party === "TUTOR" ? `con ${x.lesson.students.join(", ")}` : `per ${x.who}, con ${x.lesson.tutor}`}</small></div></header>
         <div className="cf-over"><Icon n="clock" /><span>Sfora di <b>{x.minutes} minuti</b> {x.labels.length ? <>l’impegno «{x.labels.join(", ")}»</> : "un impegno"}</span></div>
         <footer><Btn kind="ghost" disabled={!!busy} onClick={() => setNo(x)}>Non va bene</Btn><Btn kind="primary" isle="check" disabled={!!busy} onClick={() => answer(x, true)}>{busy === x.id ? "Invio…" : "Va bene"}</Btn></footer>
-      </article>)}</div> : <Empty title="Nessuna lezione da confermare">Quando una lezione proposta sfora un tuo impegno la trovi qui e ricevi un’email.</Empty>}
+      </article>)}</div> : <Empty title="Nessuna lezione da confermare" />}
       {done.length > 0 && <><h2 className="cf-h">Già gestite</h2><ul className="pm-un">{done.map((x) => <li key={x.id}>
         <div><b>{x.lesson.subject} · {x.who}</b><small>{dateLong(rome(x.lesson.start_at).date)}, {rangeOf(x.lesson.start_at, x.lesson.end_at)}{x.note ? ` · “${x.note}”` : ""}</small></div>
         <Tag tone={x.status === "ACCEPTED" ? "green" : "red"}>{x.status === "ACCEPTED" ? "Accettata" : "Rifiutata"}</Tag></li>)}</ul></>}

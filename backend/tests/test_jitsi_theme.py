@@ -92,3 +92,35 @@ def test_jitsi_components_reach_prosody_by_service_name():
         assert env["XMPP_SERVER"] == "jitsi-prosody", name
         assert env["XMPP_BOSH_URL_BASE"] == "http://jitsi-prosody:5280", name
     assert services["jitsi-web"]["environment"]["COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME"] == "jitsi-jvb"
+
+
+def test_welcome_page_replaces_empty_jitsi_root():
+    """https://meet.<dominio>/ senza stanza: pagina del centro, non l'app Jitsi."""
+    import yaml
+
+    head = (JITSI / "plugin.head.html").read_text()
+    assert 'location.replace("/static/lumen/welcome.html")' in head
+    page = (JITSI / "static/welcome.html").read_text()
+    for needle in ("welcome.css", "welcome.js", "welcome-config.js", "data-site-link",
+                   "Torna al sito del centro", 'class="veil"', "noindex"):
+        assert needle in page, needle
+    script = (JITSI / "static/welcome.js").read_text()
+    assert '"#3B82F6"' in script and '"#000000"' in script and 'fade: "edges"' in script
+    assert "cursorSize: 50" in script and "cursorStrength: 0.6" in script
+    assert "prefers-reduced-motion" in script and "^https?:" in script
+    assert "https://" not in script.replace("^https?:\\/\\/", "")  # nessuna risorsa esterna
+    init = (JITSI / "05-lumen-theme.sh").read_text()
+    assert "welcome-config.js" in init and "clean_url" in init
+    env = yaml.safe_load((ROOT / "compose.jitsi.yaml").read_text())["services"]["jitsi-web"]["environment"]
+    assert {"CENTER_NAME", "CENTER_SITE_URL", "CENTER_APP_URL"} <= set(env)
+
+
+def test_dokploy_builds_backend_image_once():
+    """Una sola build del backend: gli altri servizi riusano l'immagine locale."""
+    import yaml
+
+    services = yaml.safe_load((ROOT / "compose.dokploy.yaml").read_text())["services"]
+    backend = {k: v for k, v in services.items() if v.get("image") == "ripetizioni-backend:dokploy"}
+    built = [k for k, v in backend.items() if "build" in v]
+    assert built == ["migrate"]
+    assert all(v["pull_policy"] == "never" for k, v in backend.items() if k != "migrate")

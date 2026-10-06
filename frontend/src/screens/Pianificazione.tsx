@@ -201,7 +201,7 @@ export default function Pianificazione() {
       </section>}
       {shown === 3 && <section className="module pv-pub">
         <h2 className="m-title">Pubblica</h2>
-        {!lastDone?.result ? <Empty title="Ancora nessuna proposta per questa settimana">Avvia un calcolo nel passo 2.</Empty> : <>
+        {!lastDone?.result ? <Empty title="Ancora nessuna proposta per questa settimana" /> : <>
           <div className="pv-score"><b>{lastDone.result.assignments.length}</b><span>di {lastDone.result.assignments.length + lastDone.result.unassigned.length} lezioni collocate{lastDone.result.solver_status === "OPTIMAL" ? " · soluzione ottima" : ""}{lastDone.stale ? " · i dati sono cambiati dopo il calcolo" : ""}</span></div>
           {lastDone.result.unassigned.length > 0 && <ul className="pv-list">{[...new Set(lastDone.result.unassigned.map((u) => reqOf(u.demand_key)))].map((id) => { const u = lastDone.result!.unassigned.find((x) => reqOf(x.demand_key) === id)!; return <li key={id}><Dot tone="amber" icon="x" /><span className="pv-txt"><b>{names[id] || "Richiesta"}</b><small>{reasonText(u.reason_codes)}</small></span>{editBtn(id)}</li>; })}</ul>}
           <div className="pv-go"><Btn kind="primary" isle="arrow" onClick={() => go("agenda", { d: week })}>Rivedi e pubblica nell’Agenda</Btn><small>Le lezioni nascono solo alla pubblicazione; le non collocate le accetti esplicitamente.</small></div>
@@ -231,10 +231,10 @@ export default function Pianificazione() {
     const tutors = d.tutors.filter((t) => ids.has(t.id));
     const sw = (windows || []).filter((w) => inWeek(w)), cl = closures.filter((c) => String(c.end_at) >= week && String(c.start_at) <= weekEnd + "T23:59");
     return <section className="module pv-cons" aria-labelledby="h-cons">
-      <div className="pv-ghead row"><div><h2 className="m-title" id="h-cons">Vincoli della settimana</h2><p>Quello che il motore deve rispettare. Tocca una voce per modificarla.</p></div>
+      <div className="pv-ghead row"><div><h2 className="m-title" id="h-cons">Vincoli della settimana</h2></div>
         <SegCtl label="Vincoli" value={view} onChange={(v) => setQuery((q) => (v === "famiglie" ? q.delete("vincoli") : q.set("vincoli", v)))} options={[["famiglie", "Famiglie"], ["tutor", "Tutor"], ["centro", "Orari del centro"]]} /></div>
 
-      {view === "famiglie" && (!students.length ? <Empty title="Nessuna richiesta approvata">Approva le richieste o creane una nuova.</Empty> : <div className="pv-table">
+      {view === "famiglie" && (!students.length ? <Empty title="Nessuna richiesta approvata" /> : <div className="pv-table">
         <div className="pv-th"><span>Studente</span><span>Disponibilità</span><span>Richieste</span></div>
         {students.map((s) => { const st = an?.students.find((x) => x.id === s.id); return <div key={s.id} className="pv-tr">
           <div className="pv-who"><Avatar name={s.name} k={s.id} /><div><b>{s.name}</b><small>{st ? `${hours(st.available_minutes)} h libere · ${hours(st.demand_minutes)} h richieste` : "—"}</small></div></div>
@@ -245,7 +245,7 @@ export default function Pianificazione() {
         </div>; })}
       </div>)}
 
-      {view === "tutor" && (!tutors.length ? <Empty title="Nessun tutor con competenze approvate">Aggiungile in Configurazione.</Empty> : <div className="pv-table">
+      {view === "tutor" && (!tutors.length ? <Empty title="Nessun tutor con competenze approvate" /> : <div className="pv-table">
         <div className="pv-th"><span>Tutor</span><span>Disponibilità</span><span>Carico possibile</span></div>
         {tutors.map((t) => { const a = an?.tutors.find((x) => x.id === t.id); const cap = a ? Math.min(a.available_minutes, a.weekly_limit_minutes ?? Infinity) : 0; const pct = cap && a ? Math.min(100, Math.round((a.eligible_demand_minutes / cap) * 100)) : 0;
           const subj = [...new Set(skills.filter((s) => s.approved && s.tutor === t.id).map((s) => subjects[String(s.subject)]).filter(Boolean))];
@@ -261,7 +261,7 @@ export default function Pianificazione() {
       {view === "centro" && (!windows ? <Skeleton /> : <div className="pv-center">
         <div className="pv-ctl"><span className="pv-legend"><span><i />In presenza</span><span><i className="violet" />Online</span><span><i className="red" />Chiuso</span></span>
           <Btn kind="sm" icon="plus" onClick={() => setCfg({ kind: "service-windows", label: "Apertura", row: null })}>Apertura</Btn><Btn kind="sm" icon="plus" onClick={() => setCfg({ kind: "closures", label: "Chiusura", row: null })}>Chiusura</Btn></div>
-        {!sw.length ? <Empty title="Nessuna apertura in questa settimana">Senza aperture il motore non può collocare lezioni.</Empty> : <div className="pv-tl">
+        {!sw.length ? <Empty title="Nessuna apertura in questa settimana" /> : <div className="pv-tl">
           <div className="pv-tl-row axis" aria-hidden><span /><span className="pv-tl-scale">{[8, 10, 12, 14, 16, 18, 20].map((h) => <small key={h} style={{ left: ((h - 7) / 15) * 100 + "%" }}>{h}:00</small>)}</span></div>
           {WD_SHORT.map((dn, i) => { const day = addDays(week, i), off = cl.filter((c) => String(c.start_at).slice(0, 10) <= day && String(c.end_at).slice(0, 10) >= day); const ws = sw.filter((w) => Number(w.weekday) === i);
             return <div key={i} className="pv-tl-row"><b>{dn}</b><span className="pv-tl-track">

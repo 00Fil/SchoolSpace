@@ -236,7 +236,7 @@ services:
   # Rinnovo automatico dei certificati (Let's Encrypt HTTP-01 via webroot condiviso con nginx).
   # Primo rilascio: scripts/tls-bootstrap.sh. nginx ricarica i certificati ogni 6 h.
   acme:
-    image: certbot/certbot:v3.1.0
+    image: certbot/certbot:v5.8.0
     profiles: [tls]
     entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/acme --quiet --deploy-hook 'touch /etc/letsencrypt/.renewed'; sleep 12h & wait $${!}; done"]
     volumes:

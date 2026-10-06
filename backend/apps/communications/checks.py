@@ -53,3 +53,23 @@ def communications_config(app_configs, **kwargs):
             )
         )
     return issues
+
+
+@register()
+def video_config(app_configs, **kwargs):
+    from . import video
+
+    problems = video.config_problems()
+    if not problems:
+        return []
+    return [
+        Warning(
+            "Videolezioni automatiche disattivate: " + "; ".join(problems),
+            hint=(
+                "Impostare VIDEO_JITSI_URL=https://<dominio-jitsi> e JITSI_JWT_APP_SECRET "
+                "(openssl rand -hex 32, identico nello stack Jitsi), oppure lasciare "
+                "VIDEO_PROVIDER vuoto"
+            ),
+            id="communications.W010",
+        )
+    ]

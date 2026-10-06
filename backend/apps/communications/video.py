@@ -20,19 +20,55 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 from urllib.parse import quote
 
 from django.conf import settings
 
 PROVIDER = "jitsi"
+MIN_SECRET_LENGTH = 32
+log = logging.getLogger(__name__)
+_warned = set()
+
+
+def config_problems():
+    """Motivi per cui le videolezioni automatiche non sono attive (lista vuota = ok).
+
+    Non solleva mai: una configurazione incompleta disattiva solo la funzione,
+    senza impedire l'avvio dell'applicazione o delle migrazioni.
+    """
+    provider = (getattr(settings, "VIDEO_PROVIDER", "") or "").strip().lower()
+    if not provider:
+        return []
+    if provider != PROVIDER:
+        return [f"VIDEO_PROVIDER='{provider}' non supportato (valori ammessi: vuoto o 'jitsi')"]
+    problems = []
+    url = getattr(settings, "VIDEO_JITSI_URL", "") or ""
+    secret = getattr(settings, "VIDEO_JITSI_APP_SECRET", "") or ""
+    if not url:
+        problems.append("VIDEO_JITSI_URL assente")
+    elif not url.startswith("https://"):
+        problems.append("VIDEO_JITSI_URL deve iniziare con https://")
+    if not secret:
+        problems.append("VIDEO_JITSI_APP_SECRET (JITSI_JWT_APP_SECRET) assente")
+    elif len(secret) < MIN_SECRET_LENGTH:
+        problems.append(
+            f"VIDEO_JITSI_APP_SECRET troppo corto ({len(secret)} caratteri, minimo {MIN_SECRET_LENGTH})"
+        )
+    return problems
 
 
 def enabled():
-    return (
-        settings.VIDEO_PROVIDER == PROVIDER
-        and bool(settings.VIDEO_JITSI_URL)
-        and bool(settings.VIDEO_JITSI_APP_SECRET)
-    )
+    if (getattr(settings, "VIDEO_PROVIDER", "") or "").strip().lower() != PROVIDER:
+        return False
+    problems = config_problems()
+    if problems:
+        key = tuple(problems)
+        if key not in _warned:
+            _warned.add(key)
+            log.warning("videolezioni disattivate: %s", "; ".join(problems))
+        return False
+    return True
 
 
 def _key():

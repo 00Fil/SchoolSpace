@@ -206,3 +206,39 @@ def test_presence_tracking_prefills_attendance(comms, jitsi, monkeypatch):  # no
         client_for(outsider).post(url, {"event": "join"}, format="json").status_code
         == 404
     )
+
+
+# --- v0.10.1: configurazione incompleta non blocca l'avvio ---------------------------
+
+
+@pytest.mark.parametrize(
+    "url,secret,expected",
+    [
+        ("", SECRET, "VIDEO_JITSI_URL assente"),
+        ("http://meet.example.invalid", SECRET, "https://"),
+        (JITSI, "", "assente"),
+        (JITSI, "corto", "troppo corto"),
+    ],
+)
+def test_incomplete_jitsi_config_disables_video_without_crash(settings, url, secret, expected):
+    from apps.communications import checks, video
+
+    settings.VIDEO_PROVIDER = "jitsi"
+    settings.VIDEO_JITSI_URL = url
+    settings.VIDEO_JITSI_APP_SECRET = secret
+    assert video.enabled() is False
+    problems = video.config_problems()
+    assert any(expected in p for p in problems)
+    issues = checks.video_config(None)
+    assert [i.id for i in issues] == ["communications.W010"]
+
+
+def test_video_check_silent_when_disabled_or_valid(settings):
+    from apps.communications import checks, video
+
+    settings.VIDEO_PROVIDER = ""
+    assert checks.video_config(None) == [] and video.enabled() is False
+    settings.VIDEO_PROVIDER = "jitsi"
+    settings.VIDEO_JITSI_URL = JITSI
+    settings.VIDEO_JITSI_APP_SECRET = SECRET
+    assert checks.video_config(None) == [] and video.enabled() is True

@@ -71,6 +71,8 @@ stabili di Jitsi; dopo un aggiornamento importante di Jitsi controllare a vista 
   in Configurazione → Aule restano il limite di lezioni online contemporanee per il pianificatore.
 
 ## Problemi frequenti
+
+- **`migrate` o `web` riportano `communications.W010 Videolezioni automatiche disattivate: …`**: `VIDEO_PROVIDER=jitsi` è impostato ma manca qualcosa. L'app parte comunque, senza stanze automatiche. Correggere nell'ambiente del gestionale `VIDEO_JITSI_URL=https://meet.<dominio>` e `JITSI_JWT_APP_SECRET` (`openssl rand -hex 32`, 64 caratteri, **identico** a quello dello stack Jitsi), poi ridistribuire. Finché Jitsi non è pronto si può lasciare `VIDEO_PROVIDER` vuoto.
 | Sintomo | Causa probabile |
 |---|---|
 | «Videolezioni non attive» | `VIDEO_PROVIDER` vuoto e nessun link manuale |

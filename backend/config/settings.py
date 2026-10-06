@@ -394,14 +394,9 @@ VIDEO_ROOM_PREFIX = env("VIDEO_ROOM_PREFIX", "lezione")
 VIDEO_GRACE_MINUTES = env_int("VIDEO_GRACE_MINUTES", 10, minimum=0, maximum=60)
 # Videolezione integrata nella pagina (iframe) o in una nuova scheda.
 VIDEO_EMBED = env_bool("VIDEO_EMBED", True)
-if VIDEO_PROVIDER not in ("", "jitsi"):
-    raise ImproperlyConfigured("VIDEO_PROVIDER must be empty or 'jitsi'")
-if VIDEO_PROVIDER == "jitsi" and not (
-    VIDEO_JITSI_URL.startswith("https://") and len(VIDEO_JITSI_APP_SECRET) >= 32
-):
-    raise ImproperlyConfigured(
-        "VIDEO_PROVIDER=jitsi requires VIDEO_JITSI_URL (https) and VIDEO_JITSI_APP_SECRET (>=32 chars)"
-    )
+# v0.10.1: una configurazione video incompleta NON blocca piu' l'avvio (migrate/web):
+# le videolezioni automatiche restano disattivate, il motivo e' riportato dal system
+# check communications.W010 (visibile nei log di migrate) e da apps.communications.video.
 # Chiavi Fernet per i segreti effimeri (token di invito/reset) delle consegne:
 # prima = attiva, successive solo in lettura (rotazione). Vuoto = derivata da SECRET_KEY.
 COMMUNICATIONS_SEAL_KEYS = [

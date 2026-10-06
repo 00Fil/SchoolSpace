@@ -35,6 +35,7 @@ class OutgoingEmail:
     body: str
     idempotency_key: str
     headers: dict = field(default_factory=dict)
+    html: str = ""  # alternativa HTML (layout Lumen); il testo resta sempre presente
 
 
 @dataclass(frozen=True)
@@ -123,6 +124,8 @@ def build_mime(message, sender, domain):
     for key, value in message.headers.items():
         mime[key] = value
     mime.set_content(message.body, charset="utf-8")
+    if message.html:
+        mime.add_alternative(message.html, subtype="html", charset="utf-8")
     return mime
 
 
@@ -223,6 +226,7 @@ class ApiBackend(EmailBackend):
                 "to": [message.to],
                 "subject": message.subject,
                 "text": message.body,
+                **({"html": message.html} if message.html else {}),
                 "headers": {"Auto-Submitted": "auto-generated", **message.headers},
                 "reference": message.idempotency_key,
             }
@@ -300,6 +304,7 @@ class ResendBackend(EmailBackend):
                 "to": [message.to],
                 "subject": message.subject,
                 "text": message.body,
+                **({"html": message.html} if message.html else {}),
                 "headers": {"Auto-Submitted": "auto-generated", **message.headers},
             }
         ).encode()

@@ -43,7 +43,7 @@ from .providers import (
     TransientError,
     get_backend,
 )
-from .rendering import render_email, render_notification
+from .rendering import render_email, render_email_html, render_notification
 
 log = logging.getLogger("apps.communications")
 Outcome = DeliveryAttempt.Outcome
@@ -220,10 +220,16 @@ def _deliver_email(delivery_id, rng=random):
         log.exception("communications.backend_unavailable")
         return _settle(delivery, "transient", "BACKEND_MISCONFIGURED", rng=rng)
     subject, body = render_email(event, delivery, extra)
+    try:
+        html = render_email_html(event, delivery, extra, subject)
+    except Exception:  # la versione testuale basta: l'HTML non deve bloccare l'invio
+        log.exception("communications.html_render_failed delivery=%s", delivery.id)
+        html = ""
     message = OutgoingEmail(
         to=to,
         subject=subject,
         body=body,
+        html=html,
         idempotency_key=delivery.idempotency_key,
         headers={"X-Delivery-Id": str(delivery.id)},
     )

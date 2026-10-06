@@ -22,7 +22,12 @@ x-jitsi-env: &jitsi-env
   XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
   XMPP_MUC_DOMAIN: muc.meet.jitsi
   XMPP_GUEST_DOMAIN: guest.meet.jitsi
-  XMPP_SERVER: xmpp.meet.jitsi
+  # Nome del SERVIZIO (sempre risolto dal DNS di Docker), non l'alias di rete
+  # "xmpp.meet.jitsi": Dokploy (deploy isolato, compose randomizzato) puo' riscrivere le
+  # reti e far perdere gli alias -> jicofo/jvb "UnknownHostException: xmpp.meet.jitsi",
+  # nessuna conferenza e i partecipanti non riescono a entrare.
+  XMPP_SERVER: jitsi-prosody
+  XMPP_BOSH_URL_BASE: http://jitsi-prosody:5280
   ENABLE_AUTH: "1"
   AUTH_TYPE: jwt
   ENABLE_GUESTS: "0"
@@ -62,6 +67,8 @@ services:
     environment:
       <<: *jitsi-env
       DISABLE_HTTPS: "1"            # TLS terminato da Traefik
+      # Websocket del bridge video (colibri): nome del servizio jvb, non l'alias "jvb".
+      COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME: jitsi-jvb
       ENABLE_HTTP_REDIRECT: "0"
       ENABLE_LETSENCRYPT: "0"
     expose: ["80"]

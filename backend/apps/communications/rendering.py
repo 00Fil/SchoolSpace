@@ -88,6 +88,24 @@ def render_email(event, delivery, extra=None):
     return subject, f"{body}\n{footer}\n"
 
 
+def render_email_html(event, delivery, extra=None, subject=""):
+    """Versione HTML (Lumen) dello stesso messaggio: alternativa a ``render_email``."""
+    from . import email_layout
+
+    context = {**build_context(event, delivery), **(extra or {})}
+    spec = email_layout.build(event.event_type, context)
+    return render_to_string(
+        "communications/email/layout.html",
+        {
+            **spec,
+            "subject": subject,
+            "center_name": context.get("center_name", ""),
+            "portal_url": email_layout._safe_url(context.get("portal_url")),
+            "essential": context.get("essential"),
+        },
+    )
+
+
 def render_notification(event, delivery):
     """(titolo, testo breve) della notifica interna."""
     context = build_context(event, delivery)

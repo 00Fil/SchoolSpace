@@ -38,6 +38,24 @@ installato sulla stessa VPS o su una dedicata.
    microfono e condivisione schermo **solo** a quell'origine (`Permissions-Policy`).
 5. Ridistribuire il gestionale (`migrate` applica `communications.0003_meeting_presence`).
 
+## Applicare il tema, passo per passo
+Il tema non si attiva con una variabile: sta dentro l'immagine `jitsi-web`, che Dokploy
+**costruisce dal repository**. Funziona quindi solo se lo stack Jitsi è un Compose con
+sorgente Git (non un template Jitsi di Dokploy né un compose incollato a mano):
+
+1. Dokploy → progetto → **Create Service → Compose**.
+2. **Provider**: lo stesso repository Git del gestionale, stesso branch.
+   **Compose Path**: `./compose.jitsi.yaml`. Tipo: Docker Compose.
+3. **Environment**: le variabili di `infra/env/jitsi.env.example`.
+4. **Domains**: servizio `jitsi-web`, porta `80`, HTTPS attivo, host `meet.<dominio>`.
+5. **Deploy**. Nei log di build deve comparire `infra/jitsi/web.Dockerfile`.
+6. Se prima c'era un altro stack Jitsi (template), fermarlo ed eliminarlo: due Jitsi sulla
+   stessa porta UDP 10000 non funzionano.
+
+Verifica: `https://meet.<dominio>/static/lumen/branding.json` deve mostrare un JSON
+(se dà 404 il tema non è nell'immagine: lo stack non è stato costruito dal repository).
+Dopo il deploy ricaricare la pagina senza cache (il browser conserva il vecchio config.js).
+
 ## Tema grafico (Lumen)
 La stanza usa il tema scuro Lumen del gestionale, applicato nell'immagine `web` costruita da
 `infra/jitsi/web.Dockerfile` (nessuna modifica al codice di Jitsi):
@@ -71,6 +89,15 @@ stabili di Jitsi; dopo un aggiornamento importante di Jitsi controllare a vista 
   in Configurazione → Aule restano il limite di lezioni online contemporanee per il pianificatore.
 
 ## Problemi frequenti
+
+- **Si entra ma si resta soli / «in attesa», gli altri non si vedono; nei log di `jitsi-jicofo`
+  `UnknownHostException: xmpp.meet.jitsi`**: jicofo (che crea la conferenza) non trova prosody,
+  quindi nessuno entra davvero nella stanza. Dalla v0.10.1 i componenti usano il nome del
+  servizio (`XMPP_SERVER=jitsi-prosody`) e non più l'alias di rete. Ridistribuire lo stack
+  Jitsi. Se persiste, controllare i log di `jitsi-prosody`: deve essere in esecuzione
+  (se si riavvia di continuo, il motivo è nelle prime righe del log).
+- **Audio/video non passano tra persone su reti diverse**: UDP 10000 non aperta sul firewall
+  della VPS (e del provider cloud) o `JVB_ADVERTISE_IPS` diverso dall'IP pubblico.
 
 - **«Server non raggiungibile» e nei log del proxy `connect() failed (111: Connection refused) … upstream: http://172.x.x.x:8000`**: il proxy puntava al vecchio IP di `web` (versioni precedenti alla v0.10.1). Riavviare il servizio `proxy`; dalla v0.10.1 non serve più. Se persiste, `web` non è in esecuzione: controllarne i log.
 

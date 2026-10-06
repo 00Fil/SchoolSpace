@@ -79,3 +79,16 @@ def test_no_service_name_collision_on_shared_network():
     for compose in ("compose.dokploy.yaml", "compose.prod.yaml"):
         web = yaml.safe_load((ROOT / compose).read_text())["services"]["web"]
         assert "ripetizioni-web" in web["networks"]["backend"]["aliases"], compose
+
+
+def test_jitsi_components_reach_prosody_by_service_name():
+    """jicofo/jvb/web non dipendono dagli alias di rete (persi con alcuni deploy Dokploy)."""
+    import yaml
+
+    stack = yaml.safe_load((ROOT / "compose.jitsi.yaml").read_text())
+    services = stack["services"]
+    for name in ("jitsi-web", "jitsi-prosody", "jitsi-jicofo", "jitsi-jvb"):
+        env = services[name]["environment"]
+        assert env["XMPP_SERVER"] == "jitsi-prosody", name
+        assert env["XMPP_BOSH_URL_BASE"] == "http://jitsi-prosody:5280", name
+    assert services["jitsi-web"]["environment"]["COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME"] == "jitsi-jvb"

@@ -1,0 +1,608 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "0.4",
+        "0.5"
+      ]
+    },
+    "build_version": {
+      "type": "string"
+    },
+    "execution_mode": {
+      "const": "IN_PROCESS_DTO"
+    },
+    "objective_scope": {
+      "enum": [
+        "COVERAGE_P0_P1_P2_ONLY",
+        "LEXICOGRAPHIC_VECTOR"
+      ]
+    },
+    "publishable": {
+      "type": "boolean",
+      "const": false
+    },
+    "calendar_changed": {
+      "type": "boolean",
+      "const": false
+    },
+    "epoch": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "const": "Europe/Rome"
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_version": {
+      "type": "string"
+    },
+    "solver_version": {
+      "type": "string"
+    },
+    "solver_status": {
+      "type": "string",
+      "enum": [
+        "OPTIMAL",
+        "FEASIBLE",
+        "INFEASIBLE",
+        "UNKNOWN",
+        "MODEL_INVALID",
+        "BLOCKED",
+        "VALIDATION_FAILED"
+      ]
+    },
+    "assignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SimulatedAssignment"
+      }
+    },
+    "unassigned": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "demand_key": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "demand_key",
+          "priority",
+          "mandatory",
+          "reason_codes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "optimality_proven_levels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "P0",
+          "P1",
+          "P2",
+          "F",
+          "C",
+          "R",
+          "P",
+          "G"
+        ]
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "PASSED",
+            "FAILED",
+            "NOT_RUN"
+          ]
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "demand_key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "demand_key"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "status",
+        "violations"
+      ],
+      "additionalProperties": false
+    },
+    "is_complete": {
+      "type": "boolean"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "wall_time_seconds": {
+          "type": "number"
+        },
+        "candidate_count": {
+          "type": "integer"
+        },
+        "model_build_seconds": {
+          "type": "number"
+        },
+        "search_seconds": {
+          "type": "number"
+        },
+        "diagnostic_seconds": {
+          "type": "number"
+        },
+        "variables": {
+          "type": "integer"
+        },
+        "constraints": {
+          "type": "integer"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "term": {
+                "enum": [
+                  "P0",
+                  "P1",
+                  "P2",
+                  "F",
+                  "C",
+                  "R",
+                  "P",
+                  "G"
+                ]
+              },
+              "status": {
+                "type": "string"
+              },
+              "seconds": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "term",
+              "status",
+              "seconds"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "hinted_units": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "wall_time_seconds"
+      ],
+      "additionalProperties": false
+    },
+    "termination_reason": {
+      "type": "string"
+    },
+    "objective_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "empty_domain_diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "demand_key": {
+            "type": "string"
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "demand_key",
+          "reason_codes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "objective_vector": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "P0",
+          "P1",
+          "P2",
+          "F",
+          "C",
+          "R",
+          "P",
+          "G"
+        ]
+      }
+    },
+    "evaluated_objectives": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "policy_approvals": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "PENDING_APPROVAL",
+          "APPROVED"
+        ]
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "MOVE_WITHIN_DECLARED",
+              "REQUEST_NEW_AVAILABILITY"
+            ]
+          },
+          "status": {
+            "const": "HYPOTHESIS"
+          },
+          "demand_key": {
+            "type": "string"
+          },
+          "tutor_id": {
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "IN_PERSON",
+              "ONLINE"
+            ]
+          },
+          "start": {
+            "type": "integer"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "requires_moving": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missing_availability": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "STUDENT",
+                    "TUTOR"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "booking_allowed": {
+            "const": false
+          }
+        },
+        "required": [
+          "kind",
+          "status",
+          "demand_key",
+          "tutor_id",
+          "mode",
+          "start",
+          "end",
+          "requires_moving",
+          "missing_availability",
+          "booking_allowed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "conflict_analysis": {
+      "type": "object",
+      "properties": {
+        "note": {
+          "type": "string"
+        },
+        "isolated_submodels": {
+          "type": "object",
+          "properties": {
+            "individually_infeasible": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "individually_feasible": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "not_checked": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "individually_infeasible",
+            "individually_feasible",
+            "not_checked"
+          ],
+          "additionalProperties": false
+        },
+        "conflict_set": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "status",
+            "members"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "note",
+        "isolated_submodels",
+        "conflict_set"
+      ],
+      "additionalProperties": false
+    },
+    "scope_expansion": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "PROPOSED_REQUIRES_APPROVAL",
+            "NO_EXPANSION_FOUND"
+          ]
+        },
+        "additional_unlock": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "auto_applied": {
+          "const": false
+        },
+        "reason": {
+          "type": "string"
+        },
+        "relaxed_status": {
+          "type": "string"
+        },
+        "relaxed_unassigned": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "status",
+        "additional_unlock",
+        "auto_applied"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "build_version",
+    "execution_mode",
+    "objective_scope",
+    "publishable",
+    "calendar_changed",
+    "epoch",
+    "timezone",
+    "input_hash",
+    "policy_version",
+    "solver_version",
+    "solver_status",
+    "assignments",
+    "unassigned",
+    "optimality_proven_levels",
+    "validation",
+    "is_complete",
+    "diagnostics",
+    "statistics"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "SimulatedAssignment": {
+      "type": "object",
+      "properties": {
+        "demand_key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "tutor_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "IN_PERSON",
+            "ONLINE"
+          ]
+        },
+        "location": {
+          "type": "string",
+          "enum": [
+            "ON_SITE",
+            "REMOTE"
+          ]
+        },
+        "space_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "video_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60540
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60540
+        },
+        "student_location": {
+          "type": "string",
+          "enum": [
+            "ON_SITE",
+            "REMOTE"
+          ]
+        },
+        "student_space_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "demand_key",
+        "tutor_id",
+        "mode",
+        "location",
+        "space_id",
+        "video_id",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$comment": "v0.5: risultati 0.4 restano validi; campi diagnostici e vettore lessicografico solo per DTO 0.5."
+}

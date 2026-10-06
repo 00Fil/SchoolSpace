@@ -1,0 +1,278 @@
+# Integrazione continua (GAP-J06, J07, I04, L03, K02). Tutti i job sono bloccanti per il merge
+# (branch protection: richiedere "ci-ok"). Le Actions sono fissate per SHA (Dependabot le aggiorna).
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.13"
+  NODE_VERSION: "22"
+  DJANGO_SECRET_KEY: ci-only-not-for-production
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  static:
+    name: lint, segreti, configurazione
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+      - name: Strumenti (versioni fissate)
+        run: pip install ruff==0.16.9 bandit==1.9.4 shellcheck-py==0.11.0.1 pyyaml==6.0.3
+      - name: Ruff
+        working-directory: backend
+        run: ruff check --select E9,F63,F7,F82 . && ruff format --check .
+      # Baseline: 2 rilievi B310 noti in apps/communications/providers.py (URL del provider da
+      # configurazione; da chiudere in s3 con validazione https + nosec motivato). Nuovi rilievi = errore.
+      - name: Bandit (codice applicativo, severità e confidenza medie+)
+        run: >-
+          bandit -q -r backend/apps backend/api backend/config -x '*/tests/*,*/migrations/*'
+          -ll -ii -b infra/ci/bandit-baseline.json
+      - name: Shellcheck
+        run: shellcheck -x scripts/*.sh scripts/lib/*.sh infra/nginx/*.sh
+      - name: Gitleaks (intera storia, binario verificato per SHA-256; eccezioni in .gitleaks.toml)
+        run: |
+          curl -sSLo /tmp/gitleaks.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz
+          echo "a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb  /tmp/gitleaks.tgz" | sha256sum -c -
+          tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
+          /tmp/gitleaks git --redact --no-banner --exit-code 1 .
+      - name: Regole Prometheus e Alertmanager
+        run: |
+          docker run --rm -v "$PWD/infra/monitoring:/m" --entrypoint promtool prom/prometheus:v3.5.0 check rules /m/alerts.yml
+          docker run --rm -v "$PWD/infra/monitoring:/m" -w /m/tests --entrypoint promtool prom/prometheus:v3.5.0 test rules alerts_test.yml
+          docker run --rm -v "$PWD/infra/monitoring:/m" --entrypoint amtool prom/alertmanager:v0.28.1 check-config /m/alertmanager.yml
+      - name: Compose validi
+        run: |
+          cp infra/env/production.env.example infra/env/production.env
+          cp infra/env/migrator.env.example infra/env/migrator.env
+          mkdir -p secrets/redis-tls .e2e
+          touch secrets/pg-ca.pem secrets/redis-tls/ca.crt secrets/redis-users.acl .e2e/ca.crt .e2e/redis-users.acl
+          docker compose -f compose.prod.yaml config -q
+          docker compose -f compose.prod.yaml -f compose.e2e.yaml config -q
+          docker compose -f compose.yaml config -q
+
+  backend-sqlite:
+    name: test backend (SQLite)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+      - name: Dipendenze solo da lockfile con hash
+        run: pip install --require-hashes -r backend/requirements-dev.txt
+      - name: Strumenti per i test infrastrutturali (nginx reale, age, shellcheck)
+        run: sudo apt-get update -q && sudo apt-get install -y -q nginx-light age shellcheck
+      - name: Controlli Django
+        working-directory: backend
+        env: { USE_SQLITE_FOR_TESTS: "1", EXPERIMENTAL_DB_PLANNING: "1" }
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+      - name: pytest
+        working-directory: backend
+        env: { USE_SQLITE_FOR_TESTS: "1", EXPERIMENTAL_DB_PLANNING: "1" }
+        run: pytest -q -p no:cacheprovider
+
+  backend-postgres:
+    name: test backend (PostgreSQL 17, ruoli s4, restore drill)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: ripetizioni
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-admin
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 3s --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: ci-admin
+      DB_HOST: localhost
+      DB_PORT: "5432"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+      - run: pip install --require-hashes -r backend/requirements-dev.txt
+      - run: sudo apt-get update -q && sudo apt-get install -y -q postgresql-client age
+      - name: Ruoli a privilegio minimo (infra/postgres, come in produzione)
+        run: |
+          psql -X -q -v ON_ERROR_STOP=1 -d ripetizioni -c "CREATE EXTENSION IF NOT EXISTS btree_gist"
+          psql -X -q -v ON_ERROR_STOP=1 -d ripetizioni -v db=ripetizioni \
+            -v pw_migrator=ci-migrator -v pw_runtime=ci-runtime -v pw_ro=ci-ro -f infra/postgres/01_roles.sql
+          psql -X -q -v ON_ERROR_STOP=1 -d ripetizioni -v db=ripetizioni -v pw_backup=ci-backup \
+            -f scripts/sql/backup-role.sql
+      - name: Migrazione come app_migrator, poi privilegi e verifica 04_verify
+        working-directory: backend
+        env:
+          POSTGRES_DB: ripetizioni
+          POSTGRES_USER: app_migrator
+          POSTGRES_PASSWORD: ci-migrator
+          PGOPTIONS: "-c role=app_owner"
+        run: |
+          python manage.py migrate --noinput
+          python manage.py makemigrations --check --dry-run
+          PGOPTIONS= PSQL="psql -d ripetizioni" ../scripts/pg-privileges.sh
+      - name: Il runtime non può fare DDL
+        run: |
+          if PGUSER=app_runtime PGPASSWORD=ci-runtime psql -X -d ripetizioni -c "CREATE TABLE ci_x(id int)"; then
+            echo "::error::app_runtime può creare tabelle"; exit 1
+          fi
+      - name: Backup cifrato e restore drill reali
+        working-directory: backend
+        env:
+          S5_PG_DRILL: "1"
+          S5_PG_SOURCE_DB: ripetizioni
+          USE_SQLITE_FOR_TESTS: "1"
+        run: pytest -q -p no:cacheprovider tests/test_ops_scripts.py
+      - name: pytest su PostgreSQL (DB di test creato dall'amministratore)
+        working-directory: backend
+        env:
+          POSTGRES_DB: ripetizioni
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-admin
+          EXPERIMENTAL_DB_PLANNING: "1"
+        run: pytest -q -p no:cacheprovider --ignore=tests/test_infra_nginx.py --ignore=tests/test_ops_scripts.py
+      - name: check --deploy con config.settings_production (0 avvisi)
+        working-directory: backend
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings_production
+          DJANGO_SECRET_KEY: ci-check-deploy-Kq7v2Lx9Rk4Tz8Wn3Pc6Hb1Yd5Fg0Js2Ua7IeQ4o
+          DJANGO_ALLOWED_HOSTS: app.example.invalid
+          DJANGO_CSRF_TRUSTED_ORIGINS: https://app.example.invalid
+          POSTGRES_DB: ripetizioni
+          POSTGRES_USER: app_runtime
+          POSTGRES_PASSWORD: ci-runtime
+          DB_SSLMODE: require
+          CACHE_URL: rediss://app:x@redis.invalid:6380/1
+          CELERY_BROKER_URL: rediss://app:x@redis.invalid:6380/0
+        run: python manage.py check --deploy --fail-level WARNING
+
+  dependencies:
+    name: audit dipendenze e lockfile
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: pip install pip-audit==2.10.1 pip-tools==7.6.1
+      - name: pip-audit (bloccante)
+        run: |
+          pip-audit -r backend/requirements.txt --require-hashes --disable-pip --strict
+          pip-audit -r backend/requirements-dev.txt --require-hashes --disable-pip --strict
+      - name: Lockfile coerenti con requirements*.in
+        run: python3 scripts/check-lock.py
+      - name: npm audit (dipendenze di runtime, bloccante da high)
+        working-directory: frontend
+        run: npm ci --ignore-scripts && npm audit --omit=dev --audit-level=high
+
+  frontend:
+    name: build frontend
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - working-directory: frontend
+        run: npm ci && npm run build
+
+  images:
+    name: immagini, scansione, SBOM, e2e compose
+    runs-on: ubuntu-24.04
+    needs: [static, backend-sqlite]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build backend
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: infra/backend.Dockerfile
+          build-args: BUILD_VERSION=${{ github.sha }}
+          tags: ripetizioni/backend:e2e
+          load: true
+      - name: Build proxy (frontend + statici del backend)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: infra/frontend.Dockerfile
+          build-args: BUILD_VERSION=${{ github.sha }}
+          build-contexts: backend-static=docker-image://ripetizioni/backend:e2e
+          tags: ripetizioni/proxy:e2e
+          load: true
+      - name: Trivy backend (HIGH/CRITICAL con fix disponibile = bloccante)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ripetizioni/backend:e2e
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Trivy proxy
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ripetizioni/proxy:e2e
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: SBOM CycloneDX backend
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          image: ripetizioni/backend:e2e
+          format: cyclonedx-json
+          output-file: sbom-backend.cdx.json
+          upload-artifact: false
+      - name: SBOM CycloneDX proxy
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          image: ripetizioni/proxy:e2e
+          format: cyclonedx-json
+          output-file: sbom-proxy.cdx.json
+          upload-artifact: false
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom-${{ github.sha }}
+          path: sbom-*.cdx.json
+          retention-days: 90
+      - name: e2e compose (PG17 + Redis TLS reali, smoke, resilienza)
+        env:
+          REGISTRY: ripetizioni
+          E2E_SKIP_BUILD: "1"
+        run: scripts/e2e-compose.sh
+
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs: [static, backend-sqlite, backend-postgres, dependencies, frontend, images]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Tutti i job devono essere verdi
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "$RESULTS"
+          for r in $RESULTS; do [ "$r" = success ] || exit 1; done

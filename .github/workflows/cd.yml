@@ -1,0 +1,117 @@
+# Rilascio (GAP-J03, L04): build e push delle immagini firmate per digest, poi deploy in
+# staging e, dopo approvazione manuale dell'environment "production", in produzione.
+# Il deploy esegue scripts/deploy.sh sull'host via SSH: backup < 24 h verificato, job di
+# migrazione (app_migrator), privilegi PG, rollout con healthcheck, smoke, rollback
+# automatico all'immagine precedente. Procedura manuale equivalente: docs/runbooks/README.md#rilascio
+name: cd
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag immagine da rilasciare (default: sha del commit)"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}/ripetizioni
+  IMAGE_TAG: ${{ inputs.tag || github.ref_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write          # attestazioni di provenance (SLSA) generate da buildx
+      attestations: write
+    outputs:
+      backend-digest: ${{ steps.backend.outputs.digest }}
+      proxy-digest: ${{ steps.proxy.outputs.digest }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: backend
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: infra/backend.Dockerfile
+          build-args: BUILD_VERSION=${{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/backend:${{ env.IMAGE_TAG }}
+          push: true
+          provenance: mode=max
+          sbom: true
+      - id: proxy
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: infra/frontend.Dockerfile
+          build-args: BUILD_VERSION=${{ env.IMAGE_TAG }}
+          build-contexts: backend-static=docker-image://${{ env.REGISTRY }}/backend:${{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/proxy:${{ env.IMAGE_TAG }}
+          push: true
+          provenance: mode=max
+          sbom: true
+      - name: Trivy sulle immagini pubblicate (bloccante)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/backend@${{ steps.backend.outputs.digest }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: staging
+      url: ${{ vars.STAGING_URL }}
+    steps:
+      - name: Deploy su staging
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ vars.STAGING_HOST }}
+          BASE_URL: ${{ vars.STAGING_URL }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -o BatchMode=yes "deploy@$HOST" \
+            "cd /srv/ripetizioni && git fetch --tags -q && git checkout -q '${{ github.sha }}' && \
+             BASE_URL='$BASE_URL' DEPLOY_RUN_BACKUP=1 scripts/deploy.sh '${{ env.IMAGE_TAG }}'"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-24.04
+    # Approvazione manuale: environment "production" con required reviewers (responsabile
+    # tecnico + titolare/DPO per i rilasci con migrazioni distruttive, D07 da approvare).
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+    steps:
+      - name: Deploy in produzione
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ vars.PRODUCTION_HOST }}
+          BASE_URL: ${{ vars.PRODUCTION_URL }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -o BatchMode=yes "deploy@$HOST" \
+            "cd /srv/ripetizioni && git fetch --tags -q && git checkout -q '${{ github.sha }}' && \
+             BASE_URL='$BASE_URL' scripts/deploy.sh '${{ env.IMAGE_TAG }}'"

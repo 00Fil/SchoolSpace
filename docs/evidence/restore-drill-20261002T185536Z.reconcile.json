@@ -1,0 +1,71 @@
+{
+  "restore_point": "2026-10-02T18:55:25+00:00",
+  "mode": "dry-run",
+  "started_at": "2026-10-02T18:55:37.505152+00:00",
+  "finished_at": "2026-10-02T18:55:37.518713+00:00",
+  "external_events": 0,
+  "ok": true,
+  "steps": [
+    {
+      "name": "ops.heartbeats",
+      "path": "apps.ops.restore.step_heartbeats",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "heartbeat azzerati; i worker li ricreano all'avvio"
+    },
+    {
+      "name": "scheduling.interrupted_runs",
+      "path": "apps.ops.restore.step_interrupted_runs",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "run non conclusi marcati RESTORE_INTERRUPTED (da rilanciare a mano)"
+    },
+    {
+      "name": "identity.sessions_and_tokens",
+      "path": "apps.ops.restore.step_identity",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "sessioni 0, inviti aperti 0, token reset 0 invalidati"
+    },
+    {
+      "name": "privacy.ledger",
+      "path": "apps.ops.restore.step_privacy",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "azioni pianificate 0, applicate 0, richieste privacy assenti dal DB 0 (da registrare a mano)"
+    },
+    {
+      "name": "communications.quarantine",
+      "path": "apps.ops.restore.step_communications",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "email PENDING/SENDING messe in AMBIGUOUS: 0"
+    },
+    {
+      "name": "calendar.booking_overlaps",
+      "path": "apps.ops.restore.step_booking_overlaps",
+      "required": true,
+      "status": "OK",
+      "ok": true,
+      "changed": 0,
+      "notes": "sovrapposizioni trovate: 0"
+    },
+    {
+      "name": "calendar.invariants",
+      "path": "apps.calendar.restore.check_invariants",
+      "required": false,
+      "status": "MISSING",
+      "ok": true
+    }
+  ]
+}

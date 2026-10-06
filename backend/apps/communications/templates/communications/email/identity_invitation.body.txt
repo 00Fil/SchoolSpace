@@ -1,0 +1,7 @@
+{% autoescape off %}Ciao,
+
+sei stato invitato ad accedere al gestionale di {{ center_name }}. Apri il link entro {{ hours }} ore per attivare l'accesso:
+
+{{ link }}
+
+Il link vale una sola volta. Se non ti aspettavi questo messaggio, ignoralo.{% endautoescape %}

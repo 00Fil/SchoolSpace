@@ -1,0 +1,9 @@
+{% autoescape off %}Gentile utente,
+
+è stata pubblicata una lezione di {{ subject_name }}{% if student_names %} per {{ student_names }}{% endif %}.
+
+Quando: {{ start_text }} – {{ end_time }} (ora italiana)
+Modalità: {{ mode_text }}{% if mode == "ONLINE" %}
+Il link per il collegamento sarà disponibile nel portale poco prima dell'inizio: per sicurezza non viene inviato via email.{% endif %}
+
+Per qualsiasi variazione fa fede il calendario nel portale.{% endautoescape %}

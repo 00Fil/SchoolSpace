@@ -1,0 +1,282 @@
+{
+  "generated_at": "2026-10-03T19:07:42.576Z",
+  "checks": [
+    {
+      "name": "[1440-light] la pausa natalizia risulta «Niente lezioni»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] il periodo per i recuperi risulta «Recuperi»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] nessuno scorrimento orizzontale (anno)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] Spazio seleziona la cella",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] orari inviati con motivo e slot",
+      "ok": true,
+      "info": "[{\"weekday\":0,\"start\":420,\"end\":480}]"
+    },
+    {
+      "name": "[1440-light] approvazione in blocco della bozza",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] regole: stato vuoto",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] la fascia approvata compare sulla griglia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] nessuno scorrimento orizzontale (griglia)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] la pausa natalizia risulta «Niente lezioni»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] il periodo per i recuperi risulta «Recuperi»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] nessuno scorrimento orizzontale (anno)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] Spazio seleziona la cella",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] orari inviati con motivo e slot",
+      "ok": true,
+      "info": "[{\"weekday\":0,\"start\":420,\"end\":480}]"
+    },
+    {
+      "name": "[1440-dark] approvazione in blocco della bozza",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] regole: stato vuoto",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] la fascia approvata compare sulla griglia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] nessuno scorrimento orizzontale (griglia)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] la pausa natalizia risulta «Niente lezioni»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] il periodo per i recuperi risulta «Recuperi»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] nessuno scorrimento orizzontale (anno)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] Spazio seleziona la cella",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] orari inviati con motivo e slot",
+      "ok": true,
+      "info": "[{\"weekday\":0,\"start\":420,\"end\":480}]"
+    },
+    {
+      "name": "[360-light] approvazione in blocco della bozza",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] regole: stato vuoto",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] la fascia approvata compare sulla griglia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] nessuno scorrimento orizzontale (griglia)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] la pausa natalizia risulta «Niente lezioni»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] il periodo per i recuperi risulta «Recuperi»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] nessuno scorrimento orizzontale (anno)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] Spazio seleziona la cella",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] orari inviati con motivo e slot",
+      "ok": true,
+      "info": "[{\"weekday\":0,\"start\":420,\"end\":480}]"
+    },
+    {
+      "name": "[360-dark] approvazione in blocco della bozza",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] regole: stato vuoto",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] la fascia approvata compare sulla griglia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] nessuno scorrimento orizzontale (griglia)",
+      "ok": true,
+      "info": ""
+    }
+  ],
+  "axe_serious_or_critical": [],
+  "axe_all": [
+    {
+      "name": "cfg-anno-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-orari-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-approva-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-regole-1440-light",
+      "violations": []
+    },
+    {
+      "name": "disp-griglia-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-anno-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-orari-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-approva-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-regole-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "disp-griglia-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-anno-360-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-orari-360-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-approva-360-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-regole-360-light",
+      "violations": []
+    },
+    {
+      "name": "disp-griglia-360-light",
+      "violations": []
+    },
+    {
+      "name": "cfg-anno-360-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-orari-360-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-approva-360-dark",
+      "violations": []
+    },
+    {
+      "name": "cfg-regole-360-dark",
+      "violations": []
+    },
+    {
+      "name": "disp-griglia-360-dark",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-anno-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-orari-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\disp-griglia-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-anno-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-orari-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\disp-griglia-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-anno-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-orari-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\disp-griglia-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-anno-360-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\cfg-orari-360-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p2\\disp-griglia-360-dark.png"
+  ]
+}

@@ -1,0 +1,1 @@
+{% autoescape off %}Lezione di {{ subject_name }} spostata: {{ start_text }}{% endautoescape %}

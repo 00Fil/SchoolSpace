@@ -1,0 +1,19 @@
+# Dipendenze dirette. I range seguono la politica di supporto upstream: una vulnerabilità
+# nota con correzione disponibile blocca il merge (NFR08, GAP-I08). Lock con hash in
+# requirements.txt (rigenerare con pip-compile --generate-hashes o scripts equivalenti).
+Django>=5.2.17,<5.3
+djangorestframework>=3.17.2,<4
+psycopg[binary]>=3.2,<3.3
+gunicorn>=23,<24
+ortools>=9.14,<10
+jsonschema>=4.25,<5
+celery>=5.6,<5.7
+redis>=6.4,<7
+# s1-sicurezza: Argon2id (GAP-B03), TOTP (GAP-B04), QR SVG per l'attivazione MFA.
+argon2-cffi>=25.1,<26
+pyotp>=2.9,<3
+qrcode>=8.2,<9
+# s3-comunicazioni: cifratura Fernet dei segreti effimeri delle consegne (token invito/reset).
+cryptography>=46,<51
+# --- s5-infra: metriche Prometheus (GAP-K02) ---
+prometheus-client>=0.26,<0.27

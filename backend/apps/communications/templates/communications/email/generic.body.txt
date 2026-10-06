@@ -1,0 +1,3 @@
+{% autoescape off %}Gentile utente,
+
+c'è un aggiornamento che ti riguarda. Trovi i dettagli nel portale.{% endautoescape %}

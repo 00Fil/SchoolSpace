@@ -1,0 +1,1 @@
+{% autoescape off %}{% if outcome == "APPLIED" %}Confermata{% elif outcome == "REJECTED" %}Rifiutata{% else %}Non applicata{% endif %}: modifica della lezione di {{ subject_name }} ({{ start_text }}){% endautoescape %}

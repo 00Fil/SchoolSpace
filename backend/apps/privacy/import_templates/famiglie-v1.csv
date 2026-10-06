@@ -1,0 +1,3 @@
+family_reference,family_contact_name,family_contact_email,family_contact_phone,student_key,student_display_name,student_level,student_birth_date,guardian_email,guardian_first_name,guardian_last_name,guardian_relationship,guardian_can_manage_availability,guardian_can_receive_notifications
+FAM-ESEMPIO-001,Contatto Sintetico,contatto.sintetico@example.invalid,,STU-ESEMPIO-001,Studente Sintetico Uno,Secondaria I grado,,genitore.uno@example.invalid,Genitore,Sintetico,PARENT,true,true
+FAM-ESEMPIO-001,Contatto Sintetico,contatto.sintetico@example.invalid,,STU-ESEMPIO-002,Studente Sintetico Due,Primaria,,,,,,,

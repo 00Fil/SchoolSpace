@@ -1,0 +1,22 @@
+{
+  "http_session_csrf": "PASSED",
+  "database_run": "PASSED",
+  "worker_transport": "Kombu filesystem, separate Celery solo process",
+  "assignments": 6,
+  "solver_status": "OPTIMAL",
+  "duplicate_delivery_attempts": 1,
+  "production_readiness": false,
+  "ui_smoke": {
+    "login": true,
+    "readiness": true,
+    "queue_from_ui": true,
+    "configuration_category": true,
+    "js_errors": 0,
+    "mobile_dimensions": {
+      "scroll": 390,
+      "viewport": 390
+    }
+  },
+  "postgres_redis_tested": false,
+  "hard_timeout_tested": false
+}

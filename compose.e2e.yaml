@@ -1,0 +1,81 @@
+# Override per la prova end-to-end locale (GAP-J07): stesso stack di compose.prod.yaml con
+# PostgreSQL 17 e Redis 7 reali in container, TLS ovunque con una CA locale usa-e-getta
+# (generata da scripts/e2e-compose.sh in .e2e/), dati sintetici, nessun segreto reale.
+# Uso: scripts/e2e-compose.sh   (non usare in produzione: il DB qui è un container tmpfs)
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ripetizioni
+      POSTGRES_USER: e2e_admin
+      POSTGRES_PASSWORD: e2e-only-admin
+    # La chiave TLS deve appartenere a postgres con permessi 0600: copia nel container.
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        install -o postgres -g postgres -m 0600 /certs/db.key /var/lib/postgresql/server.key &&
+        install -o postgres -g postgres -m 0644 /certs/db.crt /var/lib/postgresql/server.crt &&
+        exec docker-entrypoint.sh postgres -c ssl=on
+        -c ssl_cert_file=/var/lib/postgresql/server.crt
+        -c ssl_key_file=/var/lib/postgresql/server.key
+        -c ssl_min_protocol_version=TLSv1.2
+        -c log_min_duration_statement=500
+    volumes:
+      - ./.e2e/db:/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U e2e_admin -d ripetizioni"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    tmpfs: [/var/lib/postgresql/data]
+    networks: [backend]
+
+  redis:
+    volumes: !override
+      - ./infra/redis/redis-tls.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./.e2e/redis-users.acl:/usr/local/etc/redis/users.acl:ro
+      - ./.e2e/redis:/tls:ro
+
+  web:
+    env_file: !override [infra/env/e2e.env]
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  migrate:
+    env_file: !override [infra/env/e2e.env, infra/env/e2e-migrator.env]
+    depends_on:
+      db: { condition: service_healthy }
+  worker-solver:
+    env_file: !override [infra/env/e2e.env]
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  worker-notifications:
+    env_file: !override [infra/env/e2e.env]
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  beat:
+    env_file: !override [infra/env/e2e.env]
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  proxy:
+    environment:
+      SERVER_NAME: localhost
+      TLS_CERT: /etc/nginx/tls/fullchain.pem
+      TLS_KEY: /etc/nginx/tls/privkey.pem
+      CSP_MODE: enforce
+      TLS_RELOAD_INTERVAL: "0"
+    volumes: !override
+      - ./.e2e/proxy:/etc/nginx/tls:ro
+      - maintenance:/srv/maintenance:ro
+    ports: !override
+      - "127.0.0.1:8443:8443"
+
+secrets:
+  pg_ca:
+    file: ./.e2e/ca.crt
+  redis_ca:
+    file: ./.e2e/ca.crt

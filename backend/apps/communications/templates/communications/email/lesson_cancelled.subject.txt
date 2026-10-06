@@ -1,0 +1,1 @@
+{% autoescape off %}Lezione di {{ subject_name }} annullata: {{ start_text }}{% endautoescape %}

@@ -1,0 +1,246 @@
+{
+  "generated_at": "2026-10-03T19:07:56.891Z",
+  "checks": [
+    {
+      "name": "[1440-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] motivo precompilato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] avviso doppia conferma",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] motivo vuoto blocca",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] accettazione con versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] spostamento rifiutato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] recupero fissato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] chiusura annullata con recupero",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] pannello comunicazioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] motivo precompilato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] avviso doppia conferma",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] motivo vuoto blocca",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] accettazione con versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] spostamento rifiutato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] recupero fissato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] chiusura annullata con recupero",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] pannello comunicazioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] motivo precompilato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] avviso doppia conferma",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] motivo vuoto blocca",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] accettazione con versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] spostamento rifiutato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] recupero fissato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] chiusura annullata con recupero",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] pannello comunicazioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] motivo precompilato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] avviso doppia conferma",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] motivo vuoto blocca",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] accettazione con versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] spostamento rifiutato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] recupero fissato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] chiusura annullata con recupero",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] pannello comunicazioni",
+      "ok": true,
+      "info": ""
+    }
+  ],
+  "axe_serious_or_critical": [],
+  "axe_all": [
+    {
+      "name": "richieste-1440-light",
+      "violations": []
+    },
+    {
+      "name": "recupero-1440-light",
+      "violations": []
+    },
+    {
+      "name": "invii-1440-light",
+      "violations": []
+    },
+    {
+      "name": "richieste-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "recupero-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "invii-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "richieste-360-light",
+      "violations": []
+    },
+    {
+      "name": "recupero-360-light",
+      "violations": []
+    },
+    {
+      "name": "invii-360-light",
+      "violations": []
+    },
+    {
+      "name": "richieste-360-dark",
+      "violations": []
+    },
+    {
+      "name": "recupero-360-dark",
+      "violations": []
+    },
+    {
+      "name": "invii-360-dark",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\richieste-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\invii-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\richieste-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\invii-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\richieste-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\invii-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\richieste-360-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p4\\invii-360-dark.png"
+  ]
+}

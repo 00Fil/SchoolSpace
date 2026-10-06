@@ -1,0 +1,1 @@
+{% autoescape off %}Il centro propone di spostare la lezione di {{ subject_name }}{% if student_names %} per {{ student_names }}{% endif %} da {{ previous_start_text }} a {{ start_text }} – {{ end_time }}. Va bene?{% endautoescape %}

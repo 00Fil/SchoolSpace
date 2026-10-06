@@ -1,0 +1,301 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.4"
+    },
+    "build_version": {
+      "type": "string"
+    },
+    "execution_mode": {
+      "const": "IN_PROCESS_DTO"
+    },
+    "objective_scope": {
+      "const": "COVERAGE_P0_P1_P2_ONLY"
+    },
+    "publishable": {
+      "type": "boolean",
+      "const": false
+    },
+    "calendar_changed": {
+      "type": "boolean",
+      "const": false
+    },
+    "epoch": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "const": "Europe/Rome"
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_version": {
+      "type": "string"
+    },
+    "solver_version": {
+      "type": "string"
+    },
+    "solver_status": {
+      "type": "string",
+      "enum": [
+        "OPTIMAL",
+        "FEASIBLE",
+        "INFEASIBLE",
+        "UNKNOWN",
+        "MODEL_INVALID",
+        "BLOCKED",
+        "VALIDATION_FAILED"
+      ]
+    },
+    "assignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SimulatedAssignment"
+      }
+    },
+    "unassigned": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "demand_key": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "demand_key",
+          "priority",
+          "mandatory",
+          "reason_codes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "optimality_proven_levels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "P0",
+          "P1",
+          "P2"
+        ]
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "PASSED",
+            "FAILED",
+            "NOT_RUN"
+          ]
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "demand_key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "demand_key"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "status",
+        "violations"
+      ],
+      "additionalProperties": false
+    },
+    "is_complete": {
+      "type": "boolean"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "wall_time_seconds": {
+          "type": "number"
+        },
+        "candidate_count": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wall_time_seconds"
+      ],
+      "additionalProperties": false
+    },
+    "termination_reason": {
+      "type": "string"
+    },
+    "objective_values": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "empty_domain_diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "demand_key": {
+            "type": "string"
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "demand_key",
+          "reason_codes"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "build_version",
+    "execution_mode",
+    "objective_scope",
+    "publishable",
+    "calendar_changed",
+    "epoch",
+    "timezone",
+    "input_hash",
+    "policy_version",
+    "solver_version",
+    "solver_status",
+    "assignments",
+    "unassigned",
+    "optimality_proven_levels",
+    "validation",
+    "is_complete",
+    "diagnostics",
+    "statistics"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "SimulatedAssignment": {
+      "type": "object",
+      "properties": {
+        "demand_key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "tutor_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "IN_PERSON",
+            "ONLINE"
+          ]
+        },
+        "location": {
+          "type": "string",
+          "enum": [
+            "ON_SITE",
+            "REMOTE"
+          ]
+        },
+        "space_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "video_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10140
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10140
+        }
+      },
+      "required": [
+        "demand_key",
+        "tutor_id",
+        "mode",
+        "location",
+        "space_id",
+        "video_id",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

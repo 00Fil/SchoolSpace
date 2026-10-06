@@ -1,0 +1,130 @@
+# v0.10 · Jitsi Meet self-hosted per le videolezioni (open source, Apache-2.0).
+# Stack separato in Dokploy (Compose), su un sottodominio dedicato, es. meet.tuodominio.it:
+#   Domains -> servizio "jitsi-web", porta 80, HTTPS (Traefik di Dokploy).
+# IMPORTANTE: nomi dei servizi con prefisso "jitsi-". Un servizio chiamato "web" sulla rete
+# condivisa dokploy-network viene risolto anche dal proxy del gestionale al posto di Django
+# (le API rispondono con la pagina di Jitsi e il gestionale resta sullo skeleton).
+#   UDP 10000 aperta sul firewall della VPS (audio/video dei partecipanti).
+# Variabili: infra/env/jitsi.env.example. Guida: docs/runbooks/08-videolezioni.md.
+#
+# Solo ingressi firmati dal gestionale (AUTH_TYPE=jwt, ENABLE_GUESTS=0): senza token valido
+# per QUELLA stanza e QUELLA finestra oraria non si entra. Registrazione e dirette spente.
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }
+
+x-jitsi-env: &jitsi-env
+  TZ: Europe/Rome
+  PUBLIC_URL: ${VIDEO_JITSI_URL:?VIDEO_JITSI_URL mancante}
+  XMPP_DOMAIN: meet.jitsi
+  XMPP_AUTH_DOMAIN: auth.meet.jitsi
+  XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+  XMPP_MUC_DOMAIN: muc.meet.jitsi
+  XMPP_GUEST_DOMAIN: guest.meet.jitsi
+  XMPP_SERVER: xmpp.meet.jitsi
+  ENABLE_AUTH: "1"
+  AUTH_TYPE: jwt
+  ENABLE_GUESTS: "0"
+  JWT_APP_ID: ${JITSI_JWT_APP_ID:-ripetizioni}
+  JWT_APP_SECRET: ${JITSI_JWT_APP_SECRET:?JITSI_JWT_APP_SECRET mancante}
+  JWT_ACCEPTED_ISSUERS: ${JITSI_JWT_APP_ID:-ripetizioni}
+  JWT_ACCEPTED_AUDIENCES: jitsi
+  JWT_ALLOW_EMPTY: "0"
+  JICOFO_AUTH_PASSWORD: ${JICOFO_AUTH_PASSWORD:?JICOFO_AUTH_PASSWORD mancante}
+  JVB_AUTH_PASSWORD: ${JVB_AUTH_PASSWORD:?JVB_AUTH_PASSWORD mancante}
+  # Il primo che entra (di norma il tutor, che apre la stanza) diventa moderatore.
+  ENABLE_AUTO_OWNER: "1"
+  ENABLE_LOBBY: "0"
+  ENABLE_PREJOIN_PAGE: "0"
+  ENABLE_WELCOME_PAGE: "0"
+  ENABLE_CLOSE_PAGE: "0"
+  ENABLE_RECORDING: "0"
+  ENABLE_LIVESTREAMING: "0"
+  ENABLE_TRANSCRIPTIONS: "0"
+  DISABLE_DEEP_LINKING: "1"
+  DEFAULT_LANGUAGE: it
+  ENABLE_P2P: "1"
+  # Nessuna richiesta a servizi di terzi dal browser (privacy minori).
+  DISABLE_THIRD_PARTY_REQUESTS: "1"
+
+services:
+  jitsi-web:
+    # Jitsi web con il tema Lumen del gestionale (infra/jitsi): colori, carattere, logo,
+    # barra strumenti ridotta, nome non modificabile.
+    image: ripetizioni-jitsi-web:${JITSI_IMAGE_VERSION:-stable}
+    build:
+      context: .
+      dockerfile: infra/jitsi/web.Dockerfile
+      args:
+        JITSI_IMAGE_VERSION: ${JITSI_IMAGE_VERSION:-stable}
+    restart: unless-stopped
+    environment:
+      <<: *jitsi-env
+      DISABLE_HTTPS: "1"            # TLS terminato da Traefik
+      ENABLE_HTTP_REDIRECT: "0"
+      ENABLE_LETSENCRYPT: "0"
+    expose: ["80"]
+    volumes:
+      - jitsi-web:/config
+    networks:
+      meet.jitsi:
+        aliases: [meet.jitsi]
+      dokploy-network: {}
+    depends_on: [jitsi-prosody]
+    logging: *logging
+
+  jitsi-prosody:
+    image: jitsi/prosody:${JITSI_IMAGE_VERSION:-stable}
+    restart: unless-stopped
+    expose: ["5222", "5347", "5280"]
+    environment:
+      <<: *jitsi-env
+    volumes:
+      - jitsi-prosody:/config
+    networks:
+      meet.jitsi:
+        aliases: [xmpp.meet.jitsi, prosody]
+    logging: *logging
+
+  jitsi-jicofo:
+    image: jitsi/jicofo:${JITSI_IMAGE_VERSION:-stable}
+    restart: unless-stopped
+    environment:
+      <<: *jitsi-env
+    volumes:
+      - jitsi-jicofo:/config
+    depends_on: [jitsi-prosody]
+    networks: [meet.jitsi]
+    logging: *logging
+
+  jitsi-jvb:
+    image: jitsi/jvb:${JITSI_IMAGE_VERSION:-stable}
+    restart: unless-stopped
+    ports:
+      - "${JVB_PORT:-10000}:${JVB_PORT:-10000}/udp"
+    environment:
+      <<: *jitsi-env
+      JVB_PORT: ${JVB_PORT:-10000}
+      # IP pubblico della VPS: indispensabile dietro NAT.
+      JVB_ADVERTISE_IPS: ${JVB_ADVERTISE_IPS:?JVB_ADVERTISE_IPS mancante}
+      # Con l'IP dichiarato non serve lo STUN pubblico di jitsi.net.
+      JVB_DISABLE_STUN: "true"
+    volumes:
+      - jitsi-jvb:/config
+    depends_on: [jitsi-prosody]
+    networks:
+      meet.jitsi:
+        aliases: [jvb, jvb.meet.jitsi]
+    logging: *logging
+
+networks:
+  meet.jitsi: {}
+  dokploy-network:
+    external: true
+
+volumes:
+  jitsi-web: {}
+  jitsi-prosody: {}
+  jitsi-jicofo: {}
+  jitsi-jvb: {}

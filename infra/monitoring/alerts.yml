@@ -1,0 +1,201 @@
+# Regole di alert (GAP-K03), soglie da tec5 "Metriche e soglie di alert" — da tarare sul pilota.
+# severity: sev1 | sev2 | sev3 (tec5 "Gestione degli incidenti"); runbook in docs/runbooks/.
+groups:
+  - name: ripetizioni-recording
+    rules:
+      - record: ripetizioni:http_requests:rate5m
+        expr: sum by (route, status) (rate(ripetizioni_http_requests_total[5m]))
+      - record: ripetizioni:http_p95_seconds:ordinary_15m
+        # API "ordinarie": escluse simulazione/esempio del solver ed endpoint di esercizio.
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(ripetizioni_http_request_duration_seconds_bucket{
+            route!~"api/v1/planning/(simulate|example)|metrics|healthz|readyz|api/v1/ready"}[15m])))
+      - record: ripetizioni:http_p99_seconds:ordinary_15m
+        expr: |
+          histogram_quantile(0.99, sum by (le) (rate(ripetizioni_http_request_duration_seconds_bucket{
+            route!~"api/v1/planning/(simulate|example)|metrics|healthz|readyz|api/v1/ready"}[15m])))
+      - record: ripetizioni:http_p50_seconds:ordinary_15m
+        expr: |
+          histogram_quantile(0.50, sum by (le) (rate(ripetizioni_http_request_duration_seconds_bucket{
+            route!~"api/v1/planning/(simulate|example)|metrics|healthz|readyz|api/v1/ready"}[15m])))
+      - record: ripetizioni:http_5xx_ratio:5m
+        expr: |
+          sum(rate(ripetizioni_http_requests_total{status=~"5.."}[5m]))
+            / clamp_min(sum(rate(ripetizioni_http_requests_total[5m])), 1e-9)
+
+  - name: ripetizioni-availability
+    rules:
+      - alert: ServizioNonRaggiungibile
+        # Probe esterno ogni 30 s: due fallimenti consecutivi.
+        expr: probe_success{job="uptime"} == 0
+        for: 1m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Portale non raggiungibile da {{ $labels.instance }}"
+          runbook_url: "docs/runbooks/README.md#indisponibilita"
+      - alert: ScrapeMetricheAssente
+        expr: up{job="ripetizioni-web"} == 0
+        for: 5m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Prometheus non riesce a leggere /metrics da {{ $labels.instance }}"
+          runbook_url: "docs/runbooks/README.md#indisponibilita"
+      - alert: ErroriServer5xx
+        expr: ripetizioni:http_5xx_ratio:5m > 0.02 and sum(rate(ripetizioni_http_requests_total[5m])) > 0.05
+        for: 5m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Error rate 5xx {{ $value | humanizePercentage }} (> 2% per 5 min)"
+          runbook_url: "docs/runbooks/README.md#indisponibilita"
+      - alert: LatenzaP95Alta
+        expr: ripetizioni:http_p95_seconds:ordinary_15m > 0.5
+        for: 15m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "p95 API ordinarie {{ $value | humanizeDuration }} (> 500 ms, NFR02)"
+          runbook_url: "docs/runbooks/README.md#indisponibilita"
+      - alert: CertificatoTLSInScadenza
+        expr: (probe_ssl_earliest_cert_expiry{job="uptime"} - time()) < 14 * 86400
+        for: 1h
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Certificato di {{ $labels.instance }} in scadenza tra {{ $value | humanizeDuration }}"
+          runbook_url: "docs/infra/dns-tls-manutenzione.md#rinnovo"
+
+  - name: ripetizioni-solver
+    rules:
+      - alert: HeartbeatWorkerAssente
+        expr: max by (queue) (ripetizioni_worker_heartbeat_age_seconds) > 120
+        for: 1m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Nessun heartbeat dalla coda {{ $labels.queue }} da oltre 2 min (worker o beat fermi)"
+          runbook_url: "docs/runbooks/01-solver-bloccato.md"
+      - alert: RunOltreLimiteHard
+        expr: ripetizioni_schedule_runs_over_hard_limit > 0
+        for: 1m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "{{ $value }} run RUNNING oltre il limite hard di 90 s (NFR04)"
+          runbook_url: "docs/runbooks/01-solver-bloccato.md"
+      - alert: ValidatoreRespingeSolver
+        expr: increase(ripetizioni_schedule_runs_failed{error_code="VALIDATION_FAILED"}[15m]) > 0
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Il validatore ha respinto una soluzione del solver"
+          runbook_url: "docs/runbooks/01-solver-bloccato.md"
+      - alert: CodaSolverFerma
+        expr: ripetizioni_schedule_run_oldest_queued_age_seconds > 300
+        for: 2m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Run in coda da {{ $value | humanizeDuration }}"
+          runbook_url: "docs/runbooks/01-solver-bloccato.md"
+
+  - name: ripetizioni-comms
+    rules:
+      # Metriche calcolate da apps.ops.metrics.communications_metrics sui modelli s3.
+      - alert: BacklogOutbox
+        expr: ripetizioni_outbox_pending > 100 or ripetizioni_outbox_oldest_pending_age_seconds > 600
+        for: 5m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Outbox in ritardo (backlog > 100 o evento più vecchio di 10 min)"
+          runbook_url: "docs/runbooks/04-email-indisponibile.md"
+      - alert: ErroriProviderEmail
+        expr: |
+          sum(increase(ripetizioni_delivery_attempts_total{outcome=~"TRANSIENT_ERROR|PERMANENT_ERROR|AMBIGUOUS|LEASE_EXPIRED"}[15m]))
+            / clamp_min(sum(increase(ripetizioni_delivery_attempts_total[15m])), 1) > 0.10
+          and sum(increase(ripetizioni_delivery_attempts_total[15m])) >= 10
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Errori del provider email {{ $value | humanizePercentage }} in 15 min"
+          runbook_url: "docs/runbooks/04-email-indisponibile.md"
+      - alert: ConsegneInDeadLetter
+        expr: ripetizioni_delivery_dead > 0
+        for: 30m
+        labels: { severity: sev4, team: operations }
+        annotations:
+          summary: "{{ $value }} consegne in dead-letter da verificare nel pannello comunicazioni"
+          runbook_url: "docs/runbooks/04-email-indisponibile.md"
+
+  - name: ripetizioni-data
+    rules:
+      - alert: ConflittiCommitAnomali
+        # 409 (stale/collisione) e contatore di dominio, contro la baseline del giorno prima.
+        expr: |
+          (sum(rate(ripetizioni_http_requests_total{status="409"}[15m]))
+            + sum(rate(ripetizioni_domain_events_total{kind=~"commit_conflict|stale_revision"}[15m])))
+          > 3 * (sum(rate(ripetizioni_http_requests_total{status="409"}[1d] offset 1d))
+            + sum(rate(ripetizioni_domain_events_total{kind=~"commit_conflict|stale_revision"}[1d] offset 1d)))
+          and (sum(increase(ripetizioni_http_requests_total{status="409"}[15m]))
+            + sum(increase(ripetizioni_domain_events_total{kind=~"commit_conflict|stale_revision"}[15m]))) >= 5
+        for: 10m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Aumento anomalo di conflitti di commit/stale"
+          runbook_url: "docs/runbooks/03-collisione-stale.md"
+      - alert: StorageDatabaseQuasiPieno
+        expr: sum(pg_database_size_bytes) / scalar(ripetizioni_db_storage_limit_bytes) > 0.8
+        for: 15m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Storage PostgreSQL oltre l'80%"
+          runbook_url: "docs/infra/database-redis.md"
+      - alert: WALQuasiPieno
+        expr: pg_wal_size_bytes / scalar(ripetizioni_db_wal_limit_bytes) > 0.8
+        for: 15m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Spazio WAL oltre l'80% (archiviazione lenta o slot bloccato)"
+          runbook_url: "docs/runbooks/06-restore.md#pitr"
+      - alert: ArchiviazioneWALFallita
+        expr: increase(pg_stat_archiver_failed_count[15m]) > 0
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Archiviazione WAL fallita: PITR a rischio (RPO 15 min)"
+          runbook_url: "docs/runbooks/06-restore.md#pitr"
+      - alert: BackupAssente
+        expr: time() - ripetizioni_backup_last_success_timestamp_seconds > 26 * 3600
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Nessun dump logico verificato da oltre 26 h"
+          runbook_url: "docs/runbooks/06-restore.md#backup"
+      - alert: RedisMemoriaAlta
+        expr: redis_memory_used_bytes / clamp_min(redis_memory_max_bytes, 1) > 0.8
+        for: 10m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Redis oltre l'80% di maxmemory (noeviction: poi errori di accodamento)"
+          runbook_url: "docs/runbooks/02-redis-indisponibile.md"
+      - alert: RedisGiu
+        expr: redis_up == 0
+        for: 1m
+        labels: { severity: sev2, team: operations }
+        annotations:
+          summary: "Redis non raggiungibile"
+          runbook_url: "docs/runbooks/02-redis-indisponibile.md"
+
+  - name: ripetizioni-security
+    rules:
+      - alert: LoginFallitiAnomali
+        expr: |
+          sum(increase(ripetizioni_http_requests_total{route="api/v1/auth/login",status=~"401|429"}[10m]))
+            + sum(increase(ripetizioni_domain_events_total{kind=~"login_failed|rate_limited"}[10m])) > 50
+        labels: { severity: sev2, team: security }
+        annotations:
+          summary: "Picco di login falliti o rate limit ({{ $value }} in 10 min)"
+          runbook_url: "docs/runbooks/05-incidente-sicurezza.md"
+      - alert: AccessiNegatiAnomali
+        expr: sum(increase(ripetizioni_http_requests_total{status="403"}[10m])) > 100
+        labels: { severity: sev3, team: security }
+        annotations:
+          summary: "Molte risposte 403 in 10 min: possibile enumerazione"
+          runbook_url: "docs/runbooks/05-incidente-sicurezza.md"
+      - alert: ProviderMetricheInErrore
+        expr: ripetizioni_metrics_provider_errors > 0
+        for: 10m
+        labels: { severity: sev3, team: operations }
+        annotations:
+          summary: "Un provider di metriche fallisce: alcuni alert potrebbero essere ciechi"
+          runbook_url: "docs/runbooks/README.md#indisponibilita"

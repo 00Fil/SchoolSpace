@@ -1,0 +1,8 @@
+PostgreSQL 17.10 UTF8 (loopback 55432), config.test_settings, USE_SQLITE_FOR_TESTS=0 — 2026-10-01
+........................................................................ [ 56%]
+........................................................................ [ 85%]
+.....................................                                    [100%]
+253 passed in 143.39s (0:02:23)
+
+SQLite (CI default): 245 passed, 8 skipped (test PostgreSQL-only saltati)
+ruff E9/F63/F7/F82 + format --check: OK; manage.py check: OK; makemigrations --check: nessuna modifica

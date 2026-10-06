@@ -1,0 +1,151 @@
+# Test unitari delle regole: promtool test rules infra/monitoring/tests/alerts_test.yml
+rule_files: [../alerts.yml]
+evaluation_interval: 30s
+
+tests:
+  - name: heartbeat assente e ripristino
+    interval: 30s
+    input_series:
+      - series: 'ripetizioni_worker_heartbeat_age_seconds{queue="solver"}'
+        values: "10 40 70 100 130 160 190 220 250 10"
+      - series: 'ripetizioni_worker_heartbeat_age_seconds{queue="notifications"}'
+        values: "10x10"
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: HeartbeatWorkerAssente
+        exp_alerts: []
+      - eval_time: 3m
+        alertname: HeartbeatWorkerAssente
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: operations, queue: solver }
+            exp_annotations:
+              summary: "Nessun heartbeat dalla coda solver da oltre 2 min (worker o beat fermi)"
+              runbook_url: "docs/runbooks/01-solver-bloccato.md"
+
+  - name: validatore che respinge il solver
+    interval: 1m
+    input_series:
+      - series: 'ripetizioni_schedule_runs_failed{error_code="VALIDATION_FAILED"}'
+        values: "0 0 0 1 1 1"
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: ValidatoreRespingeSolver
+        exp_alerts: []
+      - eval_time: 4m
+        alertname: ValidatoreRespingeSolver
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: operations, error_code: VALIDATION_FAILED }
+            exp_annotations:
+              summary: "Il validatore ha respinto una soluzione del solver"
+              runbook_url: "docs/runbooks/01-solver-bloccato.md"
+
+  - name: backup assente oltre 26 h
+    interval: 1h
+    input_series:
+      - series: "ripetizioni_backup_last_success_timestamp_seconds"
+        values: "0x30"
+    alert_rule_test:
+      - eval_time: 26h
+        alertname: BackupAssente
+        exp_alerts: []
+      - eval_time: 27h
+        alertname: BackupAssente
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: operations }
+            exp_annotations:
+              summary: "Nessun dump logico verificato da oltre 26 h"
+              runbook_url: "docs/runbooks/06-restore.md#backup"
+
+  - name: p95 oltre 500 ms per 15 min
+    interval: 1m
+    input_series:
+      # 100 richieste/min: 90 sotto 200 ms, 10 tra 0,75 e 1 s -> p95 ~ 0,875 s
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/me",method="GET",status="200",le="0.2"}'
+        values: "0+90x40"
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/me",method="GET",status="200",le="0.5"}'
+        values: "0+90x40"
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/me",method="GET",status="200",le="0.75"}'
+        values: "0+90x40"
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/me",method="GET",status="200",le="1"}'
+        values: "0+100x40"
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/me",method="GET",status="200",le="+Inf"}'
+        values: "0+100x40"
+      # Il solver lento non conta come API ordinaria.
+      - series: 'ripetizioni_http_request_duration_seconds_bucket{route="api/v1/planning/simulate",method="POST",status="200",le="+Inf"}'
+        values: "0+1000x40"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: LatenzaP95Alta
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: LatenzaP95Alta
+        exp_alerts:
+          - exp_labels: { severity: sev3, team: operations }
+            exp_annotations:
+              summary: "p95 API ordinarie 875ms (> 500 ms, NFR02)"
+              runbook_url: "docs/runbooks/README.md#indisponibilita"
+
+  - name: error rate 5xx
+    interval: 1m
+    input_series:
+      - series: 'ripetizioni_http_requests_total{route="api/v1/me",method="GET",status="200"}'
+        values: "0+95x20"
+      - series: 'ripetizioni_http_requests_total{route="api/v1/me",method="GET",status="500"}'
+        values: "0+5x20"
+    alert_rule_test:
+      - eval_time: 12m
+        alertname: ErroriServer5xx
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: operations }
+            exp_annotations:
+              summary: "Error rate 5xx 5% (> 2% per 5 min)"
+              runbook_url: "docs/runbooks/README.md#indisponibilita"
+
+  - name: picco di login falliti
+    interval: 1m
+    input_series:
+      - series: 'ripetizioni_http_requests_total{route="api/v1/auth/login",method="POST",status="401"}'
+        values: "0+10x15"
+      - series: 'ripetizioni_domain_events_total{kind="login_failed"}'
+        values: "0x15"
+    alert_rule_test:
+      - eval_time: 12m
+        alertname: LoginFallitiAnomali
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: security }
+            exp_annotations:
+              summary: "Picco di login falliti o rate limit (100 in 10 min)"
+              runbook_url: "docs/runbooks/05-incidente-sicurezza.md"
+
+  - name: uptime e certificato
+    interval: 30s
+    input_series:
+      - series: 'probe_success{job="uptime",instance="https://app.example.it/api/v1/ready"}'
+        values: "1 1 0 0 0 0"
+      - series: 'probe_ssl_earliest_cert_expiry{job="uptime",instance="https://app.example.it/api/v1/ready"}'
+        values: "864000x200"
+    alert_rule_test:
+      - eval_time: 2m30s
+        alertname: ServizioNonRaggiungibile
+        exp_alerts:
+          - exp_labels: { severity: sev2, team: operations, job: uptime, instance: "https://app.example.it/api/v1/ready" }
+            exp_annotations:
+              summary: "Portale non raggiungibile da https://app.example.it/api/v1/ready"
+              runbook_url: "docs/runbooks/README.md#indisponibilita"
+
+  - name: errori del provider email
+    interval: 1m
+    input_series:
+      # 20 tentativi/min, di cui 4 in errore temporaneo (20%) dal minuto 0.
+      - series: 'ripetizioni_delivery_attempts_total{outcome="ACCEPTED"}'
+        values: "0+16x30"
+      - series: 'ripetizioni_delivery_attempts_total{outcome="TRANSIENT_ERROR"}'
+        values: "0+4x30"
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: ErroriProviderEmail
+        exp_alerts:
+          - exp_labels: { severity: sev3, team: operations }
+            exp_annotations:
+              summary: "Errori del provider email 20% in 15 min"
+              runbook_url: "docs/runbooks/04-email-indisponibile.md"

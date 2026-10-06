@@ -1,0 +1,1 @@
+{% autoescape off %}Da confermare: lezione di {{ subject_name }} spostata a {{ start_text }}{% endautoescape %}

@@ -1,0 +1,190 @@
+{
+  "generated_at": "2026-10-03T19:07:47.179Z",
+  "checks": [
+    {
+      "name": "[1440-light] avviso delle pubblicazioni in attesa",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] decisione precedente del centro visibile",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] presa visione inviata con la versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] senza lezioni scelte non invia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] modifica vuota segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] controproposta inviata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] avviso delle pubblicazioni in attesa",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] decisione precedente del centro visibile",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] presa visione inviata con la versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] senza lezioni scelte non invia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] modifica vuota segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] controproposta inviata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] avviso delle pubblicazioni in attesa",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] decisione precedente del centro visibile",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] presa visione inviata con la versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] senza lezioni scelte non invia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] modifica vuota segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-light] controproposta inviata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] avviso delle pubblicazioni in attesa",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] decisione precedente del centro visibile",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] presa visione inviata con la versione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] senza lezioni scelte non invia",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] modifica vuota segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[360-dark] controproposta inviata",
+      "ok": true,
+      "info": ""
+    }
+  ],
+  "axe_serious_or_critical": [],
+  "axe_all": [
+    {
+      "name": "orari-1440-light",
+      "violations": []
+    },
+    {
+      "name": "orari-controproposta-1440-light",
+      "violations": []
+    },
+    {
+      "name": "orari-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "orari-controproposta-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "orari-360-light",
+      "violations": []
+    },
+    {
+      "name": "orari-controproposta-360-light",
+      "violations": []
+    },
+    {
+      "name": "orari-360-dark",
+      "violations": []
+    },
+    {
+      "name": "orari-controproposta-360-dark",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-inviata-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-inviata-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-inviata-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-360-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p3\\orari-inviata-360-dark.png"
+  ]
+}

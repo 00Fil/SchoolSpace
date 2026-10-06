@@ -1,0 +1,29 @@
+# Aggiornamenti delle dipendenze (GAP-J06): PR settimanali raggruppate, CI bloccante
+# (pip-audit, npm audit, Trivy, test). I lockfile Python vanno rigenerati con
+# scripts/lock-deps.sh nella PR (Dependabot "pip" aggiorna requirements*.in/.txt).
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /backend
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Rome }
+    open-pull-requests-limit: 5
+    groups:
+      django: { patterns: ["django*", "djangorestframework"] }
+      runtime: { patterns: ["*"], update-types: [minor, patch] }
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Rome }
+    open-pull-requests-limit: 5
+    groups:
+      frontend: { patterns: ["*"], update-types: [minor, patch] }
+  - package-ecosystem: docker
+    directory: /infra
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Rome }
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Rome }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Rome }
+    groups:
+      actions: { patterns: ["*"] }

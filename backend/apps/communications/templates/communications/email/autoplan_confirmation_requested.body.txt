@@ -1,0 +1,8 @@
+{% autoescape off %}Gentile utente,
+
+il centro ha proposto una lezione di {{ subject_name }}{% if student_names %} per {{ student_names }}{% endif %} che si sovrappone di {{ overflow_minutes }} minuti a un impegno indicato{% if commitment_labels %} ({{ commitment_labels }}){% endif %}.
+
+Quando: {{ start_text }} – {{ end_time }} (ora italiana)
+Modalità: {{ mode_text }}
+
+La lezione è riservata ma non ancora confermata: accettala o rifiutala dalla sezione «Da confermare» del portale. Se rifiuti, il centro cercherà un altro orario.{% endautoescape %}

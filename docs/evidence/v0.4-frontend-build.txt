@@ -1,0 +1,16 @@
+
+> gestionale-ripetizioni-ui@0.4.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 32 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.42 kB │ gzip:  0.28 kB
+dist/assets/index-B4kGUBS1.css    5.57 kB │ gzip:  1.76 kB
+dist/assets/index-BYjo0yjh.js   260.68 kB │ gzip: 80.33 kB
+✓ built in 1.27s
+
+NPM AUDIT
+found 0 vulnerabilities

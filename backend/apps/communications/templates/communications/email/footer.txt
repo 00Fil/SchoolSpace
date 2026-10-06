@@ -1,0 +1,4 @@
+{% autoescape off %}--
+{% if essential %}Messaggio di sicurezza di {{ center_name }}, inviato automaticamente: non rispondere a questa email e non inoltrarla.{% else %}Messaggio di servizio di {{ center_name }}, inviato automaticamente: non rispondere a questa email.
+Il calendario nel portale è la fonte aggiornata{% if portal_url %}: {{ portal_url }}{% endif %}.
+Puoi gestire le preferenze di notifica dal portale. Questo messaggio non contiene dati di altri partecipanti.{% endif %}{% endautoescape %}

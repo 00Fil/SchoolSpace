@@ -1,0 +1,3 @@
+user default off
+user app on #<sha256-della-password-app> ~* &* +@all -@dangerous +info
+user exporter on #<sha256-della-password-exporter> -@all +client|list +ping +info +config|get +slowlog|get +latency|latest +memory|usage +select +scan +type +llen +strlen

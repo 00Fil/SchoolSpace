@@ -1,0 +1,14 @@
+.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/*.sqlite3
+.env
+frontend/dist
+.git
+
+# --- artefatti locali ---
+.hypothesis/
+*.tsbuildinfo
+control/
+backend/control/

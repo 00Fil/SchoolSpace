@@ -1,0 +1,95 @@
+{
+  "format": "ripetizioni-e2e-local/1",
+  "started_at": "2026-10-02T19:26:29+00:00",
+  "finished_at": "2026-10-02T19:32:18+00:00",
+  "settings": "config.settings_production",
+  "components": {
+    "postgres": "psql (PostgreSQL) 17.10",
+    "redis": "Redis server v=6.2.20",
+    "nginx": "nginx version: nginx/1.30.4"
+  },
+  "results": [
+    {
+      "scenario": "migrate_as_migrator_and_privileges",
+      "ok": true,
+      "runtime_migrate_check": 0
+    },
+    {
+      "scenario": "broker_down_at_start",
+      "ok": true,
+      "healthz": true,
+      "readyz": 503
+    },
+    {
+      "scenario": "broker_recovers",
+      "ok": true,
+      "readyz": 200
+    },
+    {
+      "scenario": "workers_heartbeat",
+      "ok": true
+    },
+    {
+      "scenario": "smoke",
+      "ok": true,
+      "failed": []
+    },
+    {
+      "scenario": "metrics",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "scenario": "redis_restart",
+      "ok": true,
+      "detected": true,
+      "recovered": true,
+      "workers_after": true
+    },
+    {
+      "scenario": "worker_kill",
+      "ok": true,
+      "detection_seconds": 44
+    },
+    {
+      "scenario": "maintenance",
+      "ok": true,
+      "on": true,
+      "off": true
+    },
+    {
+      "scenario": "logs_redacted",
+      "ok": true,
+      "access_lines": 6,
+      "leaks": []
+    },
+    {
+      "scenario": "db_least_privilege",
+      "ok": true
+    },
+    {
+      "scenario": "loadtest_25_users_p95",
+      "ok": true,
+      "summary": [
+        "LOADTEST letture=2063 errori=0 (0.00%) p50=13ms p95=28ms soglia_p95=500ms"
+      ],
+      "stats_csv": [
+        "Type,Name,Request Count,Failure Count,Median Response Time,Average Response Time,Min Response Time,Max Response Time,Average Content Size,Requests/s,Failures/s,50%,66%,75%,80%,90%,95%,98%,99%,99.9%,99.99%,100%",
+        "GET,csrf,50,0,8,9.114024559976315,5.622296000183269,28.3800950001023,37.0,0.2088914753208865,0.0,8,9,9,12,14,15,28,28,28,28,28",
+        "GET,feed-tokens,137,0,12,14.251005240849025,9.201092000239441,37.2615589999441,14.0,0.572362642379229,0.0,12,13,16,16,22,25,32,34,37,37,37",
+        "GET,index,300,0,2,2.0657022099900737,1.316631999998208,6.424750999940443,1590.0,1.2533488519253189,0.0,2,2,2,2,3,4,5,6,6,6,6",
+        "POST,login,25,0,180,193.33557120004116,150.81532900012462,263.21830599999885,159.0,0.10444573766044325,0.0,180,210,220,230,250,260,260,260,260,260,260",
+        "GET,me,743,0,14,16.793889398394743,10.601904999930412,88.81082200014134,123.49663526244953,3.1041273232683735,0.0,14,15,17,19,25,30,47,61,89,89,89",
+        "GET,mfa-status,135,0,12,13.92442555556449,9.081219000108831,55.13331499969354,88.0,0.5640069833663935,0.0,12,13,14,16,21,26,30,35,55,55,55",
+        "GET,notifications,599,0,14,16.845794934901512,10.688942999877327,71.46315099998901,98.0,2.50251987434422,0.0,14,16,17,19,25,31,41,47,71,71,71",
+        "GET,preferences,146,0,12,15.268575404104,9.04634599964993,64.57116899991888,390.0,0.6099631079369886,0.0,12,13,15,17,25,31,49,56,65,65,65",
+        ",Aggregated,2135,0,13,16.177372054804135,1.316631999998208,263.21830599999885,329.7531615925059,8.919665996201854,0.0,13,14,16,17,24,30,53,160,250,260,260"
+      ]
+    }
+  ],
+  "ok": true,
+  "not_covered": [
+    "interruzione di un run del solver: la pianificazione è disattivata in produzione (EXPERIMENTAL_DB_PLANNING vietato); coperta dai test di lease/reconcile",
+    "immagini Docker e rete compose: scripts/e2e-compose.sh (richiede Docker)"
+  ]
+}

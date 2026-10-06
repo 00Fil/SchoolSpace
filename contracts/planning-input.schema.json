@@ -1,0 +1,1184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "0.4",
+        "0.5"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+    },
+    "epoch": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string",
+      "const": "Europe/Rome"
+    },
+    "horizon_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 42
+    },
+    "grid_minutes": {
+      "type": "integer",
+      "enum": [
+        15
+      ]
+    },
+    "duration_catalog": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "enum": [
+          60,
+          90,
+          120
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "STRICT",
+        "COVERAGE"
+      ]
+    },
+    "budget_seconds": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 43200
+    },
+    "online_onsite_requires_space": {
+      "type": "boolean"
+    },
+    "video_channels_required": {
+      "type": "boolean"
+    },
+    "objective_order": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "P0",
+          "P1",
+          "P2",
+          "F",
+          "C",
+          "R",
+          "P",
+          "G"
+        ]
+      },
+      "minItems": 3,
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "unsupported_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 80
+      },
+      "minItems": 0,
+      "maxItems": 20
+    },
+    "students": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "availability_state": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "APPROVED_UNRESTRICTED",
+              "DECLARED_NONE",
+              "UNKNOWN"
+            ]
+          },
+          "availability": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "IN_PERSON",
+                    "ONLINE"
+                  ]
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                },
+                "location": {
+                  "type": "string",
+                  "enum": [
+                    "ON_SITE",
+                    "REMOTE"
+                  ]
+                }
+              },
+              "required": [
+                "mode",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 2000
+          }
+        },
+        "required": [
+          "id",
+          "availability_state",
+          "availability"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 120
+    },
+    "tutors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "availability_state": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "APPROVED_UNRESTRICTED",
+              "DECLARED_NONE",
+              "UNKNOWN"
+            ]
+          },
+          "availability": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "IN_PERSON",
+                    "ONLINE"
+                  ]
+                },
+                "location": {
+                  "type": "string",
+                  "enum": [
+                    "ON_SITE",
+                    "REMOTE"
+                  ]
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                }
+              },
+              "required": [
+                "mode",
+                "location",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 2000
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "subject": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+                },
+                "level": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "IN_PERSON",
+                    "ONLINE"
+                  ]
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                }
+              },
+              "required": [
+                "subject",
+                "level",
+                "mode",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 200
+          },
+          "daily_limit_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          },
+          "weekly_limit_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          },
+          "pause_minutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "transition_minutes": {
+            "type": "object",
+            "properties": {
+              "ON_SITE": {
+                "type": "object",
+                "properties": {
+                  "ON_SITE": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 60540
+                  },
+                  "REMOTE": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 60540
+                  }
+                },
+                "required": [
+                  "ON_SITE",
+                  "REMOTE"
+                ],
+                "additionalProperties": false
+              },
+              "REMOTE": {
+                "type": "object",
+                "properties": {
+                  "ON_SITE": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 60540
+                  },
+                  "REMOTE": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 60540
+                  }
+                },
+                "required": [
+                  "ON_SITE",
+                  "REMOTE"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "ON_SITE",
+              "REMOTE"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "availability_state",
+          "availability",
+          "skills",
+          "daily_limit_minutes",
+          "weekly_limit_minutes",
+          "pause_minutes",
+          "transition_minutes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SPACE",
+              "VIDEO_CHANNEL"
+            ]
+          },
+          "student_capacity": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "buffer_minutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "availability": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                }
+              },
+              "required": [
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 2000
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "student_capacity",
+          "buffer_minutes",
+          "availability"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 15
+    },
+    "service_windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "IN_PERSON",
+              "ONLINE"
+            ]
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "ON_SITE",
+              "REMOTE"
+            ]
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          }
+        },
+        "required": [
+          "mode",
+          "location",
+          "start",
+          "end"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 2000
+    },
+    "closures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "IN_PERSON",
+              "ONLINE"
+            ]
+          },
+          "resource_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          }
+        },
+        "required": [
+          "mode",
+          "resource_id",
+          "start",
+          "end"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 500
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "demand_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "GROUP"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "level": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 1,
+            "maxItems": 20,
+            "uniqueItems": true
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "P0",
+              "P1",
+              "P2"
+            ]
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "allowed_modes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "IN_PERSON",
+                "ONLINE"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true
+          },
+          "allowed_tutors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 1,
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "online_capacity": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 20
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "earliest_start": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "latest_end": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60540
+          },
+          "locked_assignment": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Assignment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previous_assignment": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Assignment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "preferred_tutors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 1,
+            "maxItems": 10,
+            "uniqueItems": true,
+            "description": "v0.5 (v0.9.4): tutor preferiti dalla famiglia, sottoinsieme di allowed_tutors; termine morbido P."
+          }
+        },
+        "required": [
+          "demand_key",
+          "type",
+          "subject",
+          "level",
+          "participants",
+          "duration_minutes",
+          "priority",
+          "mandatory",
+          "allowed_modes",
+          "allowed_tutors",
+          "online_capacity",
+          "earliest_start",
+          "latest_end",
+          "locked_assignment"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 1000
+    },
+    "allow_cross_local_midnight": {
+      "type": "boolean"
+    },
+    "student_buffer_minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 120
+    },
+    "horizon_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60540
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_units": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "max_tutors": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "max_students": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "max_candidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 250000
+        }
+      },
+      "required": [
+        "max_units",
+        "max_tutors",
+        "max_students",
+        "max_candidates"
+      ],
+      "additionalProperties": false
+    },
+    "search_workers": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "fairness_policy": {
+      "type": "object",
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "approval_status": {
+          "type": "string",
+          "enum": [
+            "PENDING_APPROVAL",
+            "APPROVED"
+          ]
+        },
+        "measure": {
+          "type": "string",
+          "enum": [
+            "MAX_RELATIVE_DEFICIT_PER_STUDENT"
+          ]
+        },
+        "scale": {
+          "type": "integer",
+          "enum": [
+            1000
+          ]
+        },
+        "beneficiary_counting": {
+          "type": "string",
+          "enum": [
+            "MINUTES_PER_BENEFICIARY"
+          ]
+        }
+      },
+      "required": [
+        "policy_id",
+        "version",
+        "approval_status",
+        "measure",
+        "scale",
+        "beneficiary_counting"
+      ],
+      "additionalProperties": false
+    },
+    "series": {
+      "type": "array",
+      "maxItems": 400,
+      "items": {
+        "type": "object",
+        "properties": {
+          "series_key": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 1,
+            "maxItems": 60,
+            "uniqueItems": true
+          },
+          "stability": {
+            "type": "string",
+            "enum": [
+              "PREFERRED",
+              "REQUIRED"
+            ]
+          },
+          "preferred_slot": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "weekday": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 6
+                  },
+                  "local_start_minute": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1439
+                  },
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "PREVIOUS_PLAN",
+                      "LESSON_SERIES",
+                      "DECLARED"
+                    ]
+                  }
+                },
+                "required": [
+                  "weekday",
+                  "local_start_minute",
+                  "source"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "series_key",
+          "units",
+          "stability",
+          "preferred_slot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "family_constraints": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "constraint_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SAME_START",
+              "SAME_INTERVAL",
+              "SAME_DAY",
+              "DIFFERENT_DAYS",
+              "NO_OVERLAP"
+            ]
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 2,
+            "maxItems": 20,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "constraint_id",
+          "kind",
+          "units"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "sequences": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequence_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            "minItems": 2,
+            "maxItems": 20,
+            "uniqueItems": true
+          },
+          "min_gap_minutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60540
+          },
+          "max_gap_minutes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 60540
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "require_predecessor": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sequence_id",
+          "units",
+          "min_gap_minutes",
+          "max_gap_minutes",
+          "require_predecessor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "enrollments": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "student_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                }
+              },
+              "required": [
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "student_id",
+          "periods"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "properties": {
+          "subject_kind": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TUTOR"
+            ]
+          },
+          "subject_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 60540
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60540
+                }
+              },
+              "required": [
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 200
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "subject_kind",
+          "subject_id",
+          "windows",
+          "weight"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "replanning": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "GLOBAL",
+            "LOCAL"
+          ]
+        },
+        "unlocked": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "properties": {
+              "demand_key": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+              },
+              "authorization_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+              }
+            },
+            "required": [
+              "demand_key",
+              "authorization_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expansion_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+          },
+          "maxItems": 1000,
+          "uniqueItems": true
+        },
+        "propose_scope_expansion": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "scope",
+        "unlocked",
+        "expansion_candidates",
+        "propose_scope_expansion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "policy_version",
+    "epoch",
+    "timezone",
+    "horizon_days",
+    "grid_minutes",
+    "duration_catalog",
+    "mode",
+    "budget_seconds",
+    "online_onsite_requires_space",
+    "video_channels_required",
+    "objective_order",
+    "unsupported_constraints",
+    "students",
+    "tutors",
+    "resources",
+    "service_windows",
+    "closures",
+    "units",
+    "allow_cross_local_midnight",
+    "student_buffer_minutes",
+    "horizon_minutes"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Assignment": {
+      "type": "object",
+      "properties": {
+        "demand_key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "tutor_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "IN_PERSON",
+            "ONLINE"
+          ]
+        },
+        "location": {
+          "type": "string",
+          "enum": [
+            "ON_SITE",
+            "REMOTE"
+          ]
+        },
+        "space_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "video_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60540
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60540
+        },
+        "student_location": {
+          "type": "string",
+          "enum": [
+            "ON_SITE",
+            "REMOTE"
+          ]
+        },
+        "student_space_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "demand_key",
+        "tutor_id",
+        "mode",
+        "location",
+        "space_id",
+        "video_id",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$comment": "v0.5: 0.4 resta accettato con i vincoli storici (una settimana, solo P0/P1/P2, nessun campo nuovo); i campi opzionali sono ammessi solo con schema_version 0.5."
+}

@@ -1,0 +1,707 @@
+{
+  "generated_at": "2026-10-03T19:07:33.604Z",
+  "checks": [
+    {
+      "name": "[1440-light] credenziali errate → messaggio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] MFA con autocomplete one-time-code",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] panoramica multi-figlio (2 schede)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] figlio senza delega di modifica → «Sola lettura»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] nessuno scorrimento orizzontale (reflow)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] eccezioni: «Mostra altre» segue il cursore",
+      "ok": true,
+      "info": "20 → 25"
+    },
+    {
+      "name": "[1440-light] disponibilità effettiva parziale segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] figlio non più collegato → stato revocato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] lezione del figlio in sola lettura senza azioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] focus intrappolato nel dialogo con Tab",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] motivo obbligatorio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] spostamento allo stesso orario rifiutato in locale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] assenza inviata con Idempotency-Key e studente",
+      "ok": true,
+      "info": "{\"lesson_id\":\"44444444-4444-4444-8444-444444444444\",\"kind\":\"ABSENCE\",\"reason\":\"Verifica di latino\",\"student_id\":\"11111111-1111-4111-8111-111111111111\"}"
+    },
+    {
+      "name": "[1440-light] ritiro in conflitto → «Dati non aggiornati»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] Esc chiude il dialogo e riporta il focus",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] notifica interna reale nel pannello",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] link ICS mostrato una volta",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] sessione revocata → «Accesso non più disponibile»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] dalla revoca si torna al login",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] tutor: barre minuti con superamento limite",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-light] presenze con versione attesa e Idempotency-Key",
+      "ok": true,
+      "info": "{\"expected_version\":2,\"entries\":[{\"student_id\":\"11111111-1111-4111-8111-111111111111\",\"status\":\"PRESENT\"},{\"student_id\":\"22222222-2222-4222-8222-222222222222\",\"status\":\"ABSENT\"}]}"
+    },
+    {
+      "name": "[1440-light] invito: token rimosso dall'URL",
+      "ok": true,
+      "info": "http://127.0.0.1:4179/"
+    },
+    {
+      "name": "[1440-light] nessun errore JavaScript",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] credenziali errate → messaggio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] MFA con autocomplete one-time-code",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] panoramica multi-figlio (2 schede)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] figlio senza delega di modifica → «Sola lettura»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] nessuno scorrimento orizzontale (reflow)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] eccezioni: «Mostra altre» segue il cursore",
+      "ok": true,
+      "info": "20 → 25"
+    },
+    {
+      "name": "[1440-dark] disponibilità effettiva parziale segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] figlio non più collegato → stato revocato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] lezione del figlio in sola lettura senza azioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] focus intrappolato nel dialogo con Tab",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] motivo obbligatorio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] spostamento allo stesso orario rifiutato in locale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] assenza inviata con Idempotency-Key e studente",
+      "ok": true,
+      "info": "{\"lesson_id\":\"44444444-4444-4444-8444-444444444444\",\"kind\":\"ABSENCE\",\"reason\":\"Verifica di latino\",\"student_id\":\"11111111-1111-4111-8111-111111111111\"}"
+    },
+    {
+      "name": "[1440-dark] ritiro in conflitto → «Dati non aggiornati»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] Esc chiude il dialogo e riporta il focus",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] notifica interna reale nel pannello",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] link ICS mostrato una volta",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] sessione revocata → «Accesso non più disponibile»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] dalla revoca si torna al login",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] tutor: barre minuti con superamento limite",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[1440-dark] presenze con versione attesa e Idempotency-Key",
+      "ok": true,
+      "info": "{\"expected_version\":2,\"entries\":[{\"student_id\":\"11111111-1111-4111-8111-111111111111\",\"status\":\"PRESENT\"},{\"student_id\":\"22222222-2222-4222-8222-222222222222\",\"status\":\"ABSENT\"}]}"
+    },
+    {
+      "name": "[1440-dark] invito: token rimosso dall'URL",
+      "ok": true,
+      "info": "http://127.0.0.1:4179/"
+    },
+    {
+      "name": "[1440-dark] nessun errore JavaScript",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] credenziali errate → messaggio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] MFA con autocomplete one-time-code",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] panoramica multi-figlio (2 schede)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] figlio senza delega di modifica → «Sola lettura»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] nessuno scorrimento orizzontale (reflow)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] eccezioni: «Mostra altre» segue il cursore",
+      "ok": true,
+      "info": "20 → 25"
+    },
+    {
+      "name": "[390-light] disponibilità effettiva parziale segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] figlio non più collegato → stato revocato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] lezione del figlio in sola lettura senza azioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] focus intrappolato nel dialogo con Tab",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] motivo obbligatorio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] spostamento allo stesso orario rifiutato in locale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] assenza inviata con Idempotency-Key e studente",
+      "ok": true,
+      "info": "{\"lesson_id\":\"44444444-4444-4444-8444-444444444444\",\"kind\":\"ABSENCE\",\"reason\":\"Verifica di latino\",\"student_id\":\"11111111-1111-4111-8111-111111111111\"}"
+    },
+    {
+      "name": "[390-light] ritiro in conflitto → «Dati non aggiornati»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] Esc chiude il dialogo e riporta il focus",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] notifica interna reale nel pannello",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] link ICS mostrato una volta",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] sessione revocata → «Accesso non più disponibile»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] dalla revoca si torna al login",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] tutor: barre minuti con superamento limite",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-light] presenze con versione attesa e Idempotency-Key",
+      "ok": true,
+      "info": "{\"expected_version\":2,\"entries\":[{\"student_id\":\"11111111-1111-4111-8111-111111111111\",\"status\":\"PRESENT\"},{\"student_id\":\"22222222-2222-4222-8222-222222222222\",\"status\":\"ABSENT\"}]}"
+    },
+    {
+      "name": "[390-light] invito: token rimosso dall'URL",
+      "ok": true,
+      "info": "http://127.0.0.1:4179/"
+    },
+    {
+      "name": "[390-light] nessun errore JavaScript",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] credenziali errate → messaggio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] MFA con autocomplete one-time-code",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] panoramica multi-figlio (2 schede)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] figlio senza delega di modifica → «Sola lettura»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] nessuno scorrimento orizzontale (reflow)",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] eccezioni: «Mostra altre» segue il cursore",
+      "ok": true,
+      "info": "20 → 25"
+    },
+    {
+      "name": "[390-dark] disponibilità effettiva parziale segnalata",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] figlio non più collegato → stato revocato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] lezione del figlio in sola lettura senza azioni",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] focus intrappolato nel dialogo con Tab",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] motivo obbligatorio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] spostamento allo stesso orario rifiutato in locale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] assenza inviata con Idempotency-Key e studente",
+      "ok": true,
+      "info": "{\"lesson_id\":\"44444444-4444-4444-8444-444444444444\",\"kind\":\"ABSENCE\",\"reason\":\"Verifica di latino\",\"student_id\":\"11111111-1111-4111-8111-111111111111\"}"
+    },
+    {
+      "name": "[390-dark] ritiro in conflitto → «Dati non aggiornati»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] Esc chiude il dialogo e riporta il focus",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] notifica interna reale nel pannello",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] link ICS mostrato una volta",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] sessione revocata → «Accesso non più disponibile»",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] dalla revoca si torna al login",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] tutor: barre minuti con superamento limite",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[390-dark] presenze con versione attesa e Idempotency-Key",
+      "ok": true,
+      "info": "{\"expected_version\":2,\"entries\":[{\"student_id\":\"11111111-1111-4111-8111-111111111111\",\"status\":\"PRESENT\"},{\"student_id\":\"22222222-2222-4222-8222-222222222222\",\"status\":\"ABSENT\"}]}"
+    },
+    {
+      "name": "[390-dark] invito: token rimosso dall'URL",
+      "ok": true,
+      "info": "http://127.0.0.1:4179/"
+    },
+    {
+      "name": "[390-dark] nessun errore JavaScript",
+      "ok": true,
+      "info": ""
+    }
+  ],
+  "axe_pages": 48,
+  "axe_serious_or_critical": [],
+  "axe_all": [
+    {
+      "name": "login-1440-light",
+      "violations": []
+    },
+    {
+      "name": "mfa-1440-light",
+      "violations": []
+    },
+    {
+      "name": "famiglia-home-1440-light",
+      "violations": []
+    },
+    {
+      "name": "figli-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cambio-modal-1440-light",
+      "violations": []
+    },
+    {
+      "name": "cambi-1440-light",
+      "violations": []
+    },
+    {
+      "name": "ics-1440-light",
+      "violations": []
+    },
+    {
+      "name": "sessione-revocata-1440-light",
+      "violations": []
+    },
+    {
+      "name": "contesto-1440-light",
+      "violations": []
+    },
+    {
+      "name": "tutor-home-1440-light",
+      "violations": []
+    },
+    {
+      "name": "presenze-1440-light",
+      "violations": []
+    },
+    {
+      "name": "invito-1440-light",
+      "violations": []
+    },
+    {
+      "name": "login-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "mfa-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "famiglia-home-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "figli-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cambio-modal-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "cambi-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "ics-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "sessione-revocata-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "contesto-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "tutor-home-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "presenze-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "invito-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "login-390-light",
+      "violations": []
+    },
+    {
+      "name": "mfa-390-light",
+      "violations": []
+    },
+    {
+      "name": "famiglia-home-390-light",
+      "violations": []
+    },
+    {
+      "name": "figli-390-light",
+      "violations": []
+    },
+    {
+      "name": "cambio-modal-390-light",
+      "violations": []
+    },
+    {
+      "name": "cambi-390-light",
+      "violations": []
+    },
+    {
+      "name": "ics-390-light",
+      "violations": []
+    },
+    {
+      "name": "sessione-revocata-390-light",
+      "violations": []
+    },
+    {
+      "name": "contesto-390-light",
+      "violations": []
+    },
+    {
+      "name": "tutor-home-390-light",
+      "violations": []
+    },
+    {
+      "name": "presenze-390-light",
+      "violations": []
+    },
+    {
+      "name": "invito-390-light",
+      "violations": []
+    },
+    {
+      "name": "login-390-dark",
+      "violations": []
+    },
+    {
+      "name": "mfa-390-dark",
+      "violations": []
+    },
+    {
+      "name": "famiglia-home-390-dark",
+      "violations": []
+    },
+    {
+      "name": "figli-390-dark",
+      "violations": []
+    },
+    {
+      "name": "cambio-modal-390-dark",
+      "violations": []
+    },
+    {
+      "name": "cambi-390-dark",
+      "violations": []
+    },
+    {
+      "name": "ics-390-dark",
+      "violations": []
+    },
+    {
+      "name": "sessione-revocata-390-dark",
+      "violations": []
+    },
+    {
+      "name": "contesto-390-dark",
+      "violations": []
+    },
+    {
+      "name": "tutor-home-390-dark",
+      "violations": []
+    },
+    {
+      "name": "presenze-390-dark",
+      "violations": []
+    },
+    {
+      "name": "invito-390-dark",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\login-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\mfa-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\famiglia-home-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\figli-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\cambio-modal-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\ics-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\sessione-revocata-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\contesto-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\tutor-home-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\presenze-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\invito-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\login-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\mfa-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\famiglia-home-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\figli-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\cambio-modal-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\ics-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\sessione-revocata-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\contesto-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\tutor-home-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\presenze-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\invito-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\login-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\mfa-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\famiglia-home-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\figli-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\cambio-modal-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\ics-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\sessione-revocata-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\contesto-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\tutor-home-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\presenze-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\invito-390-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\login-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\mfa-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\famiglia-home-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\figli-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\cambio-modal-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\ics-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\sessione-revocata-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\contesto-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\tutor-home-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\presenze-390-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.8-s6\\invito-390-dark.png"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+ "steps": [
+  "login",
+  "verifica dati: pronti",
+  "calcolo concluso dal worker",
+  "pubblicate 6 lezioni",
+  "ruota da tastiera: +1 h",
+  "spostamento salvato",
+  "annulla spostamento eseguito",
+  "cancellazione registrata",
+  "disponibilità creata e approvata con motivo",
+  "materia creata",
+  "guardia modifiche non salvate",
+  "dettaglio percorso",
+  "simulazione laboratorio",
+  "palette comandi"
+ ],
+ "errors": [],
+ "dims_checked": 60
+}

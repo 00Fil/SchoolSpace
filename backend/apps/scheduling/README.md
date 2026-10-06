@@ -1,0 +1,1 @@
+Bridge sperimentale v0.5: vedere docs/planner.md, docs/database-planning.md e docs/calendar.md. Il worker e il solver non scrivono booking; un comando separato del calendario transazionale salva solo nel prototipo sintetico, con PostgreSQL e flag espliciti. Nessuna produzione o approvazione di gate.

@@ -1,0 +1,48 @@
+{
+ "steps": [
+  "login centro",
+  "verifica dati: pronti (seed lun/mer/gio)",
+  "calcolo concluso dal worker",
+  "pubblicate 6 lezioni nei giorni 2026-10-05, 2026-10-08",
+  "rifiuto con motivi: RESOURCE_AVAILABILITY, SERVICE_CLOSED, STUDENT_AVAILABILITY, TUTOR_AVAILABILITY",
+  "opzioni server: 2/96 orari validi nel giorno della lezione",
+  "ruota da tastiera: +1 h",
+  "modale: martedì bloccato con motivo «Non si può: il tutor non è disponibile in quell’orario; uno studente non è dispo…» (Mar 6 ott · pieno)",
+  "spostamento a mercoledì salvato (nessuna disponibilità creata dal test)",
+  "annulla spostamento eseguito",
+  "trascinamento: rilascio a 10:00–11:00 apre il modale precompilato",
+  "spostamento da trascinamento salvato e annullato",
+  "cancellazione registrata",
+  "apertura del venerdì creata dal modulo (JSON sincronizzato)",
+  "competenze: nomi al posto degli identificativi",
+  "laboratorio: riepilogo, esclusione di una richiesta, 5 lezioni collocate",
+  "portale tutor: 6 lezioni, 0 studenti visibili (perimetro), 0 partecipanti anonimizzati",
+  "portale famiglia: 6 lezioni, 2 studenti visibili (perimetro), 6 partecipanti anonimizzati",
+  "portale studente: 3 lezioni, 1 studenti visibili (perimetro), 3 partecipanti anonimizzati",
+  "palette comandi"
+ ],
+ "errors": [],
+ "dims_checked": 60,
+ "axe_pages": 54,
+ "axe_violations": 0,
+ "portal": {
+  "tutor": {
+   "lessons": 6,
+   "day_cards": 5,
+   "visible_students": 0,
+   "hidden_participants": 0
+  },
+  "famiglia": {
+   "lessons": 6,
+   "day_cards": 5,
+   "visible_students": 2,
+   "hidden_participants": 6
+  },
+  "studente": {
+   "lessons": 3,
+   "day_cards": 2,
+   "visible_students": 1,
+   "hidden_participants": 3
+  }
+ }
+}

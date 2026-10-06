@@ -1,0 +1,105 @@
+services:
+  db:
+    image: postgres:17
+    env_file: .env
+    volumes:
+    - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  backend:
+    build:
+      context: .
+      dockerfile: infra/backend.Dockerfile
+    env_file: .env
+    volumes:
+    - app-var:/app/var
+    # Solo sviluppo: l'immagine è quella di produzione, ma con settings base e runserver.
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings
+    command:
+    - python
+    - manage.py
+    - runserver
+    - 0.0.0.0:8000
+    ports:
+    - 127.0.0.1:8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/frontend.dev.Dockerfile
+    environment:
+      API_PROXY_TARGET: http://backend:8000
+    ports:
+    - 127.0.0.1:5173:5173
+    depends_on:
+    - backend
+  redis:
+    image: redis:7-alpine
+    command:
+    - redis-server
+    - --requirepass
+    - ${REDIS_PASSWORD}
+    - --appendonly
+    - 'no'
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping | grep PONG
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    env_file: .env
+  worker-solver:
+    # L'immagine eredita il controllo HTTP del backend su :8000, che Celery non apre.
+    healthcheck:
+      disable: true
+    build: &id001
+      context: .
+      dockerfile: infra/backend.Dockerfile
+    env_file: .env
+    volumes:
+    - app-var:/app/var
+    environment: &devenv
+      DJANGO_SETTINGS_MODULE: config.settings
+    depends_on: &id002
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command:
+    - celery
+    - -A
+    - config
+    - worker
+    - --loglevel=INFO
+    - --concurrency=1
+    - -Q
+    - solver
+  beat:
+    # L'immagine eredita il controllo HTTP del backend su :8000, che Celery non apre.
+    healthcheck:
+      disable: true
+    build: *id001
+    env_file: .env
+    volumes:
+    - app-var:/app/var
+    environment: *devenv
+    depends_on: *id002
+    command:
+    - celery
+    - -A
+    - config
+    - beat
+    - --loglevel=INFO
+    - --schedule=/tmp/celerybeat-schedule
+volumes:
+  postgres-data: null
+  app-var: null

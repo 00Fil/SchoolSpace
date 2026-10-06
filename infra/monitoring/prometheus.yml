@@ -1,0 +1,39 @@
+# Prometheus (GAP-K02/K03): scrape privato, nessun endpoint pubblico.
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+  external_labels: { env: production, service: ripetizioni }
+
+rule_files: [/etc/prometheus/alerts.yml]
+
+alerting:
+  alertmanagers:
+    - static_configs: [{ targets: ["alertmanager:9093"] }]
+
+scrape_configs:
+  - job_name: ripetizioni-web
+    metrics_path: /metrics
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/secrets/ops_metrics_token
+    static_configs: [{ targets: ["web:8000"] }]
+
+  - job_name: uptime
+    # Probe HTTP del portale (readiness pubblica) e del TLS; in più usare un monitor
+    # esterno indipendente (docs/infra/uptime-monitor.md), perché questo vive nello stesso host.
+    metrics_path: /probe
+    params: { module: [https_ready] }
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["https://app.example.it/api/v1/ready"]
+    relabel_configs:
+      - { source_labels: [__address__], target_label: __param_target }
+      - { source_labels: [__param_target], target_label: instance }
+      - { target_label: __address__, replacement: "blackbox:9115" }
+
+  - job_name: postgres
+    static_configs: [{ targets: ["postgres-exporter:9187"] }]
+  - job_name: redis
+    static_configs: [{ targets: ["redis-exporter:9121"] }]
+  - job_name: node
+    static_configs: [{ targets: ["node-exporter:9100"] }]

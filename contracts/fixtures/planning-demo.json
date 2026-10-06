@@ -1,0 +1,415 @@
+{
+  "schema_version": "0.4",
+  "policy_version": "SYNTHETIC-NOT-APPROVED",
+  "epoch": "2026-10-05T00:00:00Z",
+  "timezone": "Europe/Rome",
+  "horizon_days": 7,
+  "horizon_minutes": 10080,
+  "grid_minutes": 15,
+  "duration_catalog": [
+    60,
+    90,
+    120
+  ],
+  "mode": "STRICT",
+  "budget_seconds": 3,
+  "online_onsite_requires_space": true,
+  "video_channels_required": false,
+  "allow_cross_local_midnight": false,
+  "student_buffer_minutes": 0,
+  "objective_order": [
+    "P0",
+    "P1",
+    "P2"
+  ],
+  "unsupported_constraints": [],
+  "students": [
+    {
+      "id": "student-demo-1",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "start": 480,
+          "end": 840
+        }
+      ]
+    },
+    {
+      "id": "student-demo-2",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "start": 480,
+          "end": 840
+        }
+      ]
+    },
+    {
+      "id": "student-demo-3",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "start": 480,
+          "end": 840
+        }
+      ]
+    },
+    {
+      "id": "student-demo-4",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "start": 480,
+          "end": 840
+        }
+      ]
+    }
+  ],
+  "tutors": [
+    {
+      "id": "tutor-demo-1",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "location": "ON_SITE",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "location": "REMOTE",
+          "start": 480,
+          "end": 840
+        }
+      ],
+      "skills": [
+        {
+          "subject": "math-demo",
+          "level": "DEMO",
+          "mode": "IN_PERSON",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "math-demo",
+          "level": "DEMO",
+          "mode": "ONLINE",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "science-demo",
+          "level": "DEMO",
+          "mode": "IN_PERSON",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "science-demo",
+          "level": "DEMO",
+          "mode": "ONLINE",
+          "start": 0,
+          "end": 10080
+        }
+      ],
+      "daily_limit_minutes": 300,
+      "weekly_limit_minutes": 600,
+      "pause_minutes": 0,
+      "transition_minutes": {
+        "ON_SITE": {
+          "ON_SITE": 0,
+          "REMOTE": 30
+        },
+        "REMOTE": {
+          "ON_SITE": 30,
+          "REMOTE": 0
+        }
+      }
+    },
+    {
+      "id": "tutor-demo-2",
+      "availability_state": "APPROVED",
+      "availability": [
+        {
+          "mode": "IN_PERSON",
+          "location": "ON_SITE",
+          "start": 480,
+          "end": 840
+        },
+        {
+          "mode": "ONLINE",
+          "location": "REMOTE",
+          "start": 480,
+          "end": 840
+        }
+      ],
+      "skills": [
+        {
+          "subject": "math-demo",
+          "level": "DEMO",
+          "mode": "IN_PERSON",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "math-demo",
+          "level": "DEMO",
+          "mode": "ONLINE",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "science-demo",
+          "level": "DEMO",
+          "mode": "IN_PERSON",
+          "start": 0,
+          "end": 10080
+        },
+        {
+          "subject": "science-demo",
+          "level": "DEMO",
+          "mode": "ONLINE",
+          "start": 0,
+          "end": 10080
+        }
+      ],
+      "daily_limit_minutes": 300,
+      "weekly_limit_minutes": 600,
+      "pause_minutes": 0,
+      "transition_minutes": {
+        "ON_SITE": {
+          "ON_SITE": 0,
+          "REMOTE": 30
+        },
+        "REMOTE": {
+          "ON_SITE": 30,
+          "REMOTE": 0
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "space-demo-1",
+      "kind": "SPACE",
+      "student_capacity": 2,
+      "buffer_minutes": 0,
+      "availability": [
+        {
+          "start": 480,
+          "end": 840
+        }
+      ]
+    },
+    {
+      "id": "space-demo-2",
+      "kind": "SPACE",
+      "student_capacity": 2,
+      "buffer_minutes": 0,
+      "availability": [
+        {
+          "start": 480,
+          "end": 840
+        }
+      ]
+    },
+    {
+      "id": "space-demo-3",
+      "kind": "SPACE",
+      "student_capacity": 2,
+      "buffer_minutes": 0,
+      "availability": [
+        {
+          "start": 480,
+          "end": 840
+        }
+      ]
+    }
+  ],
+  "service_windows": [
+    {
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "start": 480,
+      "end": 840
+    },
+    {
+      "mode": "ONLINE",
+      "location": "REMOTE",
+      "start": 480,
+      "end": 840
+    }
+  ],
+  "closures": [],
+  "units": [
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-1/1",
+      "type": "GROUP",
+      "subject": "math-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-1",
+        "student-demo-2"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-1/2",
+      "type": "GROUP",
+      "subject": "math-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-1",
+        "student-demo-2"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-2/1",
+      "type": "GROUP",
+      "subject": "math-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-3",
+        "student-demo-4"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-2/2",
+      "type": "GROUP",
+      "subject": "math-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-3",
+        "student-demo-4"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    },
+    {
+      "demand_key": "science-demo/week-2026-10-05/group-1/1",
+      "type": "GROUP",
+      "subject": "science-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-1",
+        "student-demo-2"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    },
+    {
+      "demand_key": "science-demo/week-2026-10-05/group-2/1",
+      "type": "GROUP",
+      "subject": "science-demo",
+      "level": "DEMO",
+      "participants": [
+        "student-demo-3",
+        "student-demo-4"
+      ],
+      "duration_minutes": 60,
+      "priority": "P1",
+      "mandatory": true,
+      "allowed_modes": [
+        "IN_PERSON"
+      ],
+      "allowed_tutors": [
+        "tutor-demo-1",
+        "tutor-demo-2"
+      ],
+      "online_capacity": null,
+      "earliest_start": 480,
+      "latest_end": 840,
+      "locked_assignment": null
+    }
+  ]
+}

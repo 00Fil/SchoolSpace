@@ -1,0 +1,214 @@
+{
+  "generated_at": "2026-10-03T19:08:04.885Z",
+  "checks": [
+    {
+      "name": "[genitore-1440-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-light] export del figlio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-light] download monouso con token nel corpo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-light] secondo export bloccato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-light] richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-dark] export del figlio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-dark] download monouso con token nel corpo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-dark] secondo export bloccato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-1440-dark] richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-1440] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-1440] consenso registrato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-1440] riconferma e chiusura con motivo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[minorenne-1440] nessuna richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[minorenne-1440] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-light] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-light] export del figlio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-light] download monouso con token nel corpo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-light] secondo export bloccato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-light] richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-dark] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-dark] export del figlio",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-dark] download monouso con token nel corpo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-dark] secondo export bloccato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[genitore-360-dark] richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-360] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-360] consenso registrato",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[maggiorenne-360] riconferma e chiusura con motivo",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[minorenne-360] nessuna richiesta di cancellazione",
+      "ok": true,
+      "info": ""
+    },
+    {
+      "name": "[minorenne-360] nessuno scorrimento orizzontale",
+      "ok": true,
+      "info": ""
+    }
+  ],
+  "axe_serious_or_critical": [],
+  "axe_all": [
+    {
+      "name": "dati-genitore-1440-light",
+      "violations": []
+    },
+    {
+      "name": "richiesta-genitore-1440-light",
+      "violations": []
+    },
+    {
+      "name": "dati-genitore-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "richiesta-genitore-1440-dark",
+      "violations": []
+    },
+    {
+      "name": "consenso-maggiorenne-1440",
+      "violations": []
+    },
+    {
+      "name": "minorenne-minorenne-1440",
+      "violations": []
+    },
+    {
+      "name": "dati-genitore-360-light",
+      "violations": []
+    },
+    {
+      "name": "richiesta-genitore-360-light",
+      "violations": []
+    },
+    {
+      "name": "dati-genitore-360-dark",
+      "violations": []
+    },
+    {
+      "name": "richiesta-genitore-360-dark",
+      "violations": []
+    },
+    {
+      "name": "consenso-maggiorenne-360",
+      "violations": []
+    },
+    {
+      "name": "minorenne-minorenne-360",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\dati-genitore-1440-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\dati-genitore-1440-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\consenso-maggiorenne-1440.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\dati-genitore-360-light.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\dati-genitore-360-dark.png",
+    "C:\\Users\\filip\\OneDrive\\Desktop\\gestionale-ripetizioni-v0.9-P6cfg2 (1)\\docs\\evidence\\v0.9-p5\\consenso-maggiorenne-360.png"
+  ]
+}

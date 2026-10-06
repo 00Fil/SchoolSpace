@@ -1,0 +1,5 @@
+{% autoescape off %}{% if outcome == "APPLIED" %}Tutti gli interessati hanno accettato la modifica: la lezione di {{ subject_name }} ora è {{ start_text }} – {{ end_time }} (ora italiana).{% elif outcome == "REJECTED" %}La modifica proposta per la lezione di {{ subject_name }} ({{ start_text }} – {{ end_time }}) è stata rifiutata.
+{{ resolution }}
+
+La lezione resta all'orario precedente: puoi proporne un altro dall'Agenda.{% else %}La modifica proposta per la lezione di {{ subject_name }} è stata accettata da tutti, ma non si è potuta applicare.
+{{ resolution }}{% endif %}{% endautoescape %}

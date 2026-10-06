@@ -1,0 +1,11 @@
+modules:
+  https_ready:
+    prober: http
+    timeout: 10s
+    http:
+      method: GET
+      valid_status_codes: [200]
+      fail_if_not_ssl: true
+      fail_if_body_not_matches_regexp: ['"status": ?"ok"']
+      preferred_ip_protocol: ip4
+      tls_config: { insecure_skip_verify: false }

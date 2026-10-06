@@ -1,0 +1,98 @@
+{
+  "schema_version": "0.4",
+  "build_version": "0.5.0",
+  "objective_scope": "COVERAGE_P0_P1_P2_ONLY",
+  "execution_mode": "IN_PROCESS_DTO",
+  "publishable": false,
+  "calendar_changed": false,
+  "epoch": "2026-10-05T00:00:00Z",
+  "timezone": "Europe/Rome",
+  "input_hash": "ab4ffccb3b9e5334f6d6136c6a78c797b0a250804c17d727d4075b6d4d71c503",
+  "policy_version": "SYNTHETIC-NOT-APPROVED",
+  "solver_version": "9.15.6755",
+  "assignments": [
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-1/1",
+      "tutor_id": "tutor-demo-1",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 480,
+      "end": 540
+    },
+    {
+      "demand_key": "science-demo/week-2026-10-05/group-2/1",
+      "tutor_id": "tutor-demo-1",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 540,
+      "end": 600
+    },
+    {
+      "demand_key": "science-demo/week-2026-10-05/group-1/1",
+      "tutor_id": "tutor-demo-1",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 600,
+      "end": 660
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-2/2",
+      "tutor_id": "tutor-demo-1",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 660,
+      "end": 720
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-2/1",
+      "tutor_id": "tutor-demo-1",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 720,
+      "end": 780
+    },
+    {
+      "demand_key": "math-demo/week-2026-10-05/group-1/2",
+      "tutor_id": "tutor-demo-2",
+      "mode": "IN_PERSON",
+      "location": "ON_SITE",
+      "space_id": "space-demo-1",
+      "video_id": null,
+      "start": 780,
+      "end": 840
+    }
+  ],
+  "unassigned": [],
+  "optimality_proven_levels": [
+    "P0",
+    "P1",
+    "P2"
+  ],
+  "validation": {
+    "status": "PASSED",
+    "violations": []
+  },
+  "is_complete": true,
+  "solver_status": "OPTIMAL",
+  "termination_reason": "OBJECTIVES_PROVEN",
+  "objective_values": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0
+  },
+  "diagnostics": [],
+  "statistics": {
+    "candidate_count": 756,
+    "wall_time_seconds": 1.905051272000037
+  }
+}

@@ -1,0 +1,35 @@
+.venv/
+node_modules
+__pycache__/
+.pytest_cache/
+*.sqlite3
+.env
+frontend/dist/
+*.pyc
+.ruff_cache/
+
+node_modules
+__pycache__/
+*.pyc
+frontend/dist/
+*.sqlite3
+backend/var/
+# --- s5-infra: segreti e artefatti di esercizio mai in repository ---
+secrets/
+infra/env/production.env
+infra/env/staging.env
+infra/env/migrator.env
+backups/
+.deploy/
+loadtest-results/
+.e2e/
+
+# --- artefatti locali ---
+.hypothesis/
+*.tsbuildinfo
+control/
+backend/control/
+
+# --- Dokploy ---
+infra/env/dokploy.env
+*.dump

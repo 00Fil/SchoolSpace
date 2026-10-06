@@ -1,0 +1,10 @@
+{% autoescape off %}Gentile utente,
+
+la lezione di {{ subject_name }}{% if student_names %} per {{ student_names }}{% endif %} è stata spostata.
+
+Prima: {{ previous_start_text }}
+Ora: {{ start_text }} – {{ end_time }} (ora italiana)
+Modalità: {{ mode_text }}{% if mode == "ONLINE" %}
+Il link per il collegamento resta disponibile solo nel portale.{% endif %}
+
+Per qualsiasi variazione fa fede il calendario nel portale.{% endautoescape %}

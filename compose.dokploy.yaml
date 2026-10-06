@@ -1,0 +1,367 @@
+# Stack di produzione per Dokploy (Compose da repository GitHub).
+# - TLS e certificati: Traefik di Dokploy (Domains -> servizio "proxy", porta 8080, HTTPS).
+# - Variabili: scheda "Environment" di Dokploy (modello: infra/env/dokploy.env.example).
+# - PostgreSQL 17 e Redis sono interni allo stack, su rete privata, senza porte pubblicate.
+# - Ordine a ogni deploy: db -> db-init (ruoli) -> migrate -> db-privileges -> app.
+# Nessuna porta pubblicata: l'unico ingresso è Traefik -> proxy:8080.
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }
+
+x-app-env: &app-env
+  DJANGO_SETTINGS_MODULE: config.settings_production
+  DEPLOY_ENVIRONMENT: production
+  BUILD_VERSION: ${BUILD_VERSION:-dokploy}
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY mancante}
+  DJANGO_ALLOWED_HOSTS: ${APP_DOMAIN:?APP_DOMAIN mancante},127.0.0.1,localhost
+  DJANGO_CSRF_TRUSTED_ORIGINS: https://${APP_DOMAIN}
+  PORTAL_BASE_URL: https://${APP_DOMAIN}
+  COMMUNICATIONS_PORTAL_URL: https://${APP_DOMAIN}
+  DJANGO_HSTS_SECONDS: ${DJANGO_HSTS_SECONDS:-3600}
+  DJANGO_ADMIN_ENABLED: "0"
+  CSP_REPORT_ONLY: "0"
+  # Traefik (Dokploy) + nginx del proxy: due salti fidati per l'IP reale del client.
+  TRUSTED_PROXY_HOPS: "2"
+  POSTGRES_DB: ${POSTGRES_DB:-ripetizioni}
+  POSTGRES_USER: app_runtime
+  POSTGRES_PASSWORD: ${PG_RUNTIME_PASSWORD:?PG_RUNTIME_PASSWORD mancante}
+  DB_HOST: db
+  DB_PORT: "5432"
+  # Rete privata dello stack: cifratura TLS attiva, certificato interno non verificato.
+  DB_SSLMODE: require
+  CACHE_URL: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD mancante}@redis:6379/1
+  CACHE_ALLOW_PLAINTEXT: "1"
+  CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  CELERY_BROKER_ALLOW_PLAINTEXT: "1"
+  OPS_METRICS_TOKEN: ${OPS_METRICS_TOKEN:?OPS_METRICS_TOKEN mancante}
+  OPS_WORKER_QUEUES: solver,notifications,default
+  PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  LOG_FORMAT: json
+  # Email (D08: Resend)
+  COMMUNICATIONS_ENV: production
+  COMMUNICATIONS_CHANNELS: ${COMMUNICATIONS_CHANNELS:-IN_APP,EMAIL}
+  COMMUNICATIONS_EMAIL_BACKEND: resend
+  COMMUNICATIONS_RESEND_API_KEY: ${RESEND_API_KEY:?RESEND_API_KEY mancante}
+  COMMUNICATIONS_EMAIL_FROM: ${EMAIL_FROM:?EMAIL_FROM mancante}
+  COMMUNICATIONS_MESSAGE_ID_DOMAIN: ${EMAIL_DOMAIN:?EMAIL_DOMAIN mancante}
+  COMMUNICATIONS_SEAL_KEYS: ${COMMUNICATIONS_SEAL_KEYS:?COMMUNICATIONS_SEAL_KEYS mancante}
+  # Regole del centro (decisioni approvate il 3/10/2026)
+  CALENDAR_HORIZON_MODE: MONTH
+  CALENDAR_REQUIRE_EXPLICIT_VALIDATION: "1"
+  CALENDAR_HORIZON_ACTOR: ${CENTER_ADMIN_USERNAME:-}
+  PORTAL_STUDENT_CAN_REQUEST_CHANGES: "0"
+  TUTOR_CHANGES_REQUIRE_GUARDIANS: "1"
+  RECOVERY_NOTICE_HOURS: ${RECOVERY_NOTICE_HOURS:-24}
+  PRIVACY_NOTICE_VERSION: ${PRIVACY_NOTICE_VERSION:-2026-10}
+  PRIVACY_MAJORITY_OVERDUE_ACTION: REPORT
+  # v0.10 videolezioni automatiche (Jitsi Meet self-hosted, compose.jitsi.yaml).
+  # VIDEO_PROVIDER vuoto = disattivate (restano i link manuali).
+  VIDEO_PROVIDER: ${VIDEO_PROVIDER:-}
+  VIDEO_JITSI_URL: ${VIDEO_JITSI_URL:-}
+  VIDEO_JITSI_APP_ID: ${JITSI_JWT_APP_ID:-ripetizioni}
+  VIDEO_JITSI_APP_SECRET: ${JITSI_JWT_APP_SECRET:-}
+
+x-backend: &backend
+  image: ripetizioni-backend:dokploy
+  build:
+    context: .
+    dockerfile: infra/backend.Dockerfile
+    args:
+      BUILD_VERSION: ${BUILD_VERSION:-dokploy}
+  environment:
+    <<: *app-env
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  user: "10001:10001"
+  restart: unless-stopped
+  networks: [backend]
+  logging: *logging
+
+x-pg-client: &pg-client
+  image: postgres:17-bookworm
+  environment: &pg-client-env
+    PGHOST: db
+    PGDATABASE: ${POSTGRES_DB:-ripetizioni}
+    PGUSER: ${PG_ADMIN_USER:-pgadmin}
+    PGPASSWORD: ${PG_ADMIN_PASSWORD:?PG_ADMIN_PASSWORD mancante}
+    PGSSLMODE: require
+  volumes:
+    - ./infra/postgres:/sql:ro
+  restart: "no"
+  networks: [backend]
+  logging: *logging
+
+services:
+  db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ripetizioni}
+      POSTGRES_USER: ${PG_ADMIN_USER:-pgadmin}
+      POSTGRES_PASSWORD: ${PG_ADMIN_PASSWORD:?PG_ADMIN_PASSWORD mancante}
+    # TLS sulla rete interna: certificato "snakeoil" dell'immagine Debian, oppure uno
+    # autofirmato generato al primo avvio e conservato nel volume dei dati.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        set -e
+        CRT=/etc/ssl/certs/ssl-cert-snakeoil.pem
+        KEY=/etc/ssl/private/ssl-cert-snakeoil.key
+        if [ ! -r "$$KEY" ] || [ ! -r "$$CRT" ]; then
+          D=/var/lib/postgresql/data/tls
+          mkdir -p "$$D"
+          CRT="$$D/server.crt"; KEY="$$D/server.key"
+          [ -s "$$KEY" ] || openssl req -new -x509 -days 3650 -nodes -subj /CN=db -keyout "$$KEY" -out "$$CRT"
+          chown postgres:postgres "$$KEY" "$$CRT"; chmod 600 "$$KEY"
+        fi
+        exec docker-entrypoint.sh postgres -c ssl=on -c ssl_cert_file="$$CRT" -c ssl_key_file="$$KEY" -c ssl_min_protocol_version=TLSv1.2 -c log_min_duration_statement=500
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    shm_size: 256m
+    restart: unless-stopped
+    networks: [backend]
+    deploy:
+      resources:
+        limits: { memory: 1G }
+    logging: *logging
+
+  # Ruoli a privilegio minimo (idempotente, a ogni deploy).
+  db-init:
+    <<: *pg-client
+    environment:
+      <<: *pg-client-env
+      PW_MIGRATOR: ${PG_MIGRATOR_PASSWORD:?PG_MIGRATOR_PASSWORD mancante}
+      PW_RUNTIME: ${PG_RUNTIME_PASSWORD:?PG_RUNTIME_PASSWORD mancante}
+      PW_RO: ${PG_READONLY_PASSWORD:?PG_READONLY_PASSWORD mancante}
+    entrypoint:
+      - sh
+      - -c
+      - psql -v ON_ERROR_STOP=1 -v db="$$PGDATABASE" -v pw_migrator="$$PW_MIGRATOR" -v pw_runtime="$$PW_RUNTIME" -v pw_ro="$$PW_RO" -f /sql/01_roles.sql
+    depends_on:
+      db: { condition: service_healthy }
+
+  # Migrazioni con il ruolo app_migrator (DDL), mai dal web.
+  migrate:
+    <<: *backend
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    environment:
+      <<: *app-env
+      POSTGRES_USER: app_migrator
+      POSTGRES_PASSWORD: ${PG_MIGRATOR_PASSWORD:?PG_MIGRATOR_PASSWORD mancante}
+      PGOPTIONS: "-c role=app_owner"
+    restart: "no"
+    depends_on:
+      db-init: { condition: service_completed_successfully }
+
+  # Privilegi sugli oggetti, trigger append-only e verifiche (dopo ogni migrate).
+  db-privileges:
+    <<: *pg-client
+    entrypoint:
+      - sh
+      - -c
+      - psql -v ON_ERROR_STOP=1 -f /sql/02_privileges.sql -f /sql/03_append_only_triggers.sql -f /sql/04_verify.sql
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  web:
+    <<: *backend
+    # Nome univoco sulla rete privata: nginx non deve mai risolvere "web" su un altro stack
+    # collegato alla rete condivisa di Dokploy/Traefik (es. il "web" di Jitsi).
+    networks:
+      backend:
+        aliases: [ripetizioni-web]
+    command: ["gunicorn", "config.wsgi:application", "--config", "/app/gunicorn.conf.py"]
+    environment:
+      <<: *app-env
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
+    volumes:
+      - privacy:/app/var
+    stop_grace_period: 30s
+    depends_on:
+      db-privileges: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    deploy:
+      resources:
+        limits: { cpus: "1.00", memory: 768M }
+
+  worker-solver:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "--loglevel=INFO", "--queues=solver",
+              "--concurrency=1", "--prefetch-multiplier=1", "--max-tasks-per-child=20",
+              "--without-gossip", "--without-mingle", "-O", "fair", "--hostname=solver@%h"]
+    volumes:
+      - privacy:/app/var
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 100s
+    depends_on:
+      db-privileges: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    deploy:
+      resources:
+        limits: { cpus: "2.00", memory: 2G }
+
+  # v0.9.4: calcolo accurato (profilo THOROUGH) su coda dedicata.
+  worker-solver-long:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "--loglevel=INFO", "--queues=solver_long",
+              "--concurrency=1", "--prefetch-multiplier=1", "--max-tasks-per-child=5",
+              "--without-gossip", "--without-mingle", "-O", "fair", "--hostname=solver-long@%h"]
+    volumes:
+      - privacy:/app/var
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 100s
+    depends_on:
+      db-privileges: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    deploy:
+      resources:
+        limits: { cpus: "4.00", memory: 4G }
+
+  worker-notifications:
+    <<: *backend
+    command: ["celery", "-A", "config", "worker", "--loglevel=INFO",
+              "--queues=notifications,default", "--concurrency=2", "--prefetch-multiplier=1",
+              "--max-tasks-per-child=200", "--without-gossip", "--without-mingle",
+              "--hostname=notifications@%h"]
+    volumes:
+      - privacy:/app/var
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s
+    depends_on:
+      db-privileges: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 512M }
+
+  beat:
+    <<: *backend
+    # Istanza unica: non scalare.
+    command: ["celery", "-A", "config", "beat", "--loglevel=INFO", "--schedule=/tmp/celerybeat-schedule"]
+    volumes:
+      - privacy:/app/var
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+    depends_on:
+      db-privileges: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 256M }
+
+  # Redis privato con password: solo trasporto/cache, nessuna persistenza.
+  redis:
+    image: redis:7.4-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD mancante}
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    entrypoint:
+      - sh
+      - -c
+      - exec redis-server --requirepass "$$REDIS_PASSWORD" --save "" --appendonly no --maxmemory 256mb --maxmemory-policy noeviction
+    read_only: true
+    tmpfs: [/data]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    user: "999:999"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [backend]
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 384M }
+    logging: *logging
+
+  # Frontend + reverse proxy verso gunicorn. HTTP interno: TLS lo termina Traefik.
+  proxy:
+    image: ripetizioni-proxy:dokploy
+    build:
+      context: .
+      dockerfile: infra/frontend.Dockerfile
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-dokploy}
+    environment:
+      SERVER_NAME: ${APP_DOMAIN}
+      CSP_MODE: enforce
+      # Unica origine incorniciabile con camera/microfono (videolezioni). Vuoto = nessuna.
+      VIDEO_ORIGIN: ${VIDEO_JITSI_URL:-}
+      HSTS_SECONDS: ${DJANGO_HSTS_SECONDS:-3600}
+      TRUST_UPSTREAM_PROTO: "1"
+    expose: ["8080"]
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /etc/nginx/conf.d:size=1m,uid=101,gid=101,mode=0755
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    depends_on:
+      web: { condition: service_healthy }
+    restart: unless-stopped
+    networks: [backend, dokploy-network]
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 256M }
+    logging: *logging
+
+  # Backup logico giornaliero (14 giorni) nel volume "pgbackups".
+  # Copiarlo anche FUORI dalla VPS (vedi docs/DEPLOY-DOKPLOY.md, "Backup").
+  db-backup:
+    <<: *pg-client
+    entrypoint:
+      - sh
+      - -c
+      - |
+        set -e
+        while :; do
+          f=/backups/ripetizioni-$$(date +%Y%m%d-%H%M).dump
+          if pg_dump -Fc -f "$$f.tmp"; then mv "$$f.tmp" "$$f"; echo "backup ok $$f"; else rm -f "$$f.tmp"; echo "backup FALLITO" >&2; fi
+          find /backups -name '*.dump' -mtime +14 -delete
+          sleep 86400
+        done
+    volumes:
+      - pgbackups:/backups
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+
+networks:
+  backend: {}
+  dokploy-network:
+    external: true
+
+volumes:
+  pgdata: {}
+  pgbackups: {}
+  privacy: {}

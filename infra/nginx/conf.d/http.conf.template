@@ -1,0 +1,11 @@
+# Porta 8080 (pubblicata come 80): ACME HTTP-01 + redirect a HTTPS, oppure, senza
+# certificati (sviluppo, e2e), serve direttamente l'applicazione.
+server {
+  listen 8080 default_server;
+  server_name __SERVER_NAME__;
+  location = /nginx-health { access_log off; default_type text/plain; return 200 "ok\n"; }
+  set $forwarded_proto http;
+
+  location ^~ /.well-known/acme-challenge/ { root /var/www/acme; default_type text/plain; }
+__HTTP_BODY__
+}

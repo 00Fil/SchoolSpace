@@ -1,0 +1,869 @@
+{
+  "test": "T34",
+  "fixture": "benchmark_input(): 10 tutor, 80 studenti/50 famiglie, 3 spazi, 120 sessioni/settimana x 6 settimane = 720 unit\u00e0 (sintetico)",
+  "generated_at": "2026-10-02T19:27:41.888049+00:00",
+  "machine": {
+    "python": "3.13.14",
+    "platform": "Linux-6.18.49-x86_64-with-glibc2.34",
+    "cpu_count": 2,
+    "note": "macchina di sviluppo condivisa con altri processi: tempi indicativi"
+  },
+  "parameters": {
+    "runs": 20,
+    "budget": 30.0,
+    "workers": 1,
+    "weeks": 6
+  },
+  "targets": {
+    "NFR04_search_budget_seconds": 30,
+    "NFR04_valid_proposal_end_to_end_seconds": 60,
+    "NFR04_job_hard_limit_seconds": 90
+  },
+  "summary": {
+    "runs": 20,
+    "outcomes": {
+      "FEASIBLE": 20
+    },
+    "valid_proposals": 20,
+    "validation_failed": 0,
+    "wall_seconds": {
+      "min": 44.391,
+      "median": 46.1675,
+      "p95": 47.257,
+      "max": 49.069
+    },
+    "cpu_seconds": {
+      "median": 45.161,
+      "max": 47.905
+    },
+    "peak_rss_mb": {
+      "median": 1252.85,
+      "max": 1261.1
+    },
+    "within_60s": 20,
+    "within_90s": 20,
+    "unassigned_mandatory_max": 0
+  },
+  "runs": [
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 11.7105,
+      "search_seconds": 30.9646,
+      "diagnostic_seconds": 3.2813,
+      "wall_time_seconds": 46.178,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.2609
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 21.7828
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 1,
+      "started_at": "2026-10-02T19:11:43.615751+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 43.966,
+      "cpu_system_seconds": 1.24,
+      "peak_rss_mb": 1260.7
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.2931,
+      "search_seconds": 31.1429,
+      "diagnostic_seconds": 3.3365,
+      "wall_time_seconds": 45.11,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.77
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.5273
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 2,
+      "started_at": "2026-10-02T19:12:31.387676+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 43.675,
+      "cpu_system_seconds": 1.016,
+      "peak_rss_mb": 1260.8
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 11.0576,
+      "search_seconds": 31.0333,
+      "diagnostic_seconds": 3.2958,
+      "wall_time_seconds": 45.636,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 11.1504
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 18.9866
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 3,
+      "started_at": "2026-10-02T19:13:18.668899+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 39.951,
+      "cpu_system_seconds": 0.849,
+      "peak_rss_mb": 1137.6
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.8948,
+      "search_seconds": 32.4242,
+      "diagnostic_seconds": 3.1222,
+      "wall_time_seconds": 46.83,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 9.1941
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.1796
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 4,
+      "started_at": "2026-10-02T19:14:06.463787+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 44.198,
+      "cpu_system_seconds": 0.92,
+      "peak_rss_mb": 1253.0
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 12.8008,
+      "search_seconds": 31.037,
+      "diagnostic_seconds": 3.2053,
+      "wall_time_seconds": 47.257,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 9.5836
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 20.6966
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 5,
+      "started_at": "2026-10-02T19:14:55.076730+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 42.477,
+      "cpu_system_seconds": 0.739,
+      "peak_rss_mb": 1160.2
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.5128,
+      "search_seconds": 31.5747,
+      "diagnostic_seconds": 3.3278,
+      "wall_time_seconds": 45.664,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.9725
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.8328
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 6,
+      "started_at": "2026-10-02T19:15:44.115191+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 44.931,
+      "cpu_system_seconds": 0.727,
+      "peak_rss_mb": 1256.7
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.2715,
+      "search_seconds": 30.8443,
+      "diagnostic_seconds": 3.0625,
+      "wall_time_seconds": 44.541,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.1845
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.9059
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 7,
+      "started_at": "2026-10-02T19:16:31.317261+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 45.353,
+      "cpu_system_seconds": 0.66,
+      "peak_rss_mb": 1260.9
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.9784,
+      "search_seconds": 31.741,
+      "diagnostic_seconds": 3.2964,
+      "wall_time_seconds": 46.284,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.1308
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.7913
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 8,
+      "started_at": "2026-10-02T19:17:17.504646+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 45.594,
+      "cpu_system_seconds": 0.974,
+      "peak_rss_mb": 1260.7
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.6464,
+      "search_seconds": 31.705,
+      "diagnostic_seconds": 3.3077,
+      "wall_time_seconds": 45.883,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.2948
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.681
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 9,
+      "started_at": "2026-10-02T19:18:05.560866+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 46.272,
+      "cpu_system_seconds": 0.927,
+      "peak_rss_mb": 1252.7
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 11.4857,
+      "search_seconds": 31.742,
+      "diagnostic_seconds": 3.3362,
+      "wall_time_seconds": 46.76,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 11.8644
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 18.125
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 10,
+      "started_at": "2026-10-02T19:18:53.502376+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 38.79,
+      "cpu_system_seconds": 0.673,
+      "peak_rss_mb": 1137.6
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 12.0813,
+      "search_seconds": 31.2119,
+      "diagnostic_seconds": 3.3654,
+      "wall_time_seconds": 46.997,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 9.5932
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 20.8214
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 11,
+      "started_at": "2026-10-02T19:19:41.888102+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 42.476,
+      "cpu_system_seconds": 1.026,
+      "peak_rss_mb": 1197.6
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 14.0521,
+      "search_seconds": 31.4059,
+      "diagnostic_seconds": 3.2753,
+      "wall_time_seconds": 49.069,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 10.0954
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 20.5283
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 12,
+      "started_at": "2026-10-02T19:20:31.198932+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 43.152,
+      "cpu_system_seconds": 0.944,
+      "peak_rss_mb": 1203.2
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 11.0318,
+      "search_seconds": 31.7008,
+      "diagnostic_seconds": 3.1555,
+      "wall_time_seconds": 46.157,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.386
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.3857
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 13,
+      "started_at": "2026-10-02T19:21:22.302674+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 44.252,
+      "cpu_system_seconds": 0.952,
+      "peak_rss_mb": 1252.7
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 11.7141,
+      "search_seconds": 30.9317,
+      "diagnostic_seconds": 3.273,
+      "wall_time_seconds": 46.255,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 10.8805
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 19.2252
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 14,
+      "started_at": "2026-10-02T19:22:10.225377+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 43.243,
+      "cpu_system_seconds": 0.667,
+      "peak_rss_mb": 1138.4
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 12.4141,
+      "search_seconds": 31.0594,
+      "diagnostic_seconds": 3.0606,
+      "wall_time_seconds": 46.829,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 10.2234
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 20.054
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 15,
+      "started_at": "2026-10-02T19:22:58.356619+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 44.135,
+      "cpu_system_seconds": 0.814,
+      "peak_rss_mb": 1154.0
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.7075,
+      "search_seconds": 31.6804,
+      "diagnostic_seconds": 3.0619,
+      "wall_time_seconds": 45.712,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.9179
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 21.9483
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 16,
+      "started_at": "2026-10-02T19:23:47.068836+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 45.681,
+      "cpu_system_seconds": 0.87,
+      "peak_rss_mb": 1259.9
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.2352,
+      "search_seconds": 30.8116,
+      "diagnostic_seconds": 3.1333,
+      "wall_time_seconds": 44.415,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.1734
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.906
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 17,
+      "started_at": "2026-10-02T19:24:34.414146+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 45.343,
+      "cpu_system_seconds": 0.8,
+      "peak_rss_mb": 1261.0
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.1263,
+      "search_seconds": 30.8181,
+      "diagnostic_seconds": 3.2106,
+      "wall_time_seconds": 44.391,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.1984
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 22.893
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 18,
+      "started_at": "2026-10-02T19:25:20.532978+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 45.258,
+      "cpu_system_seconds": 0.76,
+      "peak_rss_mb": 1261.1
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.3689,
+      "search_seconds": 31.5519,
+      "diagnostic_seconds": 3.0048,
+      "wall_time_seconds": 45.261,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 7.3928
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 23.3941
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 19,
+      "started_at": "2026-10-02T19:26:06.472790+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 43.612,
+      "cpu_system_seconds": 0.917,
+      "peak_rss_mb": 1201.6
+    },
+    {
+      "solver_status": "FEASIBLE",
+      "termination_reason": "TIME_LIMIT",
+      "validation": "PASSED",
+      "proven_levels": [
+        "P0"
+      ],
+      "objective_values": {
+        "P0": 0,
+        "P1": 3300
+      },
+      "assigned": 496,
+      "unassigned": 224,
+      "unassigned_mandatory": 0,
+      "candidate_count": 122616,
+      "variables": 154921,
+      "constraints": 227590,
+      "model_build_seconds": 10.8269,
+      "search_seconds": 32.0606,
+      "diagnostic_seconds": 3.1373,
+      "wall_time_seconds": 46.399,
+      "phases": [
+        {
+          "term": "P0",
+          "status": "OPTIMAL",
+          "seconds": 8.1022
+        },
+        {
+          "term": "P1",
+          "status": "FEASIBLE",
+          "seconds": 23.1111
+        }
+      ],
+      "input_hash": "4c96d89e2dfadb1656ef7a56760211f29953464dee306a4a07380297e6a6145b",
+      "run": 20,
+      "started_at": "2026-10-02T19:26:53.484965+00:00",
+      "exit_code": 0,
+      "cpu_user_seconds": 47.049,
+      "cpu_system_seconds": 0.856,
+      "peak_rss_mb": 1259.6
+    }
+  ]
+}

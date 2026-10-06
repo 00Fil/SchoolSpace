@@ -1,0 +1,265 @@
+# Stack di produzione/staging (GAP-J03, GAP-J04). Uso tipico (scripts/deploy.sh):
+#   IMAGE_TAG=<sha> docker compose -f compose.prod.yaml --env-file infra/env/production.env up -d
+# PostgreSQL 17 è GESTITO (fuori da questo file, rete privata + TLS verify-full).
+# Prova locale completa con DB/Redis reali senza TLS: scripts/e2e-compose.sh (compose.e2e.yaml).
+name: ripetizioni
+
+x-backend: &backend
+  image: ${REGISTRY:-ghcr.io/example/ripetizioni}/backend:${IMAGE_TAG:-local}
+  build:
+    context: .
+    dockerfile: infra/backend.Dockerfile
+    args:
+      BUILD_VERSION: ${IMAGE_TAG:-local}
+  env_file:
+    - ${APP_ENV_FILE:-infra/env/production.env}
+  environment:
+    BUILD_VERSION: ${IMAGE_TAG:-local}
+    DB_SSLROOTCERT: /run/secrets/pg_ca
+    REDIS_CA_PATH: /run/secrets/redis_ca
+  secrets: [pg_ca, redis_ca]
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  user: "10001:10001"
+  restart: unless-stopped
+  networks: [backend]
+  logging: &logging
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  proxy:
+    image: ${REGISTRY:-ghcr.io/example/ripetizioni}/proxy:${IMAGE_TAG:-local}
+    build:
+      context: .
+      dockerfile: infra/frontend.Dockerfile
+      args:
+        BUILD_VERSION: ${IMAGE_TAG:-local}
+      additional_contexts:
+        backend-static: service:web
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-_}
+      TLS_CERT: /etc/letsencrypt/live/${SERVER_NAME:-_}/fullchain.pem
+      TLS_KEY: /etc/letsencrypt/live/${SERVER_NAME:-_}/privkey.pem
+      CSP_MODE: ${CSP_MODE:-enforce}
+      CSP_REPORT_URI: ${CSP_REPORT_URI:-}
+      HSTS_SECONDS: ${HSTS_SECONDS:-3600}
+      ADMIN_ALLOW_CIDRS: ${ADMIN_ALLOW_CIDRS:-}
+    ports:
+      - "${HTTP_BIND:-0.0.0.0:80}:8080"
+      - "${HTTPS_BIND:-0.0.0.0:443}:8443"
+    volumes:
+      - letsencrypt:/etc/letsencrypt:ro
+      - acme-webroot:/var/www/acme:ro
+      - maintenance:/srv/maintenance:ro
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /etc/nginx/conf.d:size=1m,uid=101,gid=101,mode=0755
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    depends_on:
+      web: { condition: service_healthy }
+    restart: unless-stopped
+    networks: [edge, backend]
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 256M }
+    logging: *logging
+
+  web:
+    <<: *backend
+    # Nome univoco sulla rete privata: nginx non deve mai risolvere "web" su un altro stack
+    # collegato alla rete condivisa di Dokploy/Traefik (es. il "web" di Jitsi).
+    networks:
+      backend:
+        aliases: [ripetizioni-web]
+    command: ["gunicorn", "config.wsgi:application", "--config", "/app/gunicorn.conf.py"]
+    environment:
+      BUILD_VERSION: ${IMAGE_TAG:-local}
+      DB_SSLROOTCERT: /run/secrets/pg_ca
+      REDIS_CA_PATH: /run/secrets/redis_ca
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
+      PROMETHEUS_MULTIPROC_DIR: /tmp/prometheus
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits: { cpus: "1.00", memory: 768M }
+        reservations: { memory: 256M }
+
+  # Job una tantum, ruolo app_migrator: MAI all'avvio del web (tec3 "Migrazioni sicure").
+  migrate:
+    <<: *backend
+    profiles: [jobs]
+    # Dopo migrate: privilegi e trigger append-only di infra/postgres (s4) via psql, vedi
+    # scripts/deploy.sh (il container applicativo non contiene psql).
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    env_file:
+      - ${APP_ENV_FILE:-infra/env/production.env}
+      - ${MIGRATOR_ENV_FILE:-infra/env/migrator.env}
+    restart: "no"
+    deploy:
+      resources:
+        limits: { cpus: "1.00", memory: 512M }
+
+  worker-solver:
+    <<: *backend
+    command:
+      - celery
+      - -A
+      - config
+      - worker
+      - --loglevel=INFO
+      - --queues=solver
+      - --concurrency=1
+      - --prefetch-multiplier=1
+      - --max-tasks-per-child=20
+      - --without-gossip
+      - --without-mingle
+      - -O
+      - fair
+      - --hostname=solver@%h
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 100s   # > limite hard 90 s: il run in corso termina o torna in coda (acks_late)
+    deploy:
+      resources:
+        limits: { cpus: "2.00", memory: 2G }   # da tarare sul benchmark G3
+
+  # v0.9.4: calcolo accurato (profilo THOROUGH, es. notturno) su una coda dedicata,
+  # così un run di ore non blocca i calcoli rapidi. Un riavvio interrompe il run:
+  # torna in coda (acks_late) e riparte da capo, massimo 3 tentativi.
+  worker-solver-long:
+    <<: *backend
+    command:
+      - celery
+      - -A
+      - config
+      - worker
+      - --loglevel=INFO
+      - --queues=solver_long
+      - --concurrency=1
+      - --prefetch-multiplier=1
+      - --max-tasks-per-child=5
+      - --without-gossip
+      - --without-mingle
+      - -O
+      - fair
+      - --hostname=solver-long@%h
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 100s   # il run lungo in corso torna in coda (acks_late)
+    deploy:
+      resources:
+        limits: { cpus: "4.00", memory: 4G }   # PLANNING_THOROUGH_WORKERS segue i core disponibili
+
+  # Notifiche (s3): coda dedicata, così un solver lento non ritarda le email; serve anche
+  # la coda default (privacy, heartbeat generici).
+  worker-notifications:
+    <<: *backend
+    command:
+      - celery
+      - -A
+      - config
+      - worker
+      - --loglevel=INFO
+      - --queues=notifications,default
+      - --concurrency=2
+      - --prefetch-multiplier=1
+      - --max-tasks-per-child=200
+      - --without-gossip
+      - --without-mingle
+      - --hostname=notifications@%h
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "database,broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 512M }
+
+  beat:
+    <<: *backend
+    # Istanza unica: non scalare (reconciler e heartbeat duplicati).
+    command: ["celery", "-A", "config", "beat", "--loglevel=INFO", "--schedule=/tmp/celerybeat-schedule"]
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "ops_check", "--checks", "broker"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+    deploy:
+      replicas: 1
+      resources:
+        limits: { cpus: "0.25", memory: 256M }
+
+  # Redis privato: solo rete interna, AUTH (ACL) + TLS, nessuna persistenza obbligatoria
+  # (trasporto, non fonte di verità). Sostituibile con un Redis gestito UE (stesse regole).
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./infra/redis/redis-tls.conf:/usr/local/etc/redis/redis.conf:ro
+      - ${REDIS_ACL_FILE:-./secrets/redis-users.acl}:/usr/local/etc/redis/users.acl:ro
+      - ${REDIS_TLS_DIR:-./secrets/redis-tls}:/tls:ro
+    read_only: true
+    tmpfs: [/data]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    user: "999:999"
+    healthcheck:
+      # Senza credenziali: NOAUTH prova che il server risponde in TLS, senza segreti nel healthcheck.
+      test: ["CMD-SHELL", "redis-cli --tls --cacert /tls/ca.crt -p 6380 ping 2>&1 | grep -Eq 'PONG|NOAUTH'"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [backend]
+    deploy:
+      resources:
+        limits: { cpus: "0.50", memory: 384M }
+    logging: *logging
+
+  # Rinnovo automatico dei certificati (Let's Encrypt HTTP-01 via webroot condiviso con nginx).
+  # Primo rilascio: scripts/tls-bootstrap.sh. nginx ricarica i certificati ogni 6 h.
+  acme:
+    image: certbot/certbot:v3.1.0
+    profiles: [tls]
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/acme --quiet --deploy-hook 'touch /etc/letsencrypt/.renewed'; sleep 12h & wait $${!}; done"]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - acme-webroot:/var/www/acme
+    restart: unless-stopped
+    networks: [edge]
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 128M }
+    logging: *logging
+
+networks:
+  edge: {}
+  backend: {}
+
+volumes:
+  letsencrypt: {}
+  acme-webroot: {}
+  maintenance: {}
+
+secrets:
+  pg_ca:
+    file: ${PG_CA_FILE:-./secrets/pg-ca.pem}
+  redis_ca:
+    file: ${REDIS_CA_FILE:-./secrets/redis-tls/ca.crt}

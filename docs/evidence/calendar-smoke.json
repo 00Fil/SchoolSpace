@@ -1,0 +1,29 @@
+{
+  "database": "PostgreSQL 17.10, local isolated loopback server",
+  "migrations": "PASSED",
+  "separate_celery_worker": "filesystem transport, solo pool",
+  "ui": {
+    "login": true,
+    "publish": true,
+    "agenda_lessons": 6,
+    "cancel": true,
+    "js_errors": 0,
+    "mobile_dimensions": {
+      "scroll": 390,
+      "viewport": 390
+    }
+  },
+  "publish_6_lessons": "PASSED",
+  "cancel_retains_history": "PASSED",
+  "canonical_replacement_created": 1,
+  "kept_lessons": 5,
+  "manual_move_http": "PASSED",
+  "active_lessons": 6,
+  "historic_lessons": 7,
+  "bookings": 24,
+  "events": 9,
+  "emails_sent": false,
+  "production_ready": false,
+  "redis_compose_tested": false,
+  "hard_timeout_tested": false
+}

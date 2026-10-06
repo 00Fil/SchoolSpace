@@ -1,0 +1,56 @@
+# Instradamento per gravità (tec5): SEV1/SEV2 alla reperibilità, SEV3 a ticket.
+# Destinatari e reperibilità dipendono da D08 (contratto di servizio): DA APPROVARE.
+global:
+  resolve_timeout: 10m
+  smtp_smarthost: "smtp.provider-ue.example:587"
+  smtp_from: "alert@example.it"
+  smtp_auth_username: "alert@example.it"
+  smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password
+  smtp_require_tls: true
+
+route:
+  receiver: ticket
+  group_by: [alertname, queue]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers: ['severity=~"sev1|sev2"']
+      receiver: oncall
+      repeat_interval: 1h
+    - matchers: ['team="security"']
+      receiver: security
+      continue: true
+    - matchers: ['severity="sev3"']
+      receiver: ticket
+      active_time_intervals: [orario-lavorativo]
+
+inhibit_rules:
+  # Se il portale è giù, non inondare con i sintomi derivati.
+  - source_matchers: ['alertname="ServizioNonRaggiungibile"']
+    target_matchers: ['alertname=~"LatenzaP95Alta|ErroriServer5xx|ScrapeMetricheAssente"']
+  - source_matchers: ['alertname="RedisGiu"']
+    target_matchers: ['alertname=~"HeartbeatWorkerAssente|CodaSolverFerma|BacklogOutbox"']
+
+time_intervals:
+  - name: orario-lavorativo
+    time_intervals:
+      - weekdays: ["monday:friday"]
+        times: [{ start_time: "08:00", end_time: "19:00" }]
+        location: Europe/Rome
+
+receivers:
+  - name: oncall
+    webhook_configs:
+      # Strumento di reperibilità UE (es. servizio di paging); URL dal secret manager.
+      - url_file: /etc/alertmanager/secrets/oncall_webhook_url
+        send_resolved: true
+    email_configs:
+      - to: "reperibilita@example.it"
+        send_resolved: true
+  - name: security
+    email_configs:
+      - to: "sicurezza@example.it"
+  - name: ticket
+    email_configs:
+      - to: "operations@example.it"

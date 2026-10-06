@@ -1,0 +1,230 @@
+{
+ "tool": "axe-core 4.13.0",
+ "tags": [
+  "wcag2a",
+  "wcag2aa",
+  "wcag21a",
+  "wcag21aa",
+  "wcag22aa"
+ ],
+ "pages": 54,
+ "violations_total": 0,
+ "report": [
+  {
+   "page": "modale sposta (chiaro)",
+   "violations": []
+  },
+  {
+   "page": "modulo configurazione (chiaro)",
+   "violations": []
+  },
+  {
+   "page": "portale tutor settimana (light)",
+   "violations": []
+  },
+  {
+   "page": "portale tutor panoramica (light)",
+   "violations": []
+  },
+  {
+   "page": "portale tutor settimana (dark)",
+   "violations": []
+  },
+  {
+   "page": "portale tutor panoramica (dark)",
+   "violations": []
+  },
+  {
+   "page": "portale famiglia settimana (light)",
+   "violations": []
+  },
+  {
+   "page": "portale famiglia panoramica (light)",
+   "violations": []
+  },
+  {
+   "page": "portale famiglia settimana (dark)",
+   "violations": []
+  },
+  {
+   "page": "portale famiglia panoramica (dark)",
+   "violations": []
+  },
+  {
+   "page": "portale studente settimana (light)",
+   "violations": []
+  },
+  {
+   "page": "portale studente panoramica (light)",
+   "violations": []
+  },
+  {
+   "page": "portale studente settimana (dark)",
+   "violations": []
+  },
+  {
+   "page": "portale studente panoramica (dark)",
+   "violations": []
+  },
+  {
+   "page": "panoramica 1440 light",
+   "violations": []
+  },
+  {
+   "page": "agenda 1440 light",
+   "violations": []
+  },
+  {
+   "page": "studenti 1440 light",
+   "violations": []
+  },
+  {
+   "page": "disponibilita 1440 light",
+   "violations": []
+  },
+  {
+   "page": "richieste 1440 light",
+   "violations": []
+  },
+  {
+   "page": "percorsi 1440 light",
+   "violations": []
+  },
+  {
+   "page": "proposte 1440 light",
+   "violations": []
+  },
+  {
+   "page": "laboratorio 1440 light",
+   "violations": []
+  },
+  {
+   "page": "decisioni 1440 light",
+   "violations": []
+  },
+  {
+   "page": "impostazioni 1440 light",
+   "violations": []
+  },
+  {
+   "page": "panoramica 390 light",
+   "violations": []
+  },
+  {
+   "page": "agenda 390 light",
+   "violations": []
+  },
+  {
+   "page": "studenti 390 light",
+   "violations": []
+  },
+  {
+   "page": "disponibilita 390 light",
+   "violations": []
+  },
+  {
+   "page": "richieste 390 light",
+   "violations": []
+  },
+  {
+   "page": "percorsi 390 light",
+   "violations": []
+  },
+  {
+   "page": "proposte 390 light",
+   "violations": []
+  },
+  {
+   "page": "laboratorio 390 light",
+   "violations": []
+  },
+  {
+   "page": "decisioni 390 light",
+   "violations": []
+  },
+  {
+   "page": "impostazioni 390 light",
+   "violations": []
+  },
+  {
+   "page": "panoramica 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "agenda 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "studenti 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "disponibilita 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "richieste 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "percorsi 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "proposte 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "laboratorio 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "decisioni 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "impostazioni 1440 dark",
+   "violations": []
+  },
+  {
+   "page": "panoramica 390 dark",
+   "violations": []
+  },
+  {
+   "page": "agenda 390 dark",
+   "violations": []
+  },
+  {
+   "page": "studenti 390 dark",
+   "violations": []
+  },
+  {
+   "page": "disponibilita 390 dark",
+   "violations": []
+  },
+  {
+   "page": "richieste 390 dark",
+   "violations": []
+  },
+  {
+   "page": "percorsi 390 dark",
+   "violations": []
+  },
+  {
+   "page": "proposte 390 dark",
+   "violations": []
+  },
+  {
+   "page": "laboratorio 390 dark",
+   "violations": []
+  },
+  {
+   "page": "decisioni 390 dark",
+   "violations": []
+  },
+  {
+   "page": "impostazioni 390 dark",
+   "violations": []
+  }
+ ]
+}

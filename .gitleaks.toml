@@ -1,0 +1,14 @@
+# Gitleaks (CI, job "static"): regole predefinite + eccezioni SOLO per valori sintetici
+# dichiarati (prove e2e locali e fixture di test). Un segreto reale non va mai allowlistato:
+# va ruotato e rimosso dalla storia.
+title = "ripetizioni"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "valori sintetici di test ed e2e"
+paths = [
+  '''^infra/env/e2e(-migrator)?\.env$''',
+  '''^backend/tests/.*\.py$''',
+]

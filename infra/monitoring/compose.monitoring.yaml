@@ -1,0 +1,42 @@
+# Stack di monitoraggio opzionale (self-hosted UE). Uso:
+#   docker compose -f compose.prod.yaml -f infra/monitoring/compose.monitoring.yaml up -d
+services:
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=30d", "--web.enable-lifecycle=false"]
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - ./secrets/monitoring:/etc/prometheus/secrets:ro
+      - prometheus-data:/prometheus
+    networks: [backend]
+    deploy: { resources: { limits: { cpus: "0.50", memory: 1G } } }
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    volumes:
+      - ./infra/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./secrets/monitoring:/etc/alertmanager/secrets:ro
+    networks: [backend]
+    deploy: { resources: { limits: { cpus: "0.25", memory: 256M } } }
+  blackbox:
+    image: prom/blackbox-exporter:v0.27.0
+    volumes: [./infra/monitoring/blackbox.yml:/etc/blackbox_exporter/config.yml:ro]
+    networks: [backend]
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+    env_file: [./secrets/monitoring/postgres-exporter.env]  # DATA_SOURCE_NAME con ruolo app_readonly, sslmode=verify-full
+    command: ["--collector.stat_statements", "--collector.wal"]
+    networks: [backend]
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.74.0
+    env_file: [./secrets/monitoring/redis-exporter.env]  # REDIS_ADDR=rediss://redis:6380, REDIS_USER=exporter
+    networks: [backend]
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    pid: host
+    volumes: ["/:/host:ro,rslave"]
+    command: ["--path.rootfs=/host"]
+    networks: [backend]
+
+volumes:
+  prometheus-data: {}

@@ -1,0 +1,66 @@
+/* Tema Lumen v5.2 (scuro) per Jitsi Meet — allineato a frontend/src/lumen/tokens.css.
+ * I colori dei componenti arrivano da branding.json (customTheme); qui solo ciò che il tema
+ * di Jitsi non espone: carattere, raggi, vetro della barra, riquadri video, scrollbar.
+ * Selettori stabili (id e classi storiche di Jitsi), niente classi generate (css-xxxx). */
+@font-face{font-family:"Bricolage Grotesque";font-style:normal;font-weight:200 800;font-stretch:75% 100%;font-display:swap;src:url("/static/lumen/BricolageGrotesque-Variable.woff2") format("woff2")}
+:root{
+  --l-font:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --l-page:#0A0B0E;--l-frame:#14161B;--l-solid:#1F2127;
+  --l-text:#ECEEF3;--l-text-2:rgba(236,238,243,.68);
+  --l-line:rgba(255,255,255,.07);--l-line-2:rgba(255,255,255,.13);
+  --l-glass:rgba(20,22,27,.72);--l-blue:#6D93FF;--l-fill-blue:#466EDB;--l-red:#D9534F;
+  --l-r-lg:28px;--l-r-md:18px;--l-r-sm:12px;
+  --l-float:0 2px 6px rgba(0,0,0,.3),0 40px 80px -30px rgba(0,0,0,.8);
+  --l-spring:cubic-bezier(.32,.72,0,1);
+}
+html,body,#react{background:var(--l-page)!important;color:var(--l-text)}
+body,button,input,textarea,select,
+body [class*="MuiTypography"],body .toolbox-content,body .subject,body .dialog,
+body .chat-message,body .participants_pane,body .premeeting-screen{font-family:var(--l-font)!important}
+
+/* Barra strumenti: pillola di vetro come la barra comandi del gestionale */
+#new-toolbox .toolbox-content-items{
+  background:var(--l-glass)!important;border:1px solid var(--l-line-2);
+  border-radius:999px!important;padding:6px 10px!important;
+  box-shadow:var(--l-float);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4)
+}
+#new-toolbox .toolbox-button>div,#new-toolbox .toolbox-icon{border-radius:999px!important;transition:background .18s var(--l-spring),transform .18s var(--l-spring)}
+#new-toolbox .toolbox-button:active .toolbox-icon{transform:scale(.94)}
+#new-toolbox .toolbox-icon.toggled{background:var(--l-solid)!important}
+#new-toolbox .hangup-button,#new-toolbox .hangup-button .toolbox-icon{border-radius:999px!important}
+
+/* Riquadri video: angoli Lumen, bordo leggero, oratore attivo in blu */
+.videocontainer,.videocontainer>.videocontainer__background,#largeVideoContainer video,.tile-view .videocontainer video{border-radius:var(--l-r-md)!important}
+.videocontainer{border:1px solid var(--l-line)}
+.videocontainer.active-speaker,.videocontainer.dominant-speaker{box-shadow:0 0 0 2px var(--l-blue)!important}
+.avatar,.userAvatar{font-family:var(--l-font)!important;font-weight:600}
+
+/* Movimento Lumen: barra che entra a molla, riquadri che si assestano, oratore che si accende */
+#new-toolbox{transition:transform .64s var(--l-spring),opacity .36s cubic-bezier(.16,1,.3,1)!important}
+#new-toolbox.visible .toolbox-content-items{animation:lToolIn .64s var(--l-spring) both}
+.videocontainer{transition:box-shadow .36s cubic-bezier(.16,1,.3,1),transform .36s var(--l-spring),border-color .36s ease}
+.videocontainer:hover{border-color:var(--l-line-2)}
+.tile-view .videocontainer{animation:lTileIn .64s var(--l-spring) both}
+.raisehandindicator,.raised-hand-indicator{animation:lPop .36s cubic-bezier(.34,1.4,.64,1) both}
+@keyframes lToolIn{from{opacity:0;transform:translateY(16px) scale(.97)}}
+@keyframes lTileIn{from{opacity:0;transform:scale(.97)}}
+@keyframes lPop{from{opacity:0;transform:scale(.6)}}
+
+/* Titolo (materia) e indicatori in alto: solo in nuova scheda (integrata li mostra la cornice) */
+.subject,.subject-info-container{border-radius:999px!important}
+.subject .subject-text,.subject-text{font-weight:600!important;letter-spacing:0}
+.watermark.leftwatermark{width:48px!important;height:48px!important;background-size:contain;opacity:.95}
+
+/* Pannelli laterali (chat, partecipanti) e finestre */
+.participants_pane,#sideToolbarContainer,.chat-panel{background:var(--l-frame)!important;border-left:1px solid var(--l-line)}
+.dialog,.modal-dialog-container,[role="dialog"] > div{border-radius:var(--l-r-lg)!important}
+input,textarea{border-radius:var(--l-r-sm)!important}
+
+/* Avvisi a scomparsa: angoli e tipografia Lumen */
+.notification,[class*="notification"]{border-radius:var(--l-r-md)!important}
+
+/* Scrollbar discreta come nel gestionale */
+*{scrollbar-width:thin;scrollbar-color:var(--l-line-2) transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--l-line-2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

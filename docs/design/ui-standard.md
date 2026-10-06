@@ -27,7 +27,7 @@ Usare sempre le variabili; nessun colore, raggio, ombra o durata letterale nei c
 | Fondi | `--page` `--frame` `--solid` `--surface` `--surface-2` `--cell` `--cell-off` `--hatch` `--shell` `--scrim` `--scrim-soft` `--pop-shell` `--glass` `--glass-edge` |
 | Testo | `--text` (primario), `--text-2` (secondario), `--text-3` (terziario, placeholder, etichette di colonna) |
 | Linee | `--line` (bordo a riposo, 7%), `--line-2` (hover / campo, 12–13%) |
-| Ombre | `--raise-hi` (luce interna 1px), `--raise` (elemento sollevato), `--float` (livelli) |
+| Ombre | `--raise-hi` (luce in alto + ombra interna in basso), `--raise` (elemento sollevato), `--float` (livelli), `--drop`/`--drop-hi` (caduta neutra corta per oggetti pieni), `--fill-edge` + `--sheen` (bordo e curvatura delle superfici colorate), `--surface-sheen` (luce dall'alto sui pannelli), `--well` (celle e campi incassati). Vietati gli aloni colorati (ombre tinte col colore dell'elemento). |
 | Semantici | `--blue/-soft/-ink`, `--violet…`, `--green…`, `--amber…`, `--red…` — pieno per riempimenti, `-soft` per sfondi, `-ink` per testo su `-soft` |
 | Avatar | `--t1…--t5` (tinte pastello; assegnazione stabile per persona) |
 | Raggi | `--r-xl` 36 · `--r-lg` 28 · `--r-md` 18 · `--r-sm` 12 · `--pill` 999; locali: 14 campi, 7 tag, 20 box interni |
@@ -79,7 +79,7 @@ Tutti i livelli: `bezel` (anello traslucido 6px) + `core`; scrim sfocato; pila u
 
 ## 7. Movimento
 
-- Pressione: scala .97 (`--press`, 180 ms). Hover di carte e lezioni: −2px con ombra più lunga.
+- Pressione: scala .97 (`--press`, 180 ms). Hover di carte e lezioni: −2px con `--drop-hi`.
 - Ingressi livelli: opacità `--out` + trasformazione `--spring` `--d3`; uscita rimossa dopo ~460 ms.
 - Cambio rotta: View Transitions (0,5 s, `--spring`), scroll in alto, focus su `main`. Cambio tema: rivelazione circolare dal pulsante.
 - Dopo uno spostamento o ridimensionamento: FLIP dalla posizione precedente (260 ms). Conferma: piccolo rimbalzo .96 → 1.03 → 1.
@@ -144,3 +144,7 @@ Completata in v0.6: guscio e tutte le schermate v0.5 usano le primitive di `fron
 - **Lezioni cancellate** nelle card: bordo tratteggiato tenue e titolo barrato, senza opacità (che abbassava il contrasto).
 - **Portali**: «La mia settimana» riusa `DayStrip` e le card `.event` della Panoramica; nessuna azione distruttiva, solo lettura.
 - **Spiegare prima di rifiutare**: dove il server può calcolare l'esito (spostamenti), la UI marca le opzioni non valide e mostra il motivo in italiano prima dell'invio; il server rivalida comunque al salvataggio.
+
+
+## Colore (v0.10)
+Niente pastelli piatti. Pieni profondi (`--blue` #2563EB, `--violet` #6A46E5, `--green` #12804F, `--amber` #E5A10E, `--red` #C9302C) sempre con `--fill-edge`, `--sheen` e `--drop`. Le varianti `-soft` sono tinte trasparenti (10–15%) da usare con bordo nella stessa tinta e testo `-ink`. Avatar `.t1`–`.t5`: sfumature piene con iniziali bianche.

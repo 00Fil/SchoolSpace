@@ -17,16 +17,16 @@
   --cell:rgba(255,255,255,.7);--cell-off:rgba(120,126,140,.10);--hatch:rgba(120,126,140,.22);
   --text:#1B1D22;--text-2:#5A5F6B;--text-3:#7C808B;
   --line:rgba(27,29,34,.07);--line-2:rgba(27,29,34,.12);
-  --raise:0 1px 2px rgba(30,36,50,.05),0 10px 24px -14px rgba(30,36,50,.16);
-  --float:0 2px 6px rgba(30,36,50,.04),0 40px 80px -30px rgba(30,36,50,.28);
-  --raise-hi:inset 0 1px 0 rgba(255,255,255,1);
+  --raise:0 0 0 1px rgba(16,20,30,.045),0 1px 1px rgba(16,20,30,.05),0 2px 4px -1px rgba(16,20,30,.06),0 8px 16px -10px rgba(16,20,30,.14);
+  --float:0 0 0 1px rgba(16,20,30,.05),0 1px 2px rgba(16,20,30,.06),0 10px 24px -10px rgba(16,20,30,.18),0 36px 64px -30px rgba(16,20,30,.28);
+  --raise-hi:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(16,20,30,.05);
   --glass:rgba(255,255,255,.42);--glass-edge:rgba(255,255,255,.9);
   --scrim:rgba(217,219,225,.55);
-  --blue:#4F7CF7;--blue-soft:#DCE6FE;--blue-ink:#2449B8;
-  --violet:#8A6CF2;--violet-soft:#E7E0FD;--violet-ink:#5536C4;
-  --green:#3FA86F;--green-soft:#DBF1E4;--green-ink:#1F7A48;
-  --amber:#F4CB52;--amber-soft:#FDF0C8;--amber-ink:#6E5200;
-  --red:#D9534F;--red-soft:#FBE3E2;--red-ink:#9B2723;
+  --blue:#2563EB;--blue-soft:rgba(37,99,235,.10);--blue-ink:#1D4ED8;
+  --violet:#6A46E5;--violet-soft:rgba(106,70,229,.10);--violet-ink:#5530CF;
+  --green:#12804F;--green-soft:rgba(18,128,79,.11);--green-ink:#0B6B40;
+  --amber:#E5A10E;--amber-soft:rgba(229,161,14,.15);--amber-ink:#7A4E00;
+  --red:#C9302C;--red-soft:rgba(201,48,44,.10);--red-ink:#A61F1B;
   --t1:#DCE6FE;--t2:#E7E0FD;--t3:#DBF1E4;--t4:#FDE3D3;--t5:#FDF0C8;
   color-scheme:light;
 }
@@ -36,18 +36,37 @@
   --cell:rgba(255,255,255,.04);--cell-off:rgba(255,255,255,.02);--hatch:rgba(255,255,255,.07);
   --text:#ECEEF3;--text-2:rgba(236,238,243,.68);--text-3:rgba(236,238,243,.5);
   --line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.13);
-  --raise:0 1px 2px rgba(0,0,0,.3),0 10px 24px -12px rgba(0,0,0,.6);
-  --float:0 2px 6px rgba(0,0,0,.3),0 40px 80px -30px rgba(0,0,0,.8);
-  --raise-hi:inset 0 1px 0 rgba(255,255,255,.07);
+  --raise:0 0 0 1px rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.3),0 2px 4px -1px rgba(0,0,0,.35),0 8px 16px -10px rgba(0,0,0,.6);
+  --float:0 0 0 1px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.35),0 10px 24px -10px rgba(0,0,0,.6),0 36px 64px -30px rgba(0,0,0,.8);
+  --raise-hi:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.25);
   --glass:rgba(120,150,255,.14);--glass-edge:rgba(255,255,255,.14);
   --scrim:rgba(5,6,8,.6);
-  --blue:#6D93FF;--blue-soft:rgba(109,147,255,.16);--blue-ink:#B5C8FF;
-  --violet:#9C83F7;--violet-soft:rgba(156,131,247,.16);--violet-ink:#CDBFFD;
-  --green:#4DB57E;--green-soft:rgba(86,194,136,.15);--green-ink:#A5E3C1;
-  --amber:#E8BE4B;--amber-soft:rgba(232,190,75,.14);--amber-ink:#F5DA8E;
-  --red:#F07470;--red-soft:rgba(240,116,112,.14);--red-ink:#FFC2BF;
+  --blue:#5B8BFF;--blue-soft:rgba(91,139,255,.16);--blue-ink:#BCD0FF;
+  --violet:#9277FF;--violet-soft:rgba(146,119,255,.16);--violet-ink:#D2C6FF;
+  --green:#2FB574;--green-soft:rgba(47,181,116,.15);--green-ink:#9FE6C2;
+  --amber:#F0B429;--amber-soft:rgba(240,180,41,.15);--amber-ink:#FBD98A;
+  --red:#F0605B;--red-soft:rgba(240,96,91,.15);--red-ink:#FFC0BD;
   --t1:#2A3558;--t2:#35295A;--t3:#1E4232;--t4:#4A3024;--t5:#4A3E1C;
   color-scheme:dark;
 }
 :root{--scrim-soft:rgba(217,219,225,.38);--pop-shell:rgba(236,237,241,.72)}
 [data-theme="dark"]{--scrim-soft:rgba(5,6,8,.42);--pop-shell:rgba(31,33,39,.72)}
+
+/* v0.10 · materiale: niente aloni colorati. Le superfici piene hanno bordo luce in alto, ombra
+   interna in basso e una caduta d'ombra neutra, corta e stratificata (oggetto solido, non luce diffusa). */
+:root,[data-theme="light"]{
+  --drop:0 0 0 1px rgba(16,20,30,.06),0 1px 1px rgba(16,20,30,.12),0 2px 4px -1px rgba(16,20,30,.14),0 6px 12px -8px rgba(16,20,30,.22);
+  --drop-hi:0 0 0 1px rgba(16,20,30,.07),0 2px 2px rgba(16,20,30,.12),0 4px 8px -2px rgba(16,20,30,.16),0 12px 20px -10px rgba(16,20,30,.26);
+  --fill-edge:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(0,0,0,.16),inset 0 0 0 1px rgba(0,0,0,.05);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 50%,rgba(0,0,0,.06));
+  --surface-sheen:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 72px);
+  --well:inset 0 1px 2px rgba(16,20,30,.07),inset 0 0 0 1px rgba(16,20,30,.06);
+}
+[data-theme="dark"]{
+  --drop:0 0 0 1px rgba(0,0,0,.4),0 1px 1px rgba(0,0,0,.4),0 2px 4px -1px rgba(0,0,0,.45),0 6px 12px -8px rgba(0,0,0,.7);
+  --drop-hi:0 0 0 1px rgba(0,0,0,.45),0 2px 2px rgba(0,0,0,.4),0 4px 8px -2px rgba(0,0,0,.5),0 12px 20px -10px rgba(0,0,0,.75);
+  --fill-edge:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.3),inset 0 0 0 1px rgba(0,0,0,.2);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 50%,rgba(0,0,0,.12));
+  --surface-sheen:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 72px);
+  --well:inset 0 1px 2px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.05);
+}

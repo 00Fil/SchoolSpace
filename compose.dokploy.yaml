@@ -89,7 +89,7 @@ x-backend: &backend
   logging: *logging
 
 x-pg-client: &pg-client
-  image: postgres:17-bookworm
+  image: postgres:18-bookworm
   environment: &pg-client-env
     PGHOST: db
     PGDATABASE: ${POSTGRES_DB:-ripetizioni}
@@ -104,7 +104,7 @@ x-pg-client: &pg-client
 
 services:
   db:
-    image: postgres:17-bookworm
+    image: postgres:18-bookworm
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-ripetizioni}
       POSTGRES_USER: ${PG_ADMIN_USER:-pgadmin}

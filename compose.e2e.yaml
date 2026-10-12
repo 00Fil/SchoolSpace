@@ -4,7 +4,7 @@
 # Uso: scripts/e2e-compose.sh   (non usare in produzione: il DB qui è un container tmpfs)
 services:
   db:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_DB: ripetizioni
       POSTGRES_USER: e2e_admin

@@ -3,7 +3,7 @@
 # requirements.txt (rigenerare con pip-compile --generate-hashes o scripts equivalenti).
 Django>=5.2.17,<5.3
 djangorestframework>=3.17.2,<4
-psycopg[binary]>=3.2,<3.3
+psycopg[binary]>=3.3.6,<3.4
 gunicorn>=23,<24
 ortools>=9.14,<10
 jsonschema>=4.25,<5
